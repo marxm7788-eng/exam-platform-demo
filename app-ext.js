@@ -430,3 +430,31 @@ return f.apply(this,arguments)};
 try{eval(n+'=w')}catch(x){}
 });
 })();
+function sampleFill(e,k,all,status){let slots=levelSlots(e,+k[0]),n=0,now=new Date().toLocaleString('ar-EG');let t=e.tasks[k]={courses:[],status,note:'',updated:now,sent:status==='قيد الإعداد'?'':now};
+planItems(e,k).forEach(it=>{let c=it.courses.find(x=>!x.pass),sl=slots[n];if(!c||!sl||(!all&&n>=3))return;n++;t.courses.push({code:c.code,name:c.name,gid:it.gid,students:40+n*7,slot:sl.key,label:sl.label})})}
+async function loadSample(){
+if(!db)return;
+if(!confirm('تحميل البيانات التجريبية الكاملة؟\nسيحلّ إصدار تجريبي يضم كل برامج الكلية محل الإصدارات الحالية في هذا المتصفح فقط. تُحفظ نسخة من بياناتك الحالية تلقائيًا قبل الاستبدال.'))return;
+try{localStorage.setItem('sohag_exam_demo_before_sample',JSON.stringify({at:new Date().toLocaleString('ar-EG'),db}))}catch(x){}
+const pw=await hash('1234');
+[['s1','sp1','أ. مختص الكيمياء','specialist'],['s2','sp2','أ. مختص الفيزياء','specialist'],['r1','rev','د. المراجع','reviewer'],['v1','view','مشاهد','viewer']].forEach(([i,u,n,r])=>{if(!db.users.some(x=>x.username===u))db.users.push({id:i,username:u,password:pw,name:n,role:r,active:true})});
+const sp=db.users.filter(u=>u.role==='specialist'&&u.active).map(u=>u.id);
+let p1=id(),p2=id();
+let e={id:id(),name:'امتحانات الفصل الدراسي الأول (بيانات تجريبية كاملة)',year:`${startYear()}–${startYear()+1}`,semester:'الفصل الدراسي الأول',type:'الامتحانات النهائية',start:today(),archived:false,
+periods:[{id:p1,name:'الفترة الأولى',from:'09:00',to:'11:00'},{id:p2,name:'الفترة الثانية',from:'12:00',to:'14:00'}],days:[0,1,2,3,4],holidays:[],
+levelPlans:{1:{days:[0,2],periods:[p1]},2:{days:[0,2],periods:[p2]},3:{days:[1,3],periods:[p1]},4:{days:[1,3],periods:[p2]}},assign:{},tasks:{}};
+db.editions=[e];db.active=e.id;draftEdition=null;delete db.draftEdition;
+db.rooms=[['مدرج (1)',300],['مدرج (2)',250],['قاعة 101',80],['قاعة 102',80],['قاعة 201',60],['معمل الحاسب',40]].map(([n,c])=>({id:id(),name:n,cap:c}));
+programs().forEach((p,i)=>{e.assign[p.key]=sp[i%sp.length];sampleFill(e,p.key,i%5!==0,i%5===0?'قيد الإعداد':(i%5===1?'مرسل للمراجعة':'معتمد'))});
+db.demoSeeded=true;
+save();
+if(typeof me!=='undefined'&&me){try{log('تحميل البيانات التجريبية الكاملة')}catch(x){}try{render()}catch(x){}}
+try{toast('تم تحميل البيانات التجريبية الكاملة. سجّل الدخول بحساب admin أو view لتجربتها.')}catch(x){}
+}
+(function(){
+const mk=()=>{let b=document.createElement('button');b.type='button';b.id='loadSampleBtn';b.style.cssText='margin-top:10px;width:100%;background:#fff;color:#0b4a52;border:2px solid #118a86;border-radius:12px;padding:12px;font-weight:700;cursor:pointer;box-shadow:none';b.textContent='تحميل البيانات التجريبية الكاملة (كل برامج الكلية)';b.onclick=loadSample;return b};
+const put=()=>{let L=document.getElementById('login');if(!L||document.getElementById('loadSampleBtn'))return;let w=document.createTreeWalker(L,NodeFilter.SHOW_TEXT),n,t=null;while(n=w.nextNode()){if(n.nodeValue.includes('حسابات تجريبية: اضغط')){t=n.parentElement;break}}
+if(t){t.insertAdjacentElement('afterend',mk());let h=document.createElement('small');h.id='loadSampleHint';h.style.cssText='display:block;margin-top:6px;opacity:.75';h.textContent='يملأ المنصة بإصدار كامل لتجربتها فورًا. البيانات تُحفظ في متصفحك فقط.';document.getElementById('loadSampleBtn').insertAdjacentElement('afterend',h)}};
+put();document.addEventListener('DOMContentLoaded',put);setTimeout(put,500);
+const _r6=rooms;rooms=function(){return _r6()+`<section class="panel"><h2>البيانات التجريبية</h2><p class="muted">يحمّل إصدارًا تجريبيًا كاملًا لكل برامج الكلية. تُحفظ نسخة من الوضع الحالي قبل الاستبدال.</p><div class="actions"><button onclick="loadSample()">تحميل البيانات التجريبية الكاملة</button></div></section>`};
+})();

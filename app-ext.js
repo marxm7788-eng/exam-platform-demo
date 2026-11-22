@@ -504,3 +504,98 @@ D.addEventListener('touchend',e=>{if(!tx||innerWidth>900)return;let dx=e.changed
 if(Math.abs(dx)>60&&dy<50){if(open&&dx>0)closeSide();else if(!open&&dx<0&&tx.x>innerWidth-24&&D.getElementById('app')&&!D.getElementById('app').classList.contains('hidden'))setOpen(true)}tx=null},{passive:true});
 D.addEventListener('DOMContentLoaded',()=>{paint();hideLT()});paint();hideLT();
 })();
+(function(){const D=document;
+const ICONS={dashboard:'◼',setup:'⚙',assign:'⇄',tracking:'◎',review:'✔',published:'▦',users:'●',rooms:'▤',logs:'☰',tasks:'☐',observers:'◉',roadmap:'✦'};
+const MAXTABS=7;
+function counts(){let e=active&&active(),c={review:0,tracking:0,tasks:0};
+if(!e||!me)return c;
+Object.keys(e.assign||{}).forEach(k=>{let t=e.tasks[k]||{status:'مسودة'};
+if(t.status==='مرسل للمراجعة'&&can('approve'))c.review++;
+if(typeof isLate==='function'&&isLate(t))c.tracking++;
+if(e.assign[k]===me.id&&['مسودة','قيد الإعداد','يحتاج تعديل'].includes(t.status))c.tasks++});
+return c}
+function badgeFor(k,c){let n=c[k]||0;return n?`<span class="tbadge">${n}</span>`:''}
+function buildTabs(){let nav=D.getElementById('nav'),top=D.querySelector('.top');if(!nav||!top)return;if(!nav._home)nav._home=nav.parentElement;
+if(innerWidth>900){if(nav.parentElement.id!=='topbarTabs'){let tb=D.getElementById('topbarTabs');if(!tb){tb=D.createElement('div');tb.id='topbarTabs';top.appendChild(tb)}tb.appendChild(nav)}}
+else{if(nav._home&&nav.parentElement!==nav._home)nav._home.appendChild(nav);return}
+let btns=[...nav.querySelectorAll('button')];if(!btns.length)return;
+let c=counts();
+btns.forEach((b,i)=>{b.style.display=i<MAXTABS?'':'none';
+let key=keyOf(b);let old=b.querySelector('.tbadge');if(old)old.remove();
+let bd=badgeFor(key,c);if(i<MAXTABS&&bd)b.insertAdjacentHTML('beforeend',bd)});
+let mw=D.getElementById('tabMoreWrap');
+if(btns.length>MAXTABS){if(!mw){mw=D.createElement('div');mw.id='tabMoreWrap';mw.innerHTML=`<button type="button" id="tabMoreBtn">المزيد ▾</button><div id="tabMoreMenu" hidden></div>`;nav.parentElement.appendChild(mw);
+mw.querySelector('#tabMoreBtn').onclick=ev=>{ev.stopPropagation();let m2=mw.querySelector('#tabMoreMenu');m2.hidden=!m2.hidden};
+D.addEventListener('click',()=>{let m2=mw.querySelector('#tabMoreMenu');if(m2)m2.hidden=true})}
+let menu=mw.querySelector('#tabMoreMenu');menu.innerHTML=btns.slice(MAXTABS).map(b=>{let key=keyOf(b);return `<button type="button" data-go="${key}" class="${b.classList.contains('active')?'active':''}">${ICONS[key]||'•'} ${b.textContent.trim()} ${badgeFor(key,c)}</button>`}).join('');
+menu.querySelectorAll('button').forEach(x=>x.onclick=()=>{menu.hidden=true;go(x.dataset.go)});
+mw.style.display=''}
+else if(mw)mw.style.display='none';
+hl()}
+function keyOf(b){let oc=b.getAttribute('onclick')||'';let m=/go\('([^']+)'\)/.exec(oc);return m?m[1]:''}
+function hl(){let nav=D.getElementById('nav');if(!nav||nav.parentElement.id!=='topbarTabs')return;
+let tb=nav.parentElement,el=tb.querySelector('.tab-hl');
+if(!el){el=D.createElement('div');el.className='tab-hl';tb.prepend(el)}
+let a=nav.querySelector('button.active')||[...nav.querySelectorAll('button')].find(b=>b.style.display!=='none');
+if(!a){el.style.width='0';return}
+el.style.width=a.offsetWidth+'px';el.style.transform=`translateX(${a.offsetLeft}px)`}
+function buildBrand(){let top=D.querySelector('.top');if(!top||D.getElementById('topBrand'))return;
+let first=top.firstElementChild;if(!first)return;
+let b=D.createElement('div');b.id='topBrand';b.innerHTML=`<img data-lg alt=""><div>إدارة جداول الامتحانات<small>كلية العلوم – جامعة سوهاج</small></div>`;
+first.prepend(b);
+let img=b.querySelector('img');if(typeof LOGO_U!=='undefined')img.src=LOGO_U;
+let ed=D.getElementById('editionlabel');if(ed)first.appendChild(ed);
+let bd=top.querySelector('.badge.amber');if(bd&&bd.parentElement===first)bd.remove()}
+function buildAvatar(){let top=D.querySelector('.top');if(!top||D.getElementById('avWrap')||!me)return;
+let w=D.createElement('div');w.id='avWrap';
+w.innerHTML=`<button type="button" id="avBtn"><span class="avx">${esc((me.name||'م').trim()[0]||'م')}</span><span><span class="avn">${esc(me.name||'')}</span><br><span class="avr">${esc(roleName(me.role))}</span></span></button>
+<div id="avMenu" hidden><button type="button" onclick="changePassword()">تغيير كلمة المرور</button><button type="button" onclick="backup()">تصدير نسخة احتياطية</button><button type="button" onclick="logout()">تسجيل الخروج</button></div>`;
+top.appendChild(w);
+w.querySelector('#avBtn').onclick=ev=>{ev.stopPropagation();let m=w.querySelector('#avMenu');m.hidden=!m.hidden};
+D.addEventListener('click',()=>{let m=w.querySelector('#avMenu');if(m)m.hidden=true})}
+function buildRail(){if(D.getElementById('rail')||!me||innerWidth<=900)return;
+let r=D.createElement('div');r.id='rail';D.body.appendChild(r);paintRail()}
+function paintRail(){let r=D.getElementById('rail');if(!r)return;if(innerWidth<=900){r.style.display='none';return}r.style.display='';
+let c=counts(),items=menu();
+let prime=can('setup')?`<button type="button" class="prime" title="إنشاء / فتح إصدار" onclick="go('setup')">＋</button>`:'';
+r.innerHTML=prime+items.map(([k,n])=>`<button type="button" class="${page===k?'active':''}" title="${esc(n)}" onclick="go('${k}')">${ICONS[k]||'•'}${badgeForRail(k,c)}</button>`).join('')
++`<div class="sep"></div><button type="button" title="الوضع الداكن / الفاتح" onclick="setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark')">☾</button>`;
+function badgeForRail(k,c2){let n=c2[k]||0;return n?`<span class="rb">${n}</span>`:''}}
+function courseName(code){try{for(let p of programs()){let c=(p.courses||[]).find(x=>x.code===code);if(c)return c.name}}catch(e){}return code}
+function nextExam(){let e=active&&active();if(!e)return null;let today=tdy(),best=null;
+Object.entries(e.tasks||{}).forEach(([k,t])=>{if(!['معتمد','منشور'].includes(t.status))return;
+(t.courses||[]).forEach(c=>{if(!c.slot)return;let[d,pid]=String(c.slot).split('|');if(!d||d<today)return;
+if(!best||d<best.d||(d===best.d&&String(pid)<String(best.pid)))best={d,pid,c,k}})});
+if(!best)return null;
+let per=(e.periods||[]).find(p=>String(p.id)===String(best.pid));
+let pname=best.k.split('|').slice(1).join('|');
+let lv=LV&&LV[+best.k[0]-1]||best.k[0];
+return{n:best.c.name||best.c.code,code:best.c.code,d:best.d,per:per?((per.name||'')+(per.from?` • ${per.from}–${per.to||''}`:'')):'',pname,lv}}
+function heroNext(){let nx=nextExam();
+if(!nx)return `<div class="nx"><div class="nx-cap">الامتحان القادم</div><div class="nx-name">لا توجد مواعيد قادمة بعد</div><div class="nx-meta">اعتمد الجداول لتظهر أقرب موعد هنا</div></div>`;
+let dd=new Date(nx.d+'T12:00:00');
+let ds=dd.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'});
+return `<div class="nx"><div class="nx-cap">الامتحان القادم</div><div class="nx-name">${esc(nx.n)}</div><div class="nx-meta">${esc(nx.pname)} • المستوى ${esc(String(nx.lv))}${nx.per?' • '+esc(nx.per):''}</div><span class="nx-date">${ds}</span></div>`}
+const _dash6=dashboard;
+dashboard=function(){let h=_dash6();
+if(page!=='dashboard')return h;
+let n=(typeof notices==='function'?notices():[]).slice(0,6);
+let rows=n.map(([a,b])=>{let rev=/مراجعة/.test(a),late=/تجاوز|متأخر/.test(a);
+let cls=late?'redtag':rev?'amber':'blue';
+let target=rev?'review':(can('tracking')?'tracking':'tasks');
+let act=rev?'مراجعة':'عرض';
+return `<div class="arow"><span class="badge ${cls}">${esc(a)}</span><span class="ti"><b>${esc(b)}</b></span><button type="button" class="sm light" onclick="go('${target}')">${act}</button></div>`}).join('');
+let panel=`<section class="panel atn"><h2>يحتاج انتباهك</h2>${rows||'<div class="empty">لا توجد عناصر معلّقة. كل شيء على ما يرام.</div>'}</section>`;
+let i=h.indexOf('<div class="cols">');
+h= h.replace('<div class="ringwrap>', '<div class="ringwrap>');
+if(i>-1)h=h.slice(0,i)+panel+h.slice(i);else h+=panel;
+return h};
+const _render6=render;
+render=function(){_render6();
+try{buildBrand();buildTabs();buildAvatar();buildRail();paintRail();
+let nxh=D.querySelector('.hero .ringwrap');
+if(page==='dashboard'){let hero=D.querySelector('.hero');if(hero&&!hero.querySelector('.nx')){let rw=hero.querySelector('.ringwrap');if(rw)rw.insertAdjacentHTML('beforebegin',heroNext())}}
+}catch(e){console.warn('shell',e)}};
+D.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{buildBrand();buildTabs()},400)});
+window.addEventListener('resize',()=>{try{buildTabs();hl();paintRail()}catch(e){}});
+})();

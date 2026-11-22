@@ -1,0 +1,815 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>نسخة تجريبية – منصة إدارة جداول الامتحانات</title>
+<style>
+:root{--navy:#173451;--navy2:#234b6d;--teal:#168b88;--bg:#f3f6fa;--white:#fff;--ink:#192b3d;--muted:#718096;--line:#e1e8ef;--green:#23845b;--red:#bd4650;--amber:#a66b12;--shadow:0 7px 22px #1b35500c}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 Tahoma,"Segoe UI",Arial,sans-serif}button,input,select,textarea{font:inherit}button{border:0;border-radius:9px;padding:9px 14px;background:var(--navy);color:#fff;cursor:pointer;font-weight:600}button:hover{filter:brightness(1.08)}button:disabled{opacity:.45;cursor:not-allowed}.light{background:#fff;color:var(--navy);border:1px solid var(--line)}.teal{background:var(--teal)}.danger{background:var(--red)}.sm{font-size:12px;padding:5px 9px}.muted{color:var(--muted)}.hidden{display:none!important}#login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(140deg,#102942,#1d4c68)}.loginbox{width:min(420px,100%);background:white;border-radius:18px;padding:30px;box-shadow:0 20px 60px #07192a55}.logo{width:54px;height:54px;border-radius:15px;background:#e6f4f3;color:var(--teal);display:grid;place-items:center;font-size:26px;margin-bottom:14px}.loginbox h1{margin:0;color:var(--navy);font-size:22px}.loginbox p{color:var(--muted);margin:4px 0 22px}.field{display:grid;gap:5px;margin-bottom:12px}.field label{font-size:12px;color:#536477;font-weight:bold}.field input,.field select,.field textarea,input,select,textarea{width:100%;padding:10px;border:1px solid #d8e1eb;border-radius:8px;background:#fff;color:var(--ink);outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px #168b8817}.field textarea{min-height:75px}.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.side{background:var(--navy);color:#fff;padding:20px 14px;display:flex;flex-direction:column;gap:18px}.brand{padding:4px 9px 17px;border-bottom:1px solid #ffffff22}.brand b{display:block;font-size:16px}.brand small{color:#b9ccdc}.profile{padding:11px;border-radius:11px;background:#ffffff12}.profile b{display:block}.profile small{color:#bdcede}.navtitle{font-size:10px;color:#a9bfd2;padding:0 10px}.nav{display:grid;gap:4px}.nav button{background:transparent;color:#dce8f2;text-align:right;font-weight:500}.nav button.active,.nav button:hover{background:#ffffff18;color:white}.sidebottom{margin-top:auto;display:grid;gap:7px}.sidebottom button{background:#ffffff12;border:1px solid #ffffff24}.main{min-width:0}.top{height:68px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 26px;gap:10px}.top b{display:block}.top small{color:var(--muted)}.content{padding:25px;max-width:1450px;margin:auto}.head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px}.head h1{font-size:23px;color:var(--navy);margin:0}.head p{margin:3px 0 0;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.panel,.stat{background:white;border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:var(--shadow);margin-bottom:15px}.panel h2,.panel h3{margin:0 0 13px;color:var(--navy)}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:15px}.stat{margin:0}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:26px;color:var(--navy)}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:650px;background:#fff}th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);vertical-align:middle}th{background:#f5f8fb;color:#56677a;font-size:12px;white-space:nowrap}td{font-size:13px}tr:last-child td{border-bottom:0}.badge{display:inline-block;border-radius:30px;padding:3px 9px;font-size:11px;background:#edf1f5;color:#536477;white-space:nowrap}.green{background:#eaf7f0;color:var(--green)}.amber{background:#fff5e4;color:var(--amber)}.redtag{background:#fff0f1;color:var(--red)}.blue{background:#edf4fb;color:#315d8c}.notice{padding:10px 13px;border-radius:9px;margin:10px 0;font-size:12px;background:#edf5fc;color:#315d8c}.warning{background:#fff5e4;color:var(--amber)}.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:15px}.step{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 5px;text-align:center;font-size:11px;color:var(--muted)}.step b{display:block;color:var(--navy);font-size:12px}.step.active{border-color:var(--teal);background:#e9f6f5}.step.done{background:#f0faf5;border-color:#b8dec9}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tabs button{background:#eef2f6;color:#536477}.tabs button.active{background:var(--navy);color:white}.checks{display:flex;flex-wrap:wrap;gap:8px}.check{display:flex;align-items:center;gap:6px;background:#f6f8fa;border:1px solid var(--line);padding:7px 10px;border-radius:8px}.check input{width:auto}.empty{text-align:center;padding:27px;color:var(--muted)}.empty b{display:block;color:var(--navy)}.progress{height:7px;background:#edf1f4;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;background:var(--teal)}.modalbg{position:fixed;inset:0;background:#10243bcc;display:grid;place-items:center;padding:16px;z-index:5}.modal{width:min(540px,100%);background:#fff;border-radius:15px;padding:20px}.modal h3{margin:0 0 14px;color:var(--navy)}.toast{position:fixed;bottom:18px;left:18px;background:#173451;color:#fff;padding:11px 16px;border-radius:9px;z-index:8;box-shadow:var(--shadow)}.toast.err{background:var(--red)}.mobile{display:none}.foot{font-size:11px;color:var(--muted);margin-top:14px}@media(max-width:950px){.stats{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:repeat(3,1fr)}}@media(max-width:720px){.app{grid-template-columns:1fr}.side{position:fixed;z-index:4;right:-260px;top:0;bottom:0;width:245px;transition:.2s}.side.open{right:0}.mobile{display:inline-block}.top{padding:0 12px}.content{padding:14px}.cols,.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.head{display:block}.head>.actions{margin-top:10px}.steps{grid-template-columns:repeat(2,1fr)}}@media print{.side,.top,.no-print,button{display:none!important}.app{display:block}.content{padding:0}.panel{box-shadow:none;border:0}body{background:#fff}table{min-width:0}th,td{font-size:10px;padding:6px}}
+
+/* ===== Components ===== */
+.notice{padding:11px 14px;border-radius:10px;background:#edf5fb;color:#24506f;border:1px solid #d3e4f1;margin:12px 0;line-height:1.7}
+.notice.warning{background:#fff7e8;color:var(--amber);border-color:#f2dcb0}
+.notice.success{background:#e9f7f0;color:var(--green);border-color:#c5e7d6}
+.notice.info{background:#edf5fb;color:#24506f;border-color:#d3e4f1}
+.foot{margin-top:14px;font-size:12px;color:var(--muted);text-align:center}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow)}
+.panel h2{margin:0 0 6px;font-size:18px;color:var(--navy)}
+.panel h3{margin:0 0 8px;font-size:15px;color:var(--navy)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:14px 16px;box-shadow:var(--shadow);display:grid;gap:2px}
+.stat span{color:var(--muted);font-size:12px}
+.stat strong{font-size:26px;color:var(--navy)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;margin-bottom:18px}
+.cols>.panel{margin-bottom:0}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.formgrid .full{grid-column:1/-1}
+.checks{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.check{display:flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;cursor:pointer;font-weight:500}
+.check input{width:auto;margin:0;accent-color:var(--teal)}
+.check:hover{border-color:var(--teal)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);vertical-align:middle}
+th{background:#f4f7fb;color:#4a5d70;font-size:12px}
+tr:last-child td{border-bottom:0}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;background:#eef2f6;color:#4a5d70;font-size:12px;font-weight:600}
+.badge.blue{background:#e3eefa;color:#245c8f}
+.badge.amber{background:#fff1d6;color:var(--amber)}
+.badge.redtag{background:#fde8ea;color:var(--red)}
+.badge.green{background:#e0f4ea;color:var(--green)}
+.empty{padding:26px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--navy);margin-bottom:4px}
+.progress{height:9px;background:#e8eef4;border-radius:99px;overflow:hidden;margin-top:5px}
+.progress i{display:block;height:100%;background:var(--teal);border-radius:99px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:20px}
+.step{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#f8fafc;color:var(--muted);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px}
+.step b{display:grid;place-items:center;min-width:28px;height:28px;border-radius:50%;background:#e4ebf2;color:var(--navy);font-size:12px}
+.step.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.step.active b{background:#ffffff26;color:#fff}
+.step.done{background:#e9f7f0;color:var(--green);border-color:#c5e7d6}
+.step.done b{background:var(--green);color:#fff}
+.actions{align-items:center}
+.modalbg{position:fixed;inset:0;background:#0a1b2c88;display:grid;place-items:center;padding:16px;z-index:50}
+.modal{background:#fff;border-radius:14px;padding:22px;width:min(680px,100%);max-height:90vh;overflow:auto;box-shadow:0 20px 60px #07192a55}
+.modal h3{margin:0 0 12px;color:var(--navy)}
+#toastroot{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:80}
+.toast{background:var(--green);color:#fff;padding:11px 20px;border-radius:10px;box-shadow:0 8px 24px #0003;font-weight:600}
+.toast.err{background:var(--red)}
+.mobile{display:none}
+/* ===== Level distribution cards ===== */
+.level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.level-card{margin:0!important;border:2px solid var(--line);background:#fafcff;transition:border-color .15s,background .15s}
+.level-card.conflict{border-color:var(--red);background:#fff5f6}
+.level-card .lc-head{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.level-card .lc-head h3{margin:0}
+.level-card .lc-label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px;font-weight:700}
+.level-card .lc-days{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin:0 0 12px}
+.level-card .lc-periods{display:flex;flex-direction:column;gap:4px;margin:0}
+.level-card .check{font-size:12px;padding:5px 8px}
+.level-card .check.on{border-color:var(--teal);background:#eaf6f5}
+.level-card.conflict .check.on{border-color:var(--red);background:#fdeceE}
+.conflict-alert{background:#fff0f1;color:var(--red);border:1px solid #ffccd0;font-weight:700;border-radius:10px;padding:11px 14px;margin:12px 0}
+.conflict-alert ul{margin:6px 0 0;padding:0 18px}
+.plantable td{vertical-align:top}
+.plantable select{min-width:230px}
+.plantable .stu{width:84px}
+.plantable .grouprow td{background:#eef4fa;font-weight:700;color:var(--navy)}
+.plantable .optrow td:first-child{border-right:3px solid var(--teal)}
+.rownote{font-size:11px;color:var(--teal);margin-top:3px}
+.rownote.warn{color:var(--amber)}
+.sigs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:40px;text-align:center;font-weight:700}.sigs div{border-top:1px solid #999;padding-top:8px}
+.handle{cursor:grab;font-size:18px;color:var(--muted);padding:0 6px;user-select:none}.itm.dragover td{background:#e6f4f3}.plantable .ctrl{white-space:nowrap;width:1%}.plantable .ctrl button{padding:2px 6px;margin-inline-start:2px}
+@media(max-width:1180px){.level-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}}
+@media(max-width:900px){
+ .app{grid-template-columns:1fr}
+ .side{position:fixed;top:0;bottom:0;right:0;width:260px;z-index:40;transform:translateX(100%);transition:transform .2s;overflow:auto}
+ .side.open{transform:none}
+ .mobile{display:inline-block}
+ .content{padding:16px}
+ .top{padding:0 14px}
+}
+@media print{
+ .side,.top,.no-print,#toastroot{display:none!important}
+ .app{display:block}
+ body{background:#fff}
+ .content{padding:0}
+ .panel{box-shadow:none;border:0}
+}
+</style></head><body>
+<div id="login"><div class="loginbox"><div class="logo">▦</div><h1>منصة إدارة جداول الامتحانات</h1><p>كلية العلوم – جامعة سوهاج</p><div class="field"><label>اسم المستخدم</label><input id="lu" value="admin"></div><div class="field"><label>كلمة المرور</label><input id="lp" type="password" placeholder="أدخل كلمة المرور"></div><div id="loginerr" class="notice warning hidden"></div><button style="width:100%" onclick="login()">تسجيل الدخول</button><div class="foot">نسخة تجريبية — الحسابات: admin / admin ، sp1 / 1234 (مختص) ، sp2 / 1234 ، rev / 1234 (مراجع) ، view / 1234 (مشاهد)</div></div></div>
+<div id="app" class="app hidden"><aside id="side" class="side"><div class="brand"><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div><div class="profile"><b id="who">مدير النظام</b><small id="role">مدير النظام</small></div><div><div class="navtitle">القائمة الرئيسية</div><div id="nav" class="nav"></div></div><div class="sidebottom"><button onclick="backup()">تصدير نسخة احتياطية</button><button onclick="logout()">تسجيل الخروج</button></div></aside><section class="main"><header class="top"><div style="display:flex;align-items:center;gap:9px"><button class="mobile light" onclick="toggleSide()">☰</button><div><b id="pagetitle">لوحة التحكم</b><small id="editionlabel">لا يوجد إصدار نشط</small></div></div><button class="light" onclick="changePassword()">تغيير كلمة المرور</button></header><main id="content" class="content"></main></section></div><div id="modalroot"></div><div id="toastroot"></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],LV=['الأول','الثاني','الثالث','الرابع'],SP=['الإحصاء الرياضي والبرمجة','الكيمياء الحيوية','الفيزياء الحيوية الطبية','التكنولوجيا الحيوية الجزيئية','البيولوجيا الجزيئية والطفيليات','الجيولوجيا الهندسية ومواد البناء'],G1=['شعبة العلوم البيولوجية','شعبة العلوم الفيزيائية','شعبة العلوم الجيولوجية'],P2=['الميكروبيولوجي والكيمياء','علم الحيوان والكيمياء','النبات والكيمياء','الكيمياء','الفيزياء','الرياضيات','الجيولوجيا والكيمياء','الجيوفيزياء','الجيولوجيا'],DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];let db,me=null,page='dashboard',step=1,taskKey=null,draftEdition=null;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),id=()=>Math.random().toString(36).slice(2,10),today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`},startYear=()=>{let d=new Date();return d.getMonth()>=8?d.getFullYear():d.getFullYear()-1},hash=s=>sha256Hex('sohag-local:'+s);
+
+// ---------- SHA-256 (WebCrypto when available, pure-JS fallback otherwise) ----------
+async function sha256Hex(text){
+  const bytes = new TextEncoder().encode(text);
+  if(window.crypto && window.crypto.subtle){
+    try{
+      const buf = await window.crypto.subtle.digest('SHA-256', bytes);
+      return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
+    }catch(err){ /* fall through to the JS implementation */ }
+  }
+  return sha256Js(bytes);
+}
+function sha256Js(bytes){
+  const K = [];
+  for(let n = 2; K.length < 64; n++){
+    let prime = true;
+    for(let d = 2; d * d <= n; d++){ if(n % d === 0){ prime = false; break; } }
+    if(prime){ K.push(Math.floor((Math.cbrt(n) % 1) * 4294967296)); }
+  }
+  let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const len = bytes.length;
+  const total = ((len + 9 + 63) >> 6) << 6;
+  const buf = new Uint8Array(total);
+  buf.set(bytes);
+  buf[len] = 0x80;
+  const view = new DataView(buf.buffer);
+  view.setUint32(total - 8, Math.floor(len * 8 / 4294967296));
+  view.setUint32(total - 4, (len * 8) >>> 0);
+  const w = new Uint32Array(64);
+  const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+  for(let off = 0; off < total; off += 64){
+    for(let i = 0; i < 16; i++) w[i] = view.getUint32(off + i * 4);
+    for(let i = 16; i < 64; i++){
+      const s0 = rotr(w[i-15],7) ^ rotr(w[i-15],18) ^ (w[i-15] >>> 3);
+      const s1 = rotr(w[i-2],17) ^ rotr(w[i-2],19) ^ (w[i-2] >>> 10);
+      w[i] = (w[i-16] + s0 + w[i-7] + s1) >>> 0;
+    }
+    let [a,b,c,d,e,f,g,h] = H;
+    for(let i = 0; i < 64; i++){
+      const S1 = rotr(e,6) ^ rotr(e,11) ^ rotr(e,25);
+      const ch = (e & f) ^ (~e & g);
+      const t1 = (h + S1 + ch + K[i] + w[i]) >>> 0;
+      const S0 = rotr(a,2) ^ rotr(a,13) ^ rotr(a,22);
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const t2 = (S0 + maj) >>> 0;
+      h = g; g = f; f = e; e = (d + t1) >>> 0;
+      d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+    }
+    H = [H[0]+a, H[1]+b, H[2]+c, H[3]+d, H[4]+e, H[5]+f, H[6]+g, H[7]+h].map(x => x >>> 0);
+  }
+  return H.map(x => x.toString(16).padStart(8,'0')).join('');
+}
+
+
+// ============ الخطة الدراسية المعتمدة (من ملفات الخطط) ============
+// المفتاح: "المستوى|اسم الشعبة أو البرنامج" ← الفصل (1 / 2) ← قائمة المقررات
+// مقرر: [كود، اسم، ساعات، g=بدرجات / p=ناجح-راسب]   مجموعة اختيارية: {g: العنوان, o: [[كود، اسم، ساعات], ...]}
+const CATALOG = {"2|الميكروبيولوجي والكيمياء":{"1":[["BMIC261","علم الفطريات",3,"g"],["BMIC271","علم البكتريا",3,"g"],["BMIC221","علم الخلية والوراثة",3,"g"],["CHEM235","كيمياء فيزيائية",3,"g"],["ZOOL220","طفيليات طبية",3,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["BMIC262","علم الطحالب",3,"g"],["BMIC272","علم الفيروسات",3,"g"],["BMIC282","تكنولوجيا النانو الحيوية",3,"g"],["CHEM242","كيمياء تحليلية",3,"g"],["BMIC210","ميكروبيولوجيا الغذاء",3,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الميكروبيولوجي والكيمياء":{"1":[["BMIC381","وراثة ميكروبية",3,"g"],["BMIC280","بيولوجيا جزيئية",2,"g"],["CHEM323","كيمياء غير عضوية",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC301","تلوث بيئي",2],["BMIC341","التنوع الحيوي والنظام البيئي",2]]},{"g":"مقرر اختياري (2)","o":[["MATH341","إحصاء حيوي",2],["BMIC313","الجودة والأمان الحيوي",2]]},{"g":"مقرر اختياري (3)","o":[["PHYS335","فيزياء الليزر وتطبيقاتها الحيوية",3],["PHYS341","فيزياء إشعاعية حيوية",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["BMIC312","فسيولوجيا الكائنات الدقيقة",3,"g"],["BMIC316","أمراض نبات",3,"g"],["BMIC318","ميكروبيولوجيا طبية ومناعة",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC302","المقاومة البيولوجية",2],["BMIC310","علاقة العائل بالطفيل",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM310","كيمياء عضوية",3],["CHEM315","كيمياء البترول والكروماتوجرافي",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الميكروبيولوجي والكيمياء":{"1":[["BMIC415","ميكروبيولوجيا تطبيقية وصناعية",3,"g"],["CHEM417","أطياف وأصباغ",2,"g"],["BMIC413","سموم ميكروبية",3,"g"],["BMIC400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL445","حشرات اقتصادية وطبية",3],["ZOOL429","أحياء بحرية",3]]},{"g":"مقرر اختياري (2)","o":[["CHEM435","الكيمياء الفيزيائية للجزيئات الكبيرة",3],["CHEM441","كيمياء تحليلية بيئية",3]]}],"2":[["CHEM470","كيمياء حيوية اكلينيكية",3,"g"],["BMIC482","المعلوماتية الحيوية",3,"g"],["CHEM436","كيمياء فيزيائية",3,"g"],["BMIC410","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC414","مضادات حيوية",3],["BMIC402","عقاقير نباتية",3]]},{"g":"مقرر اختياري (2)","o":[["BMIC452","زراعة أنسجة نباتية",3],["BMIC484","تكنولوجيا حيوية",3]]}]},"2|النبات والكيمياء":{"1":[["BMIC261","علم الفطريات",3,"g"],["BMIC271","علم البكتريا",3,"g"],["BMIC221","علم الخلية والوراثة",3,"g"],["CHEM235","كيمياء فيزيائية",3,"g"],["BMIC241","علم البيئة النباتية",3,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["BMIC262","علم الطحالب",3,"g"],["BMIC272","علم الفيروسات",3,"g"],["BMIC232","تصنيف نباتات زهرية",3,"g"],["CHEM242","كيمياء تحليلية",3,"g"],["BMIC252","تغذية معدنية وعلاقات مائية",3,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|النبات والكيمياء":{"1":[["BMIC341","التنوع الحيوي والنظام البيئي",2,"g"],["BMIC280","بيولوجيا جزيئية",2,"g"],["CHEM323","كيمياء غير عضوية",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC301","تلوث بيئي",2],["BMIC353","مخصبات تربة",2]]},{"g":"مقرر اختياري (2)","o":[["BMIC351","منظمات نمو",2],["BMIC310","علاقة العائل بالطفيل",2]]},{"g":"مقرر اختياري (3)","o":[["PHYS335","فيزياء الليزر وتطبيقاتها الحيوية",3],["PHYS341","فيزياء إشعاعية حيوية",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["BMIC312","فسيولوجيا الكائنات الدقيقة",3,"g"],["BMIC316","أمراض نبات",3,"g"],["CHEM360","كيمياء حيوية",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC354","الانزيمات النباتية وأيض الطاقة",3],["GEOL340","حفريات نباتية لغير الجيولوجيا",3]]},{"g":"مقرر اختياري (2)","o":[["CHEM310","كيمياء عضوية",3],["CHEM315","كيمياء البترول والكروماتوجرافي",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|النبات والكيمياء":{"1":[["BMIC451","فسيولوجيا الإجهاد",3,"g"],["CHEM417","أطياف وأصباغ",2,"g"],["BMIC441","الجغرافيا والفلورا المصرية",3,"g"],["BMIC400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL445","حشرات اقتصادية وطبية للنبات وميكروبيولوجي",3],["ZOOL429","أحياء بحرية",3]]},{"g":"مقرر اختياري (2)","o":[["CHEM435","الكيمياء الفيزيائية للجزيئات الكبيرة",3],["CHEM441","كيمياء تحليلية بيئية",3]]}],"2":[["BMIC454","الأيض العام في النبات",3,"g"],["BMIC452","زراعة أنسجة نباتية",3,"g"],["CHEM436","كيمياء فيزيائية",3,"g"],["BMIC405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC432","نباتات طبية",3],["BMIC402","عقاقير نباتية",3]]},{"g":"مقرر اختياري (2)","o":[["BMIC482","معلوماتية حيوية",3],["BMIC484","تكنولوجيا حيوية",3]]}]},"2|علم الحيوان والكيمياء":{"1":[["ZOOL213","فسيولوجيا الحيوان",3,"g"],["ZOOL225","لافقاريات (3)",3,"g"],["CHEM221","كيمياء غير عضوية لعلم الحيوان",2,"g"],["PHYS217","بصريات فيزيائية",2,"g"],["CHEM235","كيمياء فيزيائية",3,"g"],["MATH245","إحصاء عام",2,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["ZOOL262","بيولوجيا الأسماك والمصايد والاستزراع السمكي",3,"g"],["ZOOL232","فقاريات عامة وتصنيف",3,"g"],["BMIC210","ميكروبيولوجيا الغذاء",2,"g"],["CHEM212","كيمياء عضوية (1) لعلم الحيوان",2,"g"],["CHEM242","كيمياء تحليلية",3,"g"],["PHYS218","فيزياء حديثة لغير طلاب الفيزياء",2,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|علم الحيوان والكيمياء":{"1":[["ZOOL351","علم الأجنة",3,"g"],["ZOOL321","علم الطفيليات",3,"g"],["CHEM323","كيمياء غير عضوية",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL341","ديناميكية عشائر",2],["ZOOL345","تصنيف حشرات",2]]},{"g":"مقرر اختياري (2)","o":[["PHYS341","فيزياء إشعاعية حيوية",3],["PHYS335","فيزياء الليزر وتطبيقاتها الحيوية",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["ZOOL342","بيئة العشائر والمجتمعات",3,"g"],["ZOOL316","تقنية مجهرية وخلية وكيمياء أنسجة",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL322","علم الأكاروسات",2],["ZOOL324","اللافقاريات الطبية",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM348","كيمياء تحليلية بيئية لعلم الحيوان",3],["CHEM334","كيمياء فيزيائية لعلم الحيوان",3]]},{"g":"مقرر اختياري (3)","o":[["MATH360","مقدمة في المعلوماتية الحيوية",3],["MATH366","تطبيقات الحاسب في البيولوجيا",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|علم الحيوان والكيمياء":{"1":[["ZOOL411","فسيولوجيا الأعصاب",3,"g"],["ZOOL431","التشريح المقارن للفقاريات",3,"g"],["CHEM411","كيمياء عضوية لعلم الحيوان",3,"g"],["ZOOL400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL461","التلوث المائي",3],["ZOOL463","أمراض الأسماك",3]]},{"g":"مقرر اختياري (2)","o":[["ZOOL421","علم الرخويات",3],["ZOOL423","علم الأوليات",3]]}],"2":[["ZOOL422","رخويات وجلد شوكيات بحرية",3,"g"],["ZOOL442","بيئات خاصة وسلوك وتطور",3,"g"],["ZOOL444","علم الوراثة والمناعة",2,"g"],["ZOOL405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL420","طفيليات تشخيصية وجزيئية",2],["ZOOL428","التصنيف الحديث للحيوان",2]]},{"g":"مقرر اختياري (2)","o":[["ZOOL462","إدارة المزارع السمكية",2],["ZOOL464","اقتصادات الاستزراع السمكي",2]]},{"g":"مقرر اختياري (3)","o":[["CHEM435","الكيمياء الفيزيائية للجزيئات الكبيرة",3],["CHEM430","الكيمياء النووية والإشعاعية",3]]}]},"2|الجيولوجيا":{"1":[["GEOL211","حفريات لافقارية",3,"g"],["GEOL221","صخور رسوبية 1",2,"g"],["GEOL231","المعادن المكونة للصخور",3,"g"],["ZOOL227","لافقاريات للجيولوجيا",2,"g"],["PHYS217","بصريات فيزيائية",2,"g"],["CHEM235","كيمياء فيزيائية",3,"g"],["UR010-18","متطلب جامعة اختياري (1)",2,"g"]],"2":[["GEOL214","حفريات دقيقة",2,"g"],["GEOL234","صخور نارية ومتحولة 1",3,"g"],["GEOL272","جيولوجيا حقلية ومساحية وتدريب حقلي",3,"g"],["MATH240","إحصاء جيولوجي",3,"g"],["GEOL210","حفريات نباتية",2,"g"],["CHEM214","كيمياء البترول والبتروكيماويات",2,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الجيولوجيا":{"1":[["GEOL321","صخور رسوبية 2",3,"g"],["GEOL331","صخور نارية ومتحولة 2",3,"g"],["GEOL315","جيولوجيا تاريخية",2,"g"],["GEOL313","علم الطبقات",2,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL311","طباقية حياتية وبيئة قديمة",2],["GEOL360","هيدرولوجيا المياه السطحية",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM323","كيمياء غير عضوية",3],["PHYS315","الطاقة المتجددة وفيزياء الفلك",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["GEOL342","جيولوجيا تركيبية وتحليل تراكيب",3,"g"],["GEOL350","جيولوجيا البترول وجيوفيزياء 1",3,"g"],["GEOL364","جيولوجيا المياه",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL324","رسوبية تطبيقية",2],["GEOL332","جيولوجيا المناجم",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM342","كيمياء تحليلية لطلاب الجيولوجيا",3],["BMIC342","علم البيئة النباتية",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الجيولوجيا":{"1":[["GEOL431","جيولوجيا اقتصادية وجيوكيمياء",3,"g"],["GEOL425","طباقية تتابعية وتحليل حوضي",3,"g"],["GEOL400","تدريب تطبيقي أو ميداني",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL423","جيمورفولوجي وبيئات ترسيب",3],["GEOL454","جيوفيزياء 2 وجيولوجيا تحت سطحية",3]]},{"g":"مقرر اختياري (2)","o":[["GEOL471","جيولوجيا هندسية وتكتونية",3],["GEOL473","جيولوجيا البيئة",3]]},{"g":"مقرر اختياري (3)","o":[["GEOL401","موضوعات مختارة في الجيولوجيا 1",3],["GEOL460","هيدروليكا المياه الجوفية والأبار",3]]}],"2":[["GEOL432","ميكروسكوبية الخامات واستكشاف معدني",3,"g"],["GEOL436","جيولوجية مصر (الفانيروزوي وصخور القاعدة المعقدة)",3,"g"],["GEOL405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL434","أحجار البناء والزينة",3],["GEOL462","هيدروجيولوجية مصر",3]]},{"g":"مقرر اختياري (2)","o":[["GEOL442","نظم المعلومات الجغرافية",3],["GEOL446","جيولوجيا تصويرية واستشعار عن بعد",3]]},{"g":"مقرر اختياري (3)","o":[["GEOL422","جيولوجيا طبية",2],["GEOL402","موضوعات مختارة في الجيولوجيا 2",2],["GEOL466","هيدروكيمياء ومعالجة المياه",2]]}]},"2|الجيولوجيا والكيمياء":{"1":[["GEOL211","حفريات لافقارية",3,"g"],["GEOL221","صخور رسوبية 1",2,"g"],["GEOL231","المعادن المكونة للصخور",3,"g"],["CHEM235","كيمياء فيزيائية",3,"g"],["PHYS217","بصريات فيزيائية لغير طلاب الفيزياء",2,"g"],["ZOOL227","لافقاريات للجيولوجيا",2,"g"],["UR010-18","متطلب جامعة اختياري (1)",2,"g"]],"2":[["GEOL214","حفريات دقيقة",2,"g"],["GEOL234","صخور نارية ومتحولة 1",3,"g"],["CHEM242","كيمياء تحليلية",3,"g"],["MATH240","إحصاء جيولوجي",3,"g"],["PHYS218","فيزياء حديثة لغير طلاب الفيزياء",2,"g"],["PHYS232","الخواص الفيزيائية للمواد",2,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الجيولوجيا والكيمياء":{"1":[["GEOL321","صخور رسوبية 2",3,"g"],["GEOL331","صخور نارية ومتحولة 2",3,"g"],["GEOL315","جيولوجيا تاريخية",2,"g"],["GEOL313","علم الطبقات",2,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL311","طباقية حياتية وبيئة قديمة",2],["GEOL360","هيدرولوجيا المياه السطحية",2]]},{"g":"مقرر اختياري (2)","o":[["PHYS315","الطاقة المتجددة وفيزياء الفلك",3],["PHYS331","فيزياء الجوامد",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["GEOL342","جيولوجيا تركيبية وتحليل تراكيب",3,"g"],["GEOL364","جيولوجيا المياه",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC342","علم البيئة النباتية",3],["GEOL350","جيولوجيا البترول وجيوفيزياء (1)",3]]},{"g":"مقرر اختياري (2)","o":[["GEOL332","جيولوجيا المناجم",2],["GEOL326","نواتج التجوية والتعرية",2]]},{"g":"مقرر اختياري (3)","o":[["CHEM310","كيمياء عضوية",3],["CHEM315","كيمياء البترول والكروماتوجرافي",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الجيولوجيا والكيمياء":{"1":[["GEOL431","جيولوجيا اقتصادية وجيوكيمياء",3,"g"],["CHEM441","كيمياء تحليلية بيئية",3,"g"],["GEOL400","تدريب تطبيقي أو ميداني",3,"g"],{"g":"مقرر اختياري (1)","o":[["CHEM430","الكيمياء النووية والإشعاعية",3],["CHEM431","كيمياء النانو والسطوح والحفز",3]]},{"g":"مقرر اختياري (2)","o":[["GEOL425","طباقية تتابعية وتحليل حوضي",3],["GEOL423","جيمورفولوجي وبيئات ترسيب",3]]},{"g":"مقرر اختياري (3)","o":[["GEOL460","موضوعات مختارة في الجيولوجيا 1",3],["GEOL473","هيدروليكا المياه الجوفية والأبار",3]]}],"2":[["GEOL432","ميكروسكوبية الخامات واستكشاف معدني",3,"g"],["GEOL436","جيولوجية مصر (الفانيروزوي وصخور القاعدة المعقدة)",3,"g"],["CHEM450","كيمياء عضية تطبيقية",3,"g"],["GEOL405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL442","نظم المعلومات الجغرافية",3],["GEOL446","جيولوجيا تصويرية واستشعار عن بعد",3]]},{"g":"مقرر اختياري (2)","o":[["GEOL402","موضوعات مختارة في الجيولوجيا 2",2],["GEOL466","هيدروكيمياء ومعالجة المياه",2]]}]},"2|الجيوفيزياء":{"1":[["GEOL211","حفريات لافقارية",3,"g"],["GEOL233","المعادن المكونة للصخور ورسوبية (1)",3,"g"],["GEOL251","مقدمة في علم الجيوفيزياء",3,"g"],["PHYS215","بصريات فيزيائية",3,"g"],["MATH221","تفاضل وتكامل متقدم",3,"g"],["UR010-18","متطلب جامعة اختياري (1)",2,"g"]],"2":[["GEOL234","صخور نارية ومتحولة (1)",3,"g"],["GEOL252","طرق التنقيب الثاقلية",3,"g"],["GEOL272","جيولوجيا حقلية ومساحية وتدريب حقلي",3,"g"],["MATH240","إحصاء جيولوجي",3,"g"],["PHYS226","أطياف ذرية وجزيئية",3,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الجيوفيزياء":{"1":[["GEOL321","صخور رسوبية 2",3,"g"],["GEOL351","طرق تنقيب سيزمية (1 ، 2)",3,"g"],["GEOL353","الطرق الكهربية",2,"g"],["GEOL313","علم الطبقات",2,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL311","طباقية حياتية وبيئة قديمة",2],["GEOL355","هندسة الزلازل",2],["GEOL360","هيدرولوجيا المياه السطحية",2]]},{"g":"مقرر اختياري (2)","o":[["PHYS327","فيزياء رياضية",3],["PHYS331","فيزياء الجوامد",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["GEOL342","جيولوجيا تركيبية وتحليل تراكيب",3,"g"],["GEOL365","طرق تنقيب مغناطيسية وتدريب جيوفيزيائي",2,"g"],["GEOL352","جيوفيزياء هندسية وبحرية",2,"g"],["GEOL364","جيولوجيا المياه",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL324","رسوبية تطبيقية",2],["GEOL332","جيولوجيا المناجم",2],["GEOL326","نواتج التجوية والتعرية",2]]},{"g":"مقرر اختياري (2)","o":[["PHYS334","فيزياء المواد المغناطيسية",3],["PHYS332","فيزياء أشباه الموصلات",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الجيوفيزياء":{"1":[["GEOL433","جيولوجيا اقتصادية واستكشاف معدني",3,"g"],["GEOL425","طباقية تتابعية وتحليل حوضي",3,"g"],["GEOL400","تدريب تطبيقي أو ميداني",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL460","هيدروليكا المياه الجوفية والأبار",3],["GEOL423","جيمورفولوجي وبيئات ترسيب",3]]},{"g":"مقرر اختياري (2)","o":[["GEOL471","جيولوجيا هندسية وتكتونية",3],["GEOL473","جيولوجيا البيئة",3]]},{"g":"مقرر اختياري (3)","o":[["GEOL453","مغناطيسية قديمة",2],["GEOL455","موضوعات مختارة في الجيوفيزياء",2]]}],"2":[["GEOL436","جيولوجية مصر (الفانيروزوي وصخور القاعدة المعقدة)",3,"g"],["GEOL405","مشروع المقال أو البحث",3,"g"],["GEOL464","جيولوجيا تحت سطحية وجيولوجيا البترول",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL458","جيوفيزياء بيئية وجيورادار",3],["GEOL462","هيدروجيولوجية مصر",3]]},{"g":"مقرر اختياري (2)","o":[["GEOL442","نظم المعلومات الجغرافية",3],["GEOL446","جيولوجيا تصويرية واستشعار عن بعد",3]]},{"g":"مقرر اختياري (3)","o":[["GEOL422","جيولوجيا طبية",2],["GEOL402","موضوعات مختارة في الجيولوجيا 2",2]]}]},"2|الكيمياء":{"1":[["CHEM210","كيمياء عضوية (1)",3,"g"],["CHEM220","كيمياء غير عضوية (1)",2,"g"],["CHEM230","كيمياء فيزيائية (1)",3,"g"],["MATH221","تفاضل وتكامل متقدم",3,"g"],["GEOL203","بلورات ومعادن",3,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["CHEM215","كيمياء عضوية (2)",4,"g"],["CHEM232","كيمياء فيزيائية (2)",4,"g"],["CHEM240","كيمياء تحليلية (1)",3,"g"],["PHYS232","الخواص الفيزيائية للمواد",2,"g"],["MATH245","إحصاء عام",2,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الكيمياء":{"1":[["CHEM315","كيمياء البترول والكروماتوجرافي",3,"g"],["CHEM317","كيمياء المنتجات الطبيعية والأطياف",4,"g"],["CHEM341","كيمياء تحليلية (2)",3,"g"],{"g":"مقرر اختياري (1)","o":[["CHEM329","كيمياء صناعية غير عضوية",2],["CHEM327","كيمياء المركبات الفلزعضوية والمتراكبات",2]]},{"g":"مقرر اختياري (2)","o":[["PHYS341","فيزياء إشعاعية حيوية",3],["ZOOL313","علم الخلية والأنسجة",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["CHEM360","كيمياء حيوية",3,"g"],["CHEM332","كيمياء فيزيائية (3)",3,"g"],["CHEM322","كيمياء غير عضوية (2)",4,"g"],{"g":"مقرر اختياري (1)","o":[["CHEM316","كيمياء عضوية ضوئية ومركبات أليفاتية حلقية",2],["CHEM318","كيمياء عضوية بيئية وصناعية",2]]},{"g":"مقرر اختياري (2)","o":[["MATH368","تطبيقات الحاسب في الكيمياء",3],["BMIC350","فسيولوجيا النبات",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الكيمياء":{"1":[["CHEM450","كيمياء عضوية تطبيقية",3,"g"],["CHEM431","كيمياء النانو والسطوح والحفز",3,"g"],["CHEM400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["CHEM433","كيمياء التآكل",2],["CHEM437","كيمياء المواد",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM421","ميكانيكية التفاعلات غير العضوية",2],["CHEM427","موضوعات مختارة في الكيمياء غير العضوية",2]]},{"g":"مقرر اختياري (3)","o":[["CHEM413","كيمياء عضوية (3)",3],["CHEM415","موضوعات مختارة في الكيمياء العضوية",3]]},{"g":"مقرر اختياري (4)","o":[["CHEM439","كيمياء فيزيائية (4)",2],["CHEM447","موضوعات مختارة في الكيمياء التحليلية",2]]}],"2":[["CHEM424","كيمياء غير عضوية (3)",3,"g"],["CHEM448","كيمياء تحليلية (3)",2,"g"],["CHEM405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["CHEM414","كيمياء عضوية (4)",3],["CHEM416","الكيمياء العضوية التخليقية المتقدمة",3]]},{"g":"مقرر اختياري (2)","o":[["CHEM432","الكيمياء الفيزيائية للجزيئات الكبيرة",2],["CHEM438","موضوعات مختارة في الكيمياء الفيزيائية",2]]},{"g":"مقرر اختياري (3)","o":[["CHEM434","الكيمياء النووية والإشعاعية",2],["CHEM446","كيمياء تحليلية (4)",2]]},{"g":"مقرر اختياري (4)","o":[["CHEM410","ميكانيكية التفاعلات العضوية",2],["CHEM418","كيمياء عضوية (5)",2]]}]},"2|الرياضيات":{"1":[["MATH221","تفاضل وتكامل متقدم",3,"g"],["MATH223","جبر خطي",3,"g"],["MATH231","استاتيكا",3,"g"],["PHYS211","كهرومغناطيسية وتيار متردد",3,"g"],["MATH251","تصميم وتحليل الخوارزميات",3,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["MATH222","معادلات تفاضلية عادية",3,"g"],["MATH232","ديناميكا",3,"g"],["MATH242","احتمالات",3,"g"],["PHYS222","فيزياء حديثة",3,"g"],["MATH252","البرمجة الشيئية",3,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الرياضيات":{"1":[["MATH321","جبر مجرد (1)",3,"g"],["MATH325","تحليل حقيقي (1)",3,"g"],["MATH331","طرق رياضية",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH313","بحوث عمليات",2],["MATH327","ممتدات",2]]},{"g":"مقرر اختياري (2)","o":[["PHYS321","ديناميكا كهربية",3],["PHYS327","فيزياء رياضية",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["MATH322","معادلات تفاضلية جزئية",3,"g"],["MATH324","تحليل مركب",3,"g"],["MATH326","توبولوجي",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH332","نظرية المرونة",2],["MATH328","رياضيات متقطعة",2]]},{"g":"مقرر اختياري (2)","o":[["MATH350","مقدمة في الحسابات العلمية",3],["MATH360","مقدمة في المعلوماتية الحيوية",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الرياضيات":{"1":[["MATH421","تحليل عددي (1)",2,"g"],["MATH423","تحليل دالي",2,"g"],["MATH431","هيدروديناميكا",3,"g"],["MATH400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH425","تحليل حقيقي (2)",3],["MATH427","جبر مجرد (2)",3]]},{"g":"مقرر اختياري (2)","o":[["MATH441","إحصاء رياضي",3],["MATH443","إحصاء حيوي",3]]},{"g":"مقرر اختياري (3)","o":[["MATH433","موضوعات مختارة في الرياضيات التطبيقية",3],["MATH429","دوال خاصة",3]]}],"2":[["MATH422","هندسة تفاضلية",3,"g"],["MATH432","نظرية المجالات",2,"g"],["MATH405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH436","الميكانيكا الموجية",3],["MATH438","ميكانيكا الكم",3]]},{"g":"مقرر اختياري (2)","o":[["MATH434","نمذجة رياضية",3],["MATH426","تحليل عددي (2)",3]]},{"g":"مقرر اختياري (3)","o":[["MATH428","موضوعات مختارة في الرياضيات البحتة",3],["MATH424","نظرية القياس والتكامل",3]]}]},"2|الفيزياء":{"1":[["PHYS211","كهرومغناطيسية وتيار متردد",3,"g"],["PHYS213","ديناميكا حرارية",3,"g"],["PHYS215","بصريات فيزيائية",3,"g"],["MATH221","تفاضل وتكامل متقدم",3,"g"],["CHEM210","كيمياء عضوية (1)",3,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["PHYS222","فيزياء حديثة",3,"g"],["PHYS224","فيزياء رياضية (1)",3,"g"],["PHYS226","أطياف ذرية وجزيئية",3,"g"],["MATH222","معادلات تفاضلية عادية",3,"g"],["MATH254","البرمجة باستخدام الحاسب الآلي",3,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الفيزياء":{"1":[["PHYS321","ديناميكا كهربية",2,"g"],["PHYS323","مبادئ ميكانيكا الكم",2,"g"],["PHYS325","فيزياء إحصائية",2,"g"],["PHYS331","فيزياء الجوامد",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS311","الطاقة المتجددة والبيئة",2],["PHYS313","فيزياء الفلك",2]]},{"g":"مقرر اختياري (2)","o":[["MATH331","طرق رياضية",3],["CHEM301","كيمياء لطلاب الفيزياء",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["PHYS332","فيزياء أشباه الموصلات",3,"g"],["PHYS334","فيزياء المواد المغناطيسية",3,"g"],["PHYS342","فيزياء نووية",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS322","ميكانيكا كلاسيكية",2],["PHYS324","اهتزازات",2]]},{"g":"مقرر اختياري (2)","o":[["MATH350","مقدمة في الحسابات العلمية",3],["MATH322","معادلات تفاضلية جزئية",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الفيزياء":{"1":[["PHYS431","فيزياء الجوامد المتقدمة",3,"g"],["PHYS441","الفيزياء الإشعاعية",3,"g"],["PHYS400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS413","إلكترونيات",3],["PHYS415","أجهزة إلكترونيات بصرية",3]]},{"g":"مقرر اختياري (2)","o":[["PHYS421","ميكانيكا الكم",3],["PHYS443","فيزياء المعجلات والمفاعلات النووية",3]]},{"g":"مقرر اختياري (3)","o":[["PHYS435","فيزياء الفلزات والسبائك",3],["PHYS437","فيزياء البلازما وتطبيقاتها",3]]}],"2":[["PHYS412","تحليل طيفي",3,"g"],["PHYS442","فيزياء نووية متقدمة",3,"g"],["PHYS405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS432","علوم المواد",3],["PHYS436","فيزياء العازلات",3]]},{"g":"مقرر اختياري (2)","o":[["PHYS424","فيزياء رياضية (2)",3],["PHYS452","مقدمة في علم وتقنية النانو",3]]},{"g":"مقرر اختياري (3)","o":[["PHYS434","فيزياء الليزر وتطبيقاته",3],["PHYS402","موضوعات مختارة في الفيزياء",3]]}]},"1|الكيمياء الحيوية":{"1":[["MATH101","رياضيات عامة",3,"g"],["PHYS100","فيزياء عامة (1)",3,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC101","نبات عام",2,"g"],["ZOOL100","حيوان عام (1)",3,"g"],["UR001","متطلب جامعة إجباري (1)",0,"p"],["UR003","متطلب جامعة إجباري (3)",2,"g"]],"2":[["MATH152","أساسيات الحاسب",3,"g"],["PHYS105","فيزياء عامة (2)",3,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["BMIC110","ميكروبيولوجي عام",3,"g"],["ZOOL106","حيوان عام لطلاب الكيمياء الحيوية (2)",2,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"2|الكيمياء الحيوية":{"1":[["CHEM211","كيمياء أليفاتية وأروماتية",3,"g"],["CHEM261","كيمياء حيوية عامة",3,"g"],["CHEM223","كيمياء غير عضوية",3,"g"],["CHEM233","كيمياء كيناتيكية وديناميكا حرارية",3,"g"],["CHEM263","كيمياء الإنزيمات",3,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["CHEM216","كيمياء التفاعلات العضوية",3,"g"],["CHEM262","كيمياء الجزيئات الحيوية",3,"g"],["CHEM218","كيمياء المركبات الحلقية",3,"g"],["CHEM242","كيمياء تحليلية",3,"g"],["CHEM264","أيض (1)",3,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الكيمياء الحيوية":{"1":[["CHEM363","كيمياء الهرمونات",3,"g"],["CHEM331","الحفز وأطياف جزيئية",3,"g"],["CHEM367","أيض (2)",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS345","فيزياء إشعاعية وحيوية",2],["CHEM327","كيمياء المركبات الفلزعضوية والمتراكبات",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM347","كيمياء تحليلية تطبيقية",3],["CHEM337","كيمياء فيزيائية حيوية",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["CHEM314","التحليل الطيفي والمنتجات الطبيعية",3,"g"],["CHEM336","كيناتيكية تفاعلات الإنزيمات",3,"g"],["CHEM364","الكيمياء الحيوية للأغذية",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC374","فسيولوجيا النبات لطلاب الكيمياء الحيوية",2],["BMIC304","سموم ميكروبية وفيروسات",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM302","الكيمياء المعلوماتية الحيوية",3],["CHEM324","كيمياء غير عضوية ومتراكبات حيوية",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الكيمياء الحيوية":{"1":[["CHEM471","تنظيم الأيض",3,"g"],["CHEM473","موضوعات مختارة في الكيمياء الحيوية (1)",3,"g"],["CHEM400","تدريب تطبيقي أو ميداني",3,"g"],{"g":"مقرر اختياري (1)","o":[["CHEM419","كيمياء عضوية متقدمة",3],["CHEM423","كيمياء غير عضوية حيوية",3]]},{"g":"مقرر اختياري (2)","o":[["MATH445","إحصاء حيوي",3],["MATH441","إحصاء رياضي",3]]},{"g":"مقرر اختياري (3)","o":[["CHEM477","الكيمياء الحيوية للأمراض",3],["CHEM479","الأغشية الحيوية والتأثير الخلوي",3]]}],"2":[["CHEM470","كيمياء حيوية إكلينيكية",3,"g"],["CHEM472","الكيمياء الحيوية الجزيئية",3,"g"],["CHEM405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["CHEM440","الكيمياء الكهربية والغروانيات والسطوح",3],["CHEM438","موضوعات مختارة في الكيمياء الفيزيائية",3]]},{"g":"مقرر اختياري (2)","o":[["CHEM474","أيض الأدوية",3],["CHEM476","موضوعات مختارة في الكيمياء الحيوية (2)",3]]},{"g":"مقرر اختياري (3)","o":[["ZOOL410","بيولوجيا الأورام",3],["ZOOL417","مبادئ علم الوراثة",3]]}]},"1|الجيولوجيا الهندسية ومواد البناء":{"1":[["MATH101","رياضيات عامة",3,"g"],["PHYS100","فيزياء عامة (1)",3,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC101","نبات عام",2,"g"],["GEOL103","الجيولوجيا الطبيعية والتاريخية",3,"g"],["UR001","متطلب جامعة إجباري (1)",0,"p"],["UR003","متطلب جامعة إجباري (3)",2,"g"]],"2":[["MATH152","أساسيات الحاسب",3,"g"],["PHYS105","فيزياء عامة (2)",3,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["ZOOL102","حيوان عام",2,"g"],["GEOL134","البلورات وبصريات المعادن",3,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"2|الجيولوجيا الهندسية ومواد البناء":{"1":[["GEOL205","الإستكشاف الجيولوجي للمواقع",2,"g"],["GEOL207","المخاطر الجيولوجية",2,"g"],["GEOL209","التضاريس والجيومورفولوجي",2,"g"],["GEOL231","المعادن المكونة للصخور",3,"g"],["GEOL235","الصخور النارية والمتحولة",3,"g"],["GEOL241","أساسيات نظم المعلومات الجغرافية",3,"g"],["UR011-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["GEOL218","الحفريات والطبقات",3,"g"],["GEOL226","الصخور الرسوبية - 1",3,"g"],["GEOL246","أساسيات الجيولوجيا التركيبية",2,"g"],["GEOL244","التخريط الجيولوجي بواسطة تقنيات معالجة الصور",3,"g"],["GEOL256","الجيوفيزياء الكهربية والتثاقلية",2,"g"],["GEOL274","الجيولوجيا الحقلية والمساحة الجيولوجية",2,"g"],["UR021-29","متطلب جامعة اختياري (2)",2,"g"]]},"3|الجيولوجيا الهندسية ومواد البناء":{"1":[["GEOL333","الطين ومعادن الطين",2,"g"],["GEOL339","تحليل حيود الأشعة السينية في علم المعادن",2,"g"],["GEOL371","الجيولوجيا الهندسية",2,"g"],["GEOL373","مواد البناء والتشييد",3,"g"],["ENG391","ميكانيكا التربة",2,"g"],["ABCD1","مقرر حر (1)",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL337","المعادن والصخور الصناعية",2],["GEOL357","الإستكشاف الجيوفيزيقي",2]]},{"g":"مقرر اختياري (2)","o":[["GEOL359","الجيولوجيا تحت سطحية وسجلات الآبار",2],["GEOL377","صناعة الطوب الأحمر والأزرق",2]]}],"2":[["GEOL322","الصخور الرسوبية المتقدم",2,"g"],["GEOL346","الجيولوجيا التركيبية وتحليل التراكيب المتقدم",2,"g"],["GEOL372","التربة ذات المشاكل",2,"g"],["ENG394","تصميم الخرسانة المسلحة",2,"g"],["ENG396","تصميم وبناء الطرق السريعة",2,"g"],["ABCD2","مقرر حر (2)",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL374","تطبيقات مواد النانو في التشييد والبناء",2],["ENG398","التخطيط الحضري",2]]},{"g":"مقرر اختياري (2)","o":[["GEOL356","إستكشاف المواقع بالجيورادار",2],["GEOL376","تحسين التربة",2]]}]},"4|الجيولوجيا الهندسية ومواد البناء":{"1":[["GEOL470","المنحدرات الصخرية وتثبيت المنحدرات",3,"g"],["GEOL475","النشاط الزلزالي بمصر ومخاطره الجيوتقنية",3,"g"],["GEOL477","المواد الخام للأسمنت",2,"g"],["GEOL479","الجيولوجيا للمشروعات الهندسية",3,"g"],["GEOL400","تدريب تطبيقي أو ميداني",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL435","الجيولوجيا الاقتصادية والخامات المعدنية",2],["ENG485","الرسم الهندسي",2]]},{"g":"مقرر اختياري (2)","o":[["GEOL437","البيئات الرسوبية",2],["GEOL441","الإطار التكتوني لمصر",2]]}],"2":[["GEOL436","جيولوجية مصر الفانيروزوي وصخور القاعدة الممتدة",3,"g"],["GEOL472","صناعة السيراميك",2,"g"],["GEOL462","هيدروجيولوجية مصر",3,"g"],["ENG478","أنواع الأساسات",2,"g"],["GEOL405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["GEOL426","جيولوجية وادي النيل",2],["GEOL476","الجوانب الهندسية للمياه الجوفية",2]]},{"g":"مقرر اختياري (2)","o":[["GEOL438","أساسيات جيولوجيا المناجم",2],["GEOL478","جيوكيمياء الأسمنت",2]]}]},"1|الفيزياء الحيوية الطبية":{"1":[["MATH101","رياضيات عامة",3,"g"],["PHYS100","فيزياء عامة (1)",3,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC101","نبات عام",2,"g"],["ZOOL100","حيوان عام (1)",3,"g"],["UR001","متطلب جامعة إجباري (1)",0,"p"],["UR003","متطلب جامعة إجباري (3)",2,"g"]],"2":[["MATH152","أساسيات الحاسب",3,"g"],["PHYS105","فيزياء عامة (2)",3,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["BMIC110","ميكروبيولوجي عام",3,"g"],["ZOOL102","حيوان عام",2,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"2|الفيزياء الحيوية الطبية":{"1":[["PHYS259","فيزياء البصريات الحيوية",3,"g"],["PHYS251","مقدمة في الفيزياء الحيوية",3,"g"],["PHYS253","الفيزياء الكهربية والأنظمة الحيوية",3,"g"],["ZOOL211","بيولوجيا الخلية",3,"g"],["MED205","فسيولوجيا طبية",3,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["PHYS262","الموجات فوق الصوتية وتطبيقاتها الطبية",3,"g"],["PHYS228","فيزياء ذرية وحديثة",3,"g"],["PHYS256","ديناميكا حرارية للأنظمة الحيوية",3,"g"],["MED200","تشريح آدمي",3,"g"],["MATH268","رياضيات للعلوم الطبية",3,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الفيزياء الحيوية الطبية":{"1":[["PHYS317","أشباه موصلات وتطبيقاتها",3,"g"],["PHYS367","فيزياء البلازما وتطبيقاتها الطبية",3,"g"],["PHYS343","فيزياء نووية واشعاعية",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS353","فيزياء حيوية جزيئية",2],["PHYS355","فيزياء حيوية للأنظمة العصبية",2]]},{"g":"مقرر اختياري (2)","o":[["MATH360","مقدمة في المعلوماتية الحيوية",3],["CHEM335","كيمياء فيزيائية",3]]},["ABCD1","مقرر حر (1)",3,"g"]],"2":[["PHYS352","الميكانيكا الحيوية",3,"g"],["PHYS364","فيزياء الليزر وتطبيقاتها الطبية",3,"g"],["PHYS362","فيزياء قياس الجرعات الاشعاعية",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS356","استخدام الحاسب الآلي في الفيزياء الحيوية",2],["PHYS328","النظرية الكهرومغناطيسية",2]]},{"g":"مقرر اختياري (2)","o":[["CHEM362","كيمياء حيوية لطلاب الفيزياء الحيوية",3],["ZOOL312","بيولوجيا جزيئية",3]]},["ABCD2","مقرر حر (2)",3,"g"]]},"4|الفيزياء الحيوية الطبية":{"1":[["PHYS451","فيزياء الاشعاع الحيوي والوقاية",3,"g"],["PHYS461","فيزياء التصوير الطبي",3,"g"],["PHYS400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS463","فيزياء العلاج الحراري",3],["PHYS455","الميكانيكا الحيوية للسوائل",3]]},{"g":"مقرر اختياري (2)","o":[["PHYS459","فيزياء المواد الحيوية",3],["PHYS421","ميكانيكا الكم",3]]},{"g":"مقرر اختياري (3)","o":[["PHYS417","بصريات الكترونية",3],["PHYS465","فيزياء الطب النووي",3]]}],"2":[["PHYS462","فيزياء التصوير بالرنين المغناطيسي",3,"g"],["PHYS464","فيزياء العلاج الاشعاعي",3,"g"],["PHYS405","مشروع المقال والبحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["PHYS414","الالكترونيات للأنظمة الحيوية",3],["PHYS452","فيزياء اتصال الخلية",3]]},{"g":"مقرر اختياري (2)","o":[["PHYS454","فيزياء البيئة الحيوية",3],["PHYS426","طرق رياضية في الفيزياء",3]]},{"g":"مقرر اختياري (3)","o":[["PHYS404","موضوعات مختارة في الفيزياء الطبية",3],["PHYS468","فيزياء النانو وتطبيقاته الطبية",3]]}]},"1|البيولوجيا الجزيئية والطفيليات":{"1":[["MATH101","رياضيات عامة",3,"g"],["PHYS101","فيزياء عامة (1)",2,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC100","نبات عام",3,"g"],["ZOOL100","حيوان عام (1)",3,"g"],["UR001","متطلب جامعة إجباري (1)",0,"p"],["UR003","متطلب جامعة إجباري (3)",2,"g"]],"2":[["MATH152","أساسيات الحاسب",3,"g"],["PHYS102","فيزياء عامة (2)",2,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["BMIC110","ميكروبيولوجي عام",3,"g"],["ZOOL105","حيوان عام (2)",3,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"2|البيولوجيا الجزيئية والطفيليات":{"1":[["ZOOL217","بيولوجيا الخلية وكيمياء الأنسجة",3,"g"],["ZOOL223","بيولوجيا اللافقاريات",3,"g"],["ZOOL225","أساسيات علم الطفيليات",3,"g"],["CHEM221","كيمياء غير عضوية",2,"g"],["ZOOL233","أساسيات علم الوراثة",2,"g"],["ZOOL251","علم الأجنة",2,"g"],["UR010-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["ZOOL236","الأسس التصنيفية الحديثة للحيوان",2,"g"],["ZOOL234","مبادئ البيولوجيا الجزيئية",3,"g"],["ZOOL214","التقنية المجهرية",3,"g"],["CHEM212","اساسيات الكيمياء الحيوية",2,"g"],["ZOOL238","أساسيات علم المناعة",3,"g"],["ZOOL252","التشريح المقارن",2,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|البيولوجيا الجزيئية والطفيليات":{"1":[["ZOOL353","بيولوجيا التكوين الجزيئي",3,"g"],["ZOOL323","الطفيليات الطبية والوبائية",3,"g"],["ZOOL331","الوراثة الجزيئية والهندسة الوراثية",3,"g"],["ABCD1","مقرر حر (1)",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL347","الحشرات الطبية والبيطرية",2],["ZOOL325","المفصليات الطفيلية",2],["ZOOL335","تحليل الجزيئات البيولوجية",2]]},{"g":"مقرر اختياري (2)","o":[["ZOOL327","الطفيليات الأولية الحيوانية",3],["ZOOL333","المعلوماتية الحيوية",3],["ZOOL337","الأغذية المعدلة وراثيا",3]]}],"2":[["ZOOL332","بيولوجيا جزيئية متقدمة",3,"g"],["ZOOL326","علم القراديات المتطفلة",3,"g"],["ZOOL314","فسيولوجيا الهرمونات",3,"g"],["ABCD2","مقرر حر (2)",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL316","فسيولوجيا الخلية",3],["ZOOL334","فسيولوجيا المناعة",3],["ZOOL320","علم الطفيليات الجزيئية والتطبيقية",3]]},{"g":"مقرر اختياري (2)","o":[["ZOOL322","علم الاكاروسات",3],["ZOOL324","اللافقاريات الطفيلية",3],["ZOOL328","العوائل الوسيطة والنواقل البيولوجية",3]]}]},"4|البيولوجيا الجزيئية والطفيليات":{"1":[["ZOOL433","وراثة خلوية وزراعة الخلايا الحيوانية",3,"g"],["ZOOL427","فسيولوجيا الطفيليات",3,"g"],["ZOOL400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL421","علم الرخويات",3],["ZOOL423","علم الاوليات",3],["ZOOL425","بيولوجيا الطفيليات والناقلات الحشرية",3]]},{"g":"مقرر اختياري (2)","o":[["ZOOL441","البيئة الحيوانية والتلوث",3],["ZOOL420","علم الأنسجة المرضي وتقنيات الأنسجة",3],["ZOOL431","تقنية حيوية",3]]},{"g":"مقرر اختياري (3)","o":[["ZOOL437","تكنولوجيا حيوية",3],["ZOOL429","طرق مكافحة الطفيليات",3],["ZOOL439","البصمة الوراثية",3]]}],"2":[["ZOOL424","التشخيص الجزيئي للطفيليات",3,"g"],["ZOOL430","التصنيف الجزيئي",3,"g"],["ZOOL405","مشروع المقال والبحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["ZOOL414","علم السموم الحيوانية",3],["ZOOL410","بيولوجيا الأورام",3],["ZOOL416","علم بيئة الطفيليات",3]]},{"g":"مقرر اختياري (2)","o":[["ZOOL422","أمراض الدم الطفيلية",3],["ZOOL432","الجينات والنمو",3],["ZOOL434","علم الأورام الجزيئي",3]]},{"g":"مقرر اختياري (3)","o":[["ZOOL436","علم مناعة الطفيليات",3],["ZOOL438","علم المناعة المرضي",3],["ZOOL435","تطبيقات التقنية الحيوية في الحاسوب",3]]}]},"1|التكنولوجيا الحيوية الجزيئية":{"1":[["MATH101","رياضيات عامة",3,"g"],["PHYS101","فيزياء عامة (1)",2,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC100","نبات عام",3,"g"],["ZOOL100","حيوان عام (1)",3,"g"],["UR001","متطلب جامعة إجباري (1)",0,"p"],["UR003","متطلب جامعة إجباري (3)",2,"g"]],"2":[["MATH152","أساسيات الحاسب",3,"g"],["PHYS102","فيزياء عامة (2)",2,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["BMIC110","ميكروبيولوجي عام",3,"g"],["ZOOL105","حيوان عام (2)",3,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"2|التكنولوجيا الحيوية الجزيئية":{"1":[["BMIC241","علم البيئة النباتية",3,"g"],["BMIC261","علم الفطريات",3,"g"],["BMIC271","علم البكتريا",3,"g"],["BMIC281","بيولوجيا جزيئية (1)",3,"g"],["BMIC287","علم الوراثة",3,"g"],["UR011-19","متطلب جامعة اختياري (1)",2,"g"]],"2":[["BMIC232","تصنيف النباتات الزهرية",3,"g"],["BMIC254","فسيولوجيا النبات",3,"g"],["BMIC262","علم الطحالب",3,"g"],["BMIC282","بيولوجيا جزيئية (2)",3,"g"],["BMIC284","أساسيات ونظريات التكنولوجيا الحيوية",3,"g"],["UR021-29","متطلب جامعة اختياري (2)",2,"g"]]},"3|التكنولوجيا الحيوية الجزيئية":{"1":[["BMIC360","التكنولوجيا الحيوية للطحالب وإنتاج المخصبات",2,"g"],["BMIC381","الوراثة الميكروبية",3,"g"],["BMIC380","البروتيومكس (Proteomics)",2,"g"],["ABCD1","مقرر حر (1)",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC361","تكنولوجيا الإنزيمات",3],["BMIC365","تكنولوجيا انتاج المركبات الطبيعية",3]]},{"g":"مقرر اختياري (2)","o":[["BMIC385","المعالجة الحيوية للملوثات",2],["BMIC389","التكنولوجيا الحيوية وإدارة الموارد الطبيعية",2]]},{"g":"مقرر اختياري (3)","o":[["PHYS335","فيزياء الليزر وتطبيقاتها الحيوية",3],["PHYS341","فيزياء إشعاعية حيوية",3]]}],"2":[["BMIC364","التكنولوجيا التطبيقية الصناعية",3,"g"],["BMIC386","الهندسة الوراثية",2,"g"],["ABCD2","مقرر حر (2)",3,"g"],{"g":"مقرر اختياري (1)","o":[["BMIC382","جينومات RNA ووراثة جينات خارج النواة",3],["BMIC384","تكنولوجيات الطفور وإنتاج سلالات جديدة",3]]},{"g":"مقرر اختياري (2)","o":[["CHEM316","كيمياء عضوية ضوئية وكيمياء المركبات الأليفاتية الحلقية",2],["CHEM318","كيمياء عضوية بيئية وصناعية",2]]},{"g":"مقرر اختياري (3)","o":[["CHEM348","كيمياء تحليلية بيئية",3],["CHEM362","الكيمياء الحيوية",3]]}]},"4|التكنولوجيا الحيوية الجزيئية":{"1":[["BMIC463","تكنولوجيا المفاعلات الحيوية وإنتاج الوقود الحيوي",3,"g"],["BMIC485","التكنولوجيا الحيوية للنانو",3,"g"],["BMIC471","علم الفيروسات والمناعة",3,"g"],["BMIC400","تدريب تطبيقي أو ميداني",3,"g"],{"g":"مقرر اختياري (1)","o":[["VET400","التكنولوجيا الحيوية والإنتاج الحيواني",3],["AGR400","تكنولوجيا تربية النبات الطبية والزراعات المحمية",3]]},{"g":"مقرر اختياري (2)","o":[["PHR400","أساسيات العلوم الصيدلانية",3],["BMIC480","التكنولوجيا الحيوية للميكروبات",3]]}],"2":[["BMIC452","زراعة أنسجة نباتية",3,"g"],["BMIC482","المعلوماتية الحيوية",3,"g"],["BMIC488","الكائنات المهندسة وراثياً والأمان الحيوي",3,"g"],["BMIC405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["MED400","تطبيقات التكنولوجيا الحيوية في المجال الطبي",3],["MED402","الميكروبيولوجيا والطفيليات الطبية",3]]},{"g":"مقرر اختياري (2)","o":[["PHR402","التكنولوجيا الحيوية في تصنيع الدواء",3],["PHR404","التسويق والإعلام الدوائي",3]]}]},"1|الإحصاء الرياضي والبرمجة":{"1":[["MATH100","رياضيات عامة (1)",4,"g"],["PHYS100","فيزياء عامة (1)",3,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC101","نبات عام",2,"g"],["MATH150","أساسيات الحاسب (1)",2,"g"],["UR001","متطلب جامعة إجباري (1)",0,"p"],["UR003","متطلب جامعة إجباري (3)",2,"g"]],"2":[["MATH105","رياضيات عامة (2)",4,"g"],["PHYS105","فيزياء عامة (2)",3,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["ZOOL102","حيوان عام",2,"g"],["MATH155","أساسيات الحاسب (2)",2,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"2|الإحصاء الرياضي والبرمجة":{"1":[["MATH225","تفاضل وتكامل متقدم",2,"g"],["MATH241","نظرية الاحتمالات (1)",3,"g"],["MATH233","استاتيكا",3,"g"],["MATH253","البرمجة الشيئية",4,"g"],["MATH251","تصميم وتحليل الخوارزميات",3,"g"],["UR010-18","متطلب جامعة اختياري (1)",2,"g"]],"2":[["MATH242","نظرية الاحصاء (1)",2,"g"],["MATH224","معادلات تفاضلية",2,"g"],["MATH252","تراكيب البيانات",3,"g"],["MATH254","برمجة الويب",3,"g"],["MATH234","طرق رياضية",3,"g"],["MATH264","نظم ادارة قواعد البيانات",2,"g"],["UR020-30","متطلب جامعة اختياري (2)",2,"g"]]},"3|الإحصاء الرياضي والبرمجة":{"1":[["MATH341","نظرية الاحصاء (2)",2,"g"],["MATH343","نظرية الاحتمالات (2)",3,"g"],["MATH351","تقنيات برمجية",3,"g"],["MATH355","نظم التشغيل",2,"g"],["ABCD1","مقرر حر (1)",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH317","تحليل مركب",2],["MATH325","معادلات تفاضلية جزئية",2]]},{"g":"مقرر اختياري (2)","o":[["MATH363","حسابات علمية",2],["MATH367","نظم الوسائط المتعددة",2]]}],"2":[["MATH342","استدلال احصائي (1)",2,"g"],["MATH344","تحليل احصائي (1)",2,"g"],["MATH362","بحوث عمليات (1)",2,"g"],["MATH352","نظرية المترجمات",2,"g"],["MATH354","برمجة واجهات المواقع",2,"g"],["ABCD2","مقرر حر (2)",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH366","رؤية الحاسب",2],["MATH368","تعلم الآلة",2]]},{"g":"مقرر اختياري (2)","o":[["MATH356","تصميم وتحليل النظم",2],["MATH358","اللغات التصريحية",2]]}]},"4|الإحصاء الرياضي والبرمجة":{"1":[["MATH443","استدلال احصائي (2)",3,"g"],["MATH445","نظرية الصلاحية",3,"g"],["MATH461","الذكاء الاصطناعي",3,"g"],["MATH467","المعالجة المتوازية والموزعة",2,"g"],["MATH400","تدريب ميداني أو تطبيقي",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH437","ميكانيكا احصائية",2],["MATH439","ميكانيكا الكم",2]]},{"g":"مقرر اختياري (2)","o":[["MATH457","الواقع الافتراضي",2],["MATH459","تمييز الأنماط",2]]}],"2":[["MATH440","تحليل احصائي (2)",3,"g"],["MATH442","تحليل احصائي ببرنامج SPSS",3,"g"],["MATH462","هندسة البرمجيات",3,"g"],["MATH464","معالجة الصور",2,"g"],["MATH405","مشروع المقال أو البحث",3,"g"],{"g":"مقرر اختياري (1)","o":[["MATH446","احصائيات مرتبة",2],["MATH448","السلاسل الزمنية",2]]},{"g":"مقرر اختياري (2)","o":[["MATH466","المعلوماتية الحيوية",2],["MATH468","أمن المعلومات",2]]}]},"1|شعبة العلوم البيولوجية":{"1":[["MATH101","رياضيات عامة",3,"g"],["PHYS101","فيزياء عامة (1) لطلاب البيولوجي",2,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC100","نبات عام",3,"g"],["ZOOL100","علم الحيوان عام (1)",3,"g"],["UR001","متطلب جامعة إجباري (1)",2,"p"]],"2":[["MATH152","أساسيات الحاسب",3,"g"],["PHYS102","فيزياء عامة (2) لطلاب البيولوجي",2,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["BMIC110","ميكروبيولوجي عام",3,"g"],["ZOOL105","علم الحيوان عام (2)",3,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"1|شعبة العلوم الجيولوجية":{"1":[["MATH101","رياضيات عامة",3,"g"],["PHYS100","فيزياء عامة (1)",3,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC101","نبات عام",2,"g"],["GEOL105","أساسيات الجيولوجيا العامة",3,"g"],["UR001","متطلب جامعة إجباري (1)",2,"p"]],"2":[["MATH152","أساسيات الحاسب",3,"g"],["PHYS105","فيزياء عامة (2)",3,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["ZOOL102","حيوان عام",2,"g"],["GEOL132","بصريات المعادن وبلورات",3,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]},"1|شعبة العلوم الفيزيائية":{"1":[["MATH100","رياضيات عامة (1)",4,"g"],["PHYS100","فيزياء عامة (1)",3,"g"],["CHEM100","كيمياء عامة (1)",3,"g"],["BMIC101","نبات عام",2,"g"],["MATH150","أساسيات الحاسب (1)",2,"g"],["UR001","متطلب جامعة إجباري (1)",2,"p"]],"2":[["MATH105","رياضيات عامة (2)",4,"g"],["PHYS105","فيزياء عامة (2)",3,"g"],["CHEM105","كيمياء عامة (2)",3,"g"],["ZOOL102","حيوان عام",2,"g"],["MATH155","أساسيات الحاسب (2)",2,"g"],["UR002","متطلب جامعة إجباري (2)",2,"p"]]}};
+
+function semCode(e){
+  if(/الأول/.test(e.semester || '')) return '1';
+  if(/الثاني/.test(e.semester || '')) return '2';
+  return null; // الفصل الصيفي: لا توجد خطة جاهزة
+}
+
+// يحوّل خطة البرنامج إلى عناصر: مقرر إجباري واحد، أو مجموعة اختيارية بعدة مقررات
+function planItems(e, key){
+  let sem = semCode(e), cat = CATALOG[key];
+  if(!sem || !cat || !cat[sem]) return [];
+  return cat[sem].map((c, i) => {
+    if(c.g){
+      return {gid: 'g' + i, title: c.g, elective: true,
+              courses: c.o.map(o => ({code: o[0], name: o[1], hours: o[2], pass: false}))};
+    }
+    return {gid: 'c' + i, title: null, elective: false,
+            courses: [{code: c[0], name: c[1], hours: c[2], pass: c[3] === 'p'}]};
+  });
+}
+
+const LOCKED = ['مرسل للمراجعة','معتمد','منشور'];
+const isLocked = t => LOCKED.includes(t.status);
+const cnt = t => (t.courses || []).filter(c => c.slot).length;
+const planEntry = (t, code) => (t.courses || []).find(x => x.code === code && !x.manual);
+
+// تعارض: مقرران لنفس الطلاب في نفس الموعد (إلا إذا كانا بديلين داخل نفس المجموعة الاختيارية)
+function slotClash(t, code, gid, slot){
+  return (t.courses || []).find(x => String(x.slot).split('|')[0] === String(slot).split('|')[0] && x.code !== code && (x.gid || ('m:' + x.code)) !== gid);
+}
+
+// التقدم: كل مقرر إجباري بدرجات يحتاج موعدًا، وكل مجموعة اختيارية تحتاج مقررًا واحدًا على الأقل
+function taskProgress(e, k, t){
+  let total = 0, done = 0, missing = [];
+  planItems(e, k).forEach(it => {
+    if(it.elective){
+      total++;
+      if(it.courses.some(c => { let x = planEntry(t, c.code); return x && x.slot; })) done++;
+      else missing.push(it.title);
+    } else {
+      let c = it.courses[0];
+      if(c.pass) return;
+      total++;
+      let x = planEntry(t, c.code);
+      if(x && x.slot) done++; else missing.push(c.code + ' ' + c.name);
+    }
+  });
+  return {total, done, missing};
+}
+function planTotalText(e, k, t){
+  let pr = taskProgress(e, k, t);
+  return pr.total ? ` • ${pr.done}/${pr.total} متطلب` : '';
+}
+
+// نفس المقرر (الكود والاسم) المجدول في برنامج آخر من نفس المستوى
+function sharedSlots(e, level, course, exceptKey){
+  return []; // لا ربط بين البرامج المتشابهة في الأكواد
+  let out = [];
+  Object.entries(e.tasks || {}).forEach(([pk, pt]) => {
+    if(pk === exceptKey || +pk.split('|')[0] !== level) return;
+    let c = (pt.courses || []).find(x => x.code === course.code && x.name === course.name && x.slot);
+    if(c) out.push({program: pk.split('|')[1], slot: c.slot, label: c.label});
+  });
+  return out;
+}
+
+function setCourseSlot(k, code, slot){
+  let e = active();
+  if(!e) return;
+  let t = e.tasks[k];
+  if(!t || isLocked(t)) return;
+  let it = planItems(e, k).find(i => i.courses.some(c => c.code === code));
+  if(!it) return;
+  let course = it.courses.find(c => c.code === code);
+  if(slot){
+    let clash = slotClash(t, code, it.gid, slot);
+    if(clash){
+      toast(`المستوى يؤدي مقررًا واحدًا فقط في اليوم: (${clash.name}) محدد في نفس اليوم`, true);
+      render();
+      return;
+    }
+  }
+  let entry = planEntry(t, code);
+  if(!entry){
+    entry = {code, name: course.name, gid: it.gid, students: 0, slot: '', label: ''};
+    t.courses.push(entry);
+  }
+  entry.gid = it.gid;
+  if(slot){
+    let [date, pid] = slot.split('|'), per = e.periods.find(x => x.id === pid);
+    entry.slot = slot;
+    entry.label = `${DAYS[new Date(date + 'T12:00:00').getDay()]} ${date} – ${per ? per.name + ' (' + per.from + '–' + per.to + ')' : ''}`;
+  } else {
+    entry.slot = '';
+    entry.label = '';
+  }
+  if(t.status === 'مسودة') t.status = 'قيد الإعداد';
+  t.updated = new Date().toLocaleString('ar-EG');
+  save();
+  render();
+}
+
+function setCourseStudents(k, code, v){
+  let e = active();
+  if(!e) return;
+  let t = e.tasks[k];
+  if(!t || isLocked(t)) return;
+  let it = planItems(e, k).find(i => i.courses.some(c => c.code === code));
+  if(!it) return;
+  let course = it.courses.find(c => c.code === code);
+  let entry = planEntry(t, code);
+  if(!entry){
+    entry = {code, name: course.name, gid: it.gid, students: 0, slot: '', label: ''};
+    t.courses.push(entry);
+  }
+  entry.students = Math.max(0, parseInt(v, 10) || 0);
+  save();
+}
+
+function persistDb(){
+  try{
+    localStorage.setItem('sohag_exam_demo', JSON.stringify(db));
+    let now = Date.now();
+    if(now - (window._lastBackup || 0) > 30000){
+      window._lastBackup = now;
+      localStorage.setItem('sohag_exam_demo_backup', JSON.stringify({at: new Date().toLocaleString('ar-EG'), db}));
+    }
+  }catch(err){ console.error(err); toast('تعذر الحفظ في المتصفح: ' + err.message, true); }
+}
+
+// ===== القاعات والنسخ الاحتياطي =====
+function rooms(){
+  let auto = null;
+  try{ auto = JSON.parse(localStorage.getItem('sohag_exam_demo_backup')); }catch(err){}
+  return head('القاعات والنسخ الاحتياطي','إدارة القاعات وسعتها، وحماية البيانات واستعادتها.') +
+  `<section class="panel"><h2>القاعات</h2><div class="tablewrap"><table><tr><th>اسم القاعة</th><th>السعة</th><th></th></tr>${db.rooms.map(r => `<tr><td>${esc(r.name)}</td><td>${r.cap}</td><td><button class="sm light" onclick="editRoom('${r.id}')">تعديل</button> <button class="sm danger" onclick="delRoom('${r.id}')">حذف</button></td></tr>`).join('') || '<tr><td colspan="3">لا توجد قاعات.</td></tr>'}</table></div>
+   <div class="formgrid" style="margin-top:12px"><div class="field"><label>اسم القاعة</label><input id="rname"></div><div class="field"><label>السعة (عدد الطلاب)</label><input id="rcap" type="number" min="1"></div></div>
+   <div class="actions"><button onclick="addRoom()">＋ إضافة قاعة</button></div></section>
+   <section class="panel"><h2>النسخ الاحتياطي والاستعادة</h2>
+   <p class="muted">نسخة تلقائية تُحفظ كل بضع ثوانٍ عند التعديل${auto ? ' — آخر نسخة تلقائية: ' + esc(auto.at) : ''}. تشمل النسخة المستخدمين والصلاحيات والإصدارات والقاعات والسجل.</p>
+   <div class="actions"><button onclick="backup()">تصدير نسخة احتياطية الآن</button><label class="check" style="cursor:pointer">استعادة من ملف<input type="file" accept=".json" style="display:none" onchange="restoreFile(this)"></label>${auto ? '<button class="light" onclick="restoreAuto()">استعادة النسخة التلقائية</button>' : ''}</div></section>`;
+}
+function addRoom(){
+  let name = $('#rname').value.trim(), cap = +$('#rcap').value;
+  if(!name || cap < 1) return toast('أدخل اسم القاعة وسعتها', true);
+  if(db.rooms.some(r => r.name === name)) return toast('اسم القاعة مكرر', true);
+  db.rooms.push({id: id(), name, cap}); log('إضافة قاعة ' + name); render();
+}
+function editRoom(rid){
+  let r = db.rooms.find(x => x.id === rid), n = prompt('اسم القاعة', r.name);
+  if(!n) return;
+  let c = +prompt('السعة', r.cap);
+  if(c < 1) return toast('سعة غير صحيحة', true);
+  r.name = n.trim(); r.cap = c; log('تعديل قاعة ' + n); render();
+}
+function delRoom(rid){
+  if(!confirm('حذف القاعة؟')) return;
+  db.rooms = db.rooms.filter(r => r.id !== rid); log('حذف قاعة'); render();
+}
+function loadDb(obj, label){
+  if(!obj || !Array.isArray(obj.users) || !Array.isArray(obj.editions)) return toast('ملف النسخة غير صالح', true);
+  if(!confirm('سيتم استبدال كل البيانات الحالية بالنسخة المختارة. متابعة؟')) return;
+  db = obj; db.logs = db.logs || []; db.rooms = db.rooms || [];
+  draftEdition = db.draftEdition || null; delete db.draftEdition; ensureEditionShape(draftEdition);
+  db.editions.forEach(ensureEditionShape);
+  me = db.users.find(u => u.id === me.id) || db.users.find(u => u.username === 'admin');
+  save(); log('استعادة نسخة احتياطية (' + label + ')'); render(); toast('تمت استعادة البيانات بنجاح');
+}
+function restoreFile(inp){
+  let f = inp.files[0]; if(!f) return;
+  let rd = new FileReader();
+  rd.onload = () => { try{ loadDb(JSON.parse(rd.result), f.name); }catch(err){ toast('تعذر قراءة الملف', true); } };
+  rd.readAsText(f);
+}
+function restoreAuto(){ try{ loadDb(JSON.parse(localStorage.getItem('sohag_exam_demo_backup')).db, 'تلقائية'); }catch(err){ toast('لا توجد نسخة تلقائية', true); } }
+
+// ===== تصدير الجدول المجمّع (Excel / Word) =====
+function exportPub(kind){
+  let e = active(), t = $('#pubtable');
+  if(!e || !t) return;
+  let sig = ['توقيع المختص','مدير إدارة شؤون الطلاب','وكيل الكلية لشؤون التعليم والطلاب','عميد الكلية'];
+  let html = `<html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>body{font-family:Tahoma;direction:rtl}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:5px;text-align:center}.sig td{border:0;padding-top:50px}</style></head><body><h2 style="text-align:center">جامعة سوهاج – كلية العلوم</h2><h3 style="text-align:center">${esc(e.name)} – ${esc(e.year)} – ${esc(e.semester)}</h3>${t.outerHTML}<br><table class="sig"><tr>${sig.map(x => `<td>${x}<br>..................</td>`).join('')}</tr></table></body></html>`;
+  let mime = kind === 'xls' ? 'application/vnd.ms-excel' : 'application/msword';
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + html], {type: mime + ';charset=utf-8'}));
+  a.download = 'exam-schedule.' + kind; a.click(); URL.revokeObjectURL(a.href);
+  log('تصدير الجدول المجمّع ' + kind);
+}
+
+// ===== سجل النشاط مع تصفية =====
+let logF = {u: '', a: '', d: ''};
+function logs(){
+  let rows = db.logs.filter(x => (!logF.u || x.user === logF.u) && (!logF.a || x.action.includes(logF.a)) && (!logF.d || x.iso === logF.d));
+  let users = [...new Set(db.logs.map(x => x.user))];
+  return head('سجل النشاط','العمليات التي تمت على هذا الجهاز.') +
+  `<section class="panel"><div class="formgrid"><div class="field"><label>المستخدم</label><select onchange="logF.u=this.value;render()"><option value="">الكل</option>${users.map(u => `<option ${logF.u === u ? 'selected' : ''}>${esc(u)}</option>`).join('')}</select></div><div class="field"><label>نوع العملية (نص)</label><input value="${esc(logF.a)}" onchange="logF.a=this.value.trim();render()"></div><div class="field"><label>التاريخ</label><input type="date" value="${logF.d}" onchange="logF.d=this.value;render()"></div></div>${logTable(rows)}</section>`;
+}
+
+async function seedDemo(){
+  if(db.demoSeeded) return;
+  db.demoSeeded = true;
+  const pw = await hash('1234');
+  [['s1','sp1','أ. مختص الكيمياء','specialist'],['s2','sp2','أ. مختص الفيزياء','specialist'],['r1','rev','د. المراجع','reviewer'],['v1','view','مشاهد','viewer']]
+    .forEach(([i,u,n,r]) => db.users.push({id: i, username: u, password: pw, name: n, role: r, active: true}));
+  let p1 = id(), p2 = id();
+  let e = {id: id(), name: 'امتحانات الفصل الدراسي الأول (تجريبي)', year: `${startYear()}–${startYear()+1}`, semester: 'الفصل الدراسي الأول', type: 'الامتحانات النهائية', start: today(), archived: false,
+    periods: [{id: p1, name: 'الفترة الأولى', from: '09:00', to: '11:00'}, {id: p2, name: 'الفترة الثانية', from: '12:00', to: '14:00'}],
+    days: [0,1,2,3,4], holidays: [],
+    levelPlans: {1: {days: [0,2], periods: [p1]}, 2: {days: [0,2], periods: [p2]}, 3: {days: [1,3], periods: [p1]}, 4: {days: [1,3], periods: [p2]}},
+    assign: {'2|الكيمياء': 's1', '1|شعبة العلوم البيولوجية': 's1', '2|الفيزياء': 's2', '3|الرياضيات': 's2'}, tasks: {}};
+  db.editions.push(e); db.active = e.id;
+  db.rooms = [{id: id(), name: 'مدرج (1)', cap: 300}, {id: id(), name: 'قاعة 101', cap: 80}];
+  demoFill(e, '2|الفيزياء', true, 'مرسل للمراجعة');
+  demoFill(e, '1|شعبة العلوم البيولوجية', true, 'معتمد');
+  demoFill(e, '2|الكيمياء', false, 'قيد الإعداد');
+}
+function demoFill(e, k, all, status){
+  let slots = levelSlots(e, +k[0]), n = 0, now = new Date().toLocaleString('ar-EG');
+  let t = e.tasks[k] = {courses: [], status, note: '', updated: now, sent: status === 'قيد الإعداد' ? '' : now};
+  planItems(e, k).forEach(it => {
+    let c = it.courses.find(x => !x.pass), sl = slots[n];
+    if(!c || !sl || (!all && n >= 3)) return;
+    n++;
+    t.courses.push({code: c.code, name: c.name, gid: it.gid, students: 40 + n * 7, slot: sl.key, label: sl.label});
+  });
+}
+
+// ===== ترتيب المقررات (أسهم + سحب وإفلات) =====
+function orderedItems(e, k, t){
+  let items = planItems(e, k), ord = t.order || [];
+  let rank = it => { let i = ord.indexOf(it.gid); return i < 0 ? 1000 + items.indexOf(it) : i; };
+  return items.slice().sort((a, b) => rank(a) - rank(b));
+}
+function applyOrder(k, ord){
+  let e = active(), t = e.tasks[k];
+  t.order = ord;
+  let rank = c => { let i = ord.indexOf(c.gid); return i < 0 ? 1000 : i; };
+  t.courses.sort((a, b) => rank(a) - rank(b));
+  t.updated = new Date().toLocaleString('ar-EG');
+  log('تغيير ترتيب مقررات ' + k.split('|')[1]);
+  render();
+}
+function moveItem(k, gid, dir){
+  let e = active(), t = e && e.tasks[k];
+  if(!t || isLocked(t)) return;
+  let ord = orderedItems(e, k, t).map(i => i.gid), i = ord.indexOf(gid), j = i + dir;
+  if(i < 0 || j < 0 || j >= ord.length) return;
+  [ord[i], ord[j]] = [ord[j], ord[i]];
+  applyOrder(k, ord);
+}
+function dragStartItem(ev, gid){
+  ev.dataTransfer.setData('text/plain', gid);
+  ev.dataTransfer.effectAllowed = 'move';
+}
+function dropItem(ev, k, target){
+  ev.preventDefault();
+  let e = active(), t = e && e.tasks[k], gid = ev.dataTransfer.getData('text/plain');
+  if(!t || isLocked(t) || !gid || gid === target) return;
+  let ord = orderedItems(e, k, t).map(i => i.gid).filter(x => x !== gid);
+  ord.splice(ord.indexOf(target), 0, gid);
+  applyOrder(k, ord);
+}
+
+function emptyPlans(){
+  return {1:{days:[],periods:[]},2:{days:[],periods:[]},3:{days:[],periods:[]},4:{days:[],periods:[]}};
+}
+function ensureEditionShape(e){
+  if(!e) return;
+  e.periods = e.periods || [];
+  e.days = e.days || [];
+  e.holidays = e.holidays || [];
+  e.assign = e.assign || {};
+  e.tasks = e.tasks || {};
+  e.levelPlans = e.levelPlans || emptyPlans();
+  for(let l = 1; l <= 4; l++){
+    e.levelPlans[l] = e.levelPlans[l] || {days:[],periods:[]};
+    e.levelPlans[l].days = e.levelPlans[l].days || [];
+    e.levelPlans[l].periods = e.levelPlans[l].periods || [];
+  }
+}
+
+function programs(){return [1,2,3,4].flatMap(l=>(l===1?G1:P2).concat(SP).map(n=>({key:l+'|'+n,level:l,name:n})))}function save(){if(draftEdition)db.draftEdition=draftEdition;else delete db.draftEdition;persistDb()}function active(){return db.editions.find(e=>e.id===db.active)||null}function userName(uid){return db.users.find(u=>u.id===uid)?.name||'—'}function log(action){db.logs.unshift({iso:today(),date:new Date().toLocaleString('ar-EG'),user:me?.name||'النظام',action});db.logs=db.logs.slice(0,400);save()}function toast(s,err=false){$('#toastroot').innerHTML=`<div class="toast ${err?'err':''}">${esc(s)}</div>`;setTimeout(()=>$('#toastroot').innerHTML='',2600)}
+async function init(){try{db=JSON.parse(localStorage.getItem('sohag_exam_demo'))}catch(e){}if(!db||!Array.isArray(db.users)){db={users:[],editions:[],active:null,logs:[]};db.users.push({id:'admin',username:'admin',password:await hash('admin'),name:'مدير النظام',role:'admin',active:true});save()}if(!db.users.some(u=>u.username==='admin')){db.users.unshift({id:'admin',username:'admin',password:await hash('admin'),name:'مدير النظام',role:'admin',active:true})}
+db.logs=db.logs||[];db.rooms=db.rooms||[];draftEdition=db.draftEdition||null;delete db.draftEdition;ensureEditionShape(draftEdition);db.editions=db.editions||[];db.editions.forEach(e=>{e.periods=e.periods||[];e.holidays=e.holidays||[];e.assign=e.assign||{};e.tasks=e.tasks||{};if(!e.levelPlans){e.levelPlans={1:{days:[],periods:[]},2:{days:[],periods:[]},3:{days:[],periods:[]},4:{days:[],periods:[]}};Object.entries(e.distribution||{}).forEach(([key,l])=>{let [date,pid]=key.split('|'),day=new Date(date+'T12:00:00').getDay(),x=e.levelPlans[l];if(x){if(!x.days.includes(day))x.days.push(day);if(!x.periods.includes(pid))x.periods.push(pid)}})};for(let l=1;l<=4;l++)e.levelPlans[l]=e.levelPlans[l]||{days:[],periods:[]};delete e.count;delete e.distribution});await seedDemo();save()}
+function login(){(async()=>{if(!db)return;let u=$('#lu').value.trim(),p=await hash($('#lp').value),x=db.users.find(a=>a.username===u&&a.password===p&&a.active);if(!x){$('#loginerr').textContent='بيانات الدخول غير صحيحة أو الحساب غير نشط';$('#loginerr').classList.remove('hidden');return}me=x;x.last=new Date().toLocaleString('ar-EG');log('تسجيل الدخول');$('#login').classList.add('hidden');$('#app').classList.remove('hidden');$('#who').textContent=me.name;$('#role').textContent=roleName(me.role);page=menu()[0]?menu()[0][0]:'published';render()})()}function logout(){log('تسجيل الخروج');me=null;$('#app').classList.add('hidden');$('#login').classList.remove('hidden')}function roleName(r){return({admin:'مدير النظام',specialist:'مختص',reviewer:'مراجع',viewer:'مشاهد'})[r]||r}
+const PAGES = [['dashboard','لوحة التحكم'],['setup','إعداد الإصدار'],['assign','توزيع المسؤوليات'],['tracking','متابعة الجداول'],['review','المراجعة والاعتماد'],['published','الجدول المجمّع'],['users','إدارة المستخدمين'],['rooms','القاعات والنسخ الاحتياطي'],['logs','سجل النشاط'],['tasks','المهام المسندة إليّ']];
+const ROLE_PERMS = {admin: PAGES.map(x => x[0]).filter(k => k !== 'tasks').concat('approve'), specialist: ['tasks'], reviewer: ['review','approve','published'], viewer: ['published']};
+const userPerms = u => u.role === 'admin' ? ROLE_PERMS.admin : (u.perms || ROLE_PERMS[u.role] || []);
+const can = p => !!me && userPerms(me).includes(p);
+function menu(){ return PAGES.filter(([k]) => can(k)); }
+function permsModal(uid){
+  let u = db.users.find(x => x.id === uid), cur = userPerms(u), all = PAGES.concat([['approve','اعتماد الجداول']]);
+  modal('صلاحيات ' + u.name, `<div class="checks">${all.map(([k,n]) => `<label class="check"><input type="checkbox" class="perm" value="${k}" ${cur.includes(k) ? 'checked' : ''}>${n}</label>`).join('')}</div>`, `<button onclick="savePerms('${uid}')">حفظ</button>`);
+}
+function savePerms(uid){
+  let u = db.users.find(x => x.id === uid);
+  u.perms = $$('.perm:checked').map(x => x.value);
+  save(); log('تعديل صلاحيات ' + u.username); closeModal(); render(); toast('تم حفظ الصلاحيات');
+}
+function render(){let m=menu();if(!can(page)&&m.length)page=m[0][0];$('#nav').innerHTML=m.map(([k,n])=>`<button class="${page===k?'active':''}" onclick="go('${k}')">${n}</button>`).join('');$('#pagetitle').textContent=m.find(x=>x[0]===page)?.[1]||'منصة الامتحانات';let e=active()||draftEdition;$('#editionlabel').textContent=e&&e.name?`${e.name} • ${e.year} • ${e.semester}`:'لا يوجد إصدار نشط';let f={dashboard,setup,assign,tracking,review,published,users,logs,tasks,rooms};$('#content').innerHTML=(f[page]||dashboard)();$('#side').classList.remove('open');if(page==='setup'&&step===4)liveCheckDistribution()}function go(p){page=p;taskKey=null;render()}function toggleSide(){$('#side').classList.toggle('open')}function head(t,d,actions=''){return `<div class="head"><div><h1>${t}</h1><p>${d}</p></div><div class="actions no-print">${actions}</div></div>`}function stat(t,n){return `<div class="stat"><span>${t}</span><strong>${n}</strong></div>`}function badge(s){let c={مسودة:'', 'قيد الإعداد':'blue','مرسل للمراجعة':'amber','يحتاج تعديل':'redtag','معتمد':'green','منشور':'green'}[s]||'';return `<span class="badge ${c}">${s}</span>`}
+function dashboard(){let e=active(),tasks=e?Object.values(e.tasks):[],assigned=e?Object.keys(e.assign).length:0,planned=e?Object.values(e.levelPlans||{}).reduce((n,x)=>n+(x.days?.length||0)*(x.periods?.length||0),0):0;return head('لوحة التحكم','نظرة عامة على الإصدار الحالي ومراحل إعداد الجداول.',`<button onclick="go('setup')">＋ إنشاء / فتح إصدار</button>`)+`<div class="stats">${stat('الإصدارات',db.editions.length)}${stat('المختصون النشطون',db.users.filter(x=>x.role==='specialist'&&x.active).length)}${stat('المهام المسندة',assigned)}${stat('مرسلة للمراجعة',tasks.filter(t=>['مرسل للمراجعة','معتمد','منشور'].includes(t.status)).length)}${stat('المعتمدة',tasks.filter(t=>['معتمد','منشور'].includes(t.status)).length)}${stat('غير المسندة',e?programs().length-assigned:programs().length)}</div><div class="cols"><section class="panel"><h2>الإصدار الحالي</h2>${e?`<div class="notice">${esc(e.name)} – ${e.year} – ${e.semester}</div><div class="formgrid"><div>تاريخ البداية<br><b>${e.start}</b></div><div>أيام الأسبوع المختارة<br><b>${e.days.length}</b></div><div>عدد الفترات<br><b>${e.periods.length}</b></div><div>مواعيد المستوى الأسبوعية<br><b>${planned}</b></div></div><div class="actions"><button onclick="go('setup')">إعداد الإصدار</button><button class="light" onclick="go('assign')">إسناد المختصين</button></div>`:`<div class="empty"><b>لا يوجد إصدار نشط</b>ابدأ بإنشاء إصدار امتحاني.</div><button onclick="go('setup')">إنشاء إصدار</button>`}</section><section class="panel"><h2>إنجاز المختصين</h2>${e?progress(e):'<div class="empty">سيظهر التقدم بعد إنشاء الإصدار وإسناد المهام.</div>'}</section></div><section class="panel"><h2>آخر العمليات</h2>${logTable(db.logs.slice(0,7))}</section>`}
+function years(sel){let s='',y=startYear(),first=y-1,m=/^(\d{4})/.exec(sel||'');if(m&&+m[1]<first)first=+m[1];for(let i=first;i<=2099;i++){let v=`${i}–${i+1}`;s+=`<option ${sel===v?'selected':''}>${v}</option>`}return s}function editionList(){return `<section class="panel"><h2>الإصدارات المحفوظة</h2><div class="tablewrap"><table><tr><th>اسم الإصدار</th><th>العام</th><th>الفصل</th><th>الحالة</th><th></th></tr>${db.editions.map(e=>`<tr><td>${esc(e.name)}</td><td>${e.year}</td><td>${e.semester}</td><td>${e.id===db.active?'نشط':e.archived?'مؤرشف':'محفوظ'}</td><td><button class="sm light" onclick="activate('${e.id}')">فتح</button></td></tr>`).join('')||'<tr><td colspan="5">لا توجد إصدارات.</td></tr>'}</table></div></section>`}
+function setup(){let e=active()||draftEdition;if(!e){draftEdition={id:null,name:'',year:`${startYear()}–${startYear()+1}`,semester:'الفصل الدراسي الأول',type:'الامتحانات النهائية',start:today(),periods:[],days:[],holidays:[],levelPlans:{1:{days:[],periods:[]},2:{days:[],periods:[]},3:{days:[],periods:[]},4:{days:[],periods:[]}},assign:{},tasks:{},archived:false};e=draftEdition;step=1;save()}let names=['بيانات الإصدار','الفترات الامتحانية','أيام الامتحانات والإجازات','توزيع المستويات','مراجعة الإصدار'];let views=[details,periods,calendar,distribution,editionSummary];return head(active()?'إعداد الإصدار':'إنشاء إصدار جديد','اتبع خطوات إعداد الإصدار بالترتيب. يتم عرض المستويات الأربعة في كروت منفصلة مع الفحص اللحظي للتعارض.',active()?`<button class="light" onclick="newEdition()">＋ إصدار جديد</button><button class="light" onclick="archive()">أرشفة الإصدار</button>`:'')+`<section class="panel"><div class="steps">${names.map((n,i)=>`<div class="step ${step===i+1?'active':step>i+1?'done':''}" onclick="goStep(${i+1})"><b>${String(i+1).padStart(2,'0')}</b>${n}</div>`).join('')}</div>${views[step-1](e)}<div class="actions"><button class="light" ${step===1?'disabled':''} onclick="goStep(step-1)">السابق</button><button class="teal" id="wizard-next-btn" onclick="nextStep()">${step===5?(active()?'حفظ تحديثات الإصدار':'إنشاء الإصدار'):'التالي'}</button></div></section>${!active()?editionList():''}`}
+
+
+// قراءة بيانات الخطوة الحالية من الواجهة وحفظها دون تعطيل التنقل
+function persistStep(){
+  let e = active() || draftEdition;
+  if(!e) return;
+  if(step === 1 && $('#ename')){
+    e.name = $('#ename').value.trim();
+    if($('#year')) e.year = $('#year').value;
+    if($('#semester')) e.semester = $('#semester').value;
+    if($('#type')) e.type = $('#type').value;
+    if($('#start') && $('#start').value) e.start = $('#start').value;
+  }
+  if(step === 3 && $$('.day').length){
+    e.days = $$('.day:checked').map(x => +x.value).sort((a,b) => a - b);
+    for(let l = 1; l <= 4; l++){
+      e.levelPlans[l].days = e.levelPlans[l].days.filter(d => e.days.includes(d));
+    }
+  }
+  if(step === 4 && $$('.lday').length){
+    let plans = readLevelPlans();
+    for(let l = 1; l <= 4; l++) e.levelPlans[l] = plans[l];
+  }
+  save();
+}
+
+function goStep(n){
+  if(n < 1 || n > 5) return;
+  if(n > step){ toast('استخدم زر التالي لإكمال المراحل بالترتيب', true); return; }
+  persistStep();
+  step = n;
+  render();
+}
+
+function nextStep(){
+  let e = active() || draftEdition;
+  if(!e) return;
+  if(step === 1){
+    if(!saveDetails()) return;
+    step = 2; render(); return;
+  }
+  if(step === 2){
+    if(!e.periods.length) return toast('أضف فترة امتحانية واحدة على الأقل', true);
+    if(!validatePeriods(e)) return;
+    save();
+    step = 3; render(); return;
+  }
+  if(step === 3){
+    if(!applyDays()) return;
+    step = 4; render(); return;
+  }
+  if(step === 4){
+    if(!saveDistribution(false)) return;
+    if(!Object.values(e.levelPlans).every(x => x.days.length && x.periods.length)){
+      return toast('حدد يومًا وفترة واحدة على الأقل لكل مستوى', true);
+    }
+    step = 5; render(); return;
+  }
+  if(step === 5){ createEdition(); }
+}
+
+function editionForm(e=null){let y=e?.year||`${startYear()}–${startYear()+1}`;return `<div class="formgrid"><div class="field"><label>العام الدراسي</label><select id="year">${years(y)}</select></div><div class="field"><label>الفصل الدراسي</label><select id="semester">${['الفصل الدراسي الأول','الفصل الدراسي الثاني','الفصل الدراسي الصيفي'].map(x=>`<option ${e?.semester===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>نوع الامتحان</label><select id="type"><option>الامتحانات النهائية</option></select></div><div class="field"><label>تاريخ بداية الامتحانات</label><input id="start" type="date" value="${e?.start||today()}"></div><div class="field full"><label>اسم الإصدار</label><input id="ename" value="${esc(e?.name||'')}" placeholder="امتحانات الفصل الدراسي الأول 2026–2027"></div></div>`}
+
+// إنشاء الإصدار (أو حفظ تحديثاته) وتفعيله
+function createEdition(){
+  let e = active() || draftEdition;
+  if(!e) return toast('لا توجد بيانات إصدار مسجلة', true);
+  ensureEditionShape(e);
+
+  let name = String(e.name || '').trim();
+  let start = e.start;
+  if(!name || !start){
+    step = 1; render();
+    return toast('أكمل اسم الإصدار وتاريخ البداية', true);
+  }
+  if(!e.periods.length){
+    step = 2; render();
+    return toast('أضف فترة امتحانية واحدة على الأقل', true);
+  }
+  if(!e.days.length){
+    step = 3; render();
+    return toast('اختر أيام الامتحانات المسموح بها', true);
+  }
+  if(levelConflicts(e).length){
+    step = 4; render();
+    return toast('يوجد تعارض في توزيع المستويات. عالج التعارض قبل الحفظ.', true);
+  }
+  if(!Object.values(e.levelPlans).every(x => x.days.length && x.periods.length)){
+    step = 4; render();
+    return toast('حدد يومًا وفترة واحدة على الأقل لكل مستوى', true);
+  }
+
+  e.name = name;
+  let isNew = !e.id;
+  if(isNew){
+    e.id = id();
+    e.archived = false;
+    db.editions.push(e);
+  }
+  db.active = e.id;
+  draftEdition = null;
+  log((isNew ? 'إنشاء إصدار ' : 'حفظ تحديثات الإصدار ') + name);
+  save();
+
+  step = 1;
+  page = 'dashboard';
+  render();
+  toast(isNew ? 'تم إنشاء الإصدار بنجاح وتفعيله' : 'تم حفظ وتحديث الإصدار بنجاح');
+}
+
+function details(e){return `<h2>بيانات الإصدار</h2><p class="muted">حدد البيانات الأساسية. نوع الامتحان الحالي هو الامتحانات النهائية.</p>${editionForm(e)}<div class="notice">تاريخ البداية هو نقطة انطلاق احتساب التواريخ الفعلية. لا تحتاج إلى تحديد تاريخ نهاية أو عدد أيام مسبقًا.</div>`}
+function saveDetails(){
+  let e = active() || draftEdition;
+  let name = $('#ename')?.value.trim();
+  let start = $('#start')?.value;
+  if(!name || !start) { toast('أكمل اسم الإصدار وتاريخ البداية', true); return false; }
+  Object.assign(e, {
+    name,
+    year: $('#year')?.value || e.year,
+    semester: $('#semester')?.value || e.semester,
+    type: $('#type')?.value || e.type,
+    start
+  });
+  save();
+  if(active()) log('تعديل بيانات الإصدار');
+  return true;
+}
+function periods(e){return `<h2>الفترات الامتحانية</h2><p class="muted">أضف الفترات التي ستُجرى خلالها الامتحانات. يجب ألا تتداخل أوقات الفترات.</p><div class="tablewrap"><table><tr><th>اسم الفترة</th><th>من</th><th>إلى</th><th>إجراء</th></tr>${e.periods.map(p=>`<tr><td>${esc(p.name)}</td><td>${p.from}</td><td>${p.to}</td><td><button class="sm light" onclick="editPeriod('${p.id}')">تعديل</button> <button class="sm danger" onclick="delPeriod('${p.id}')">حذف</button></td></tr>`).join('')||'<tr><td colspan="4">لم تتم إضافة فترات.</td></tr>'}</table></div><div class="formgrid" style="margin-top:14px"><div class="field"><label>اسم الفترة</label><input id="pname"></div><div class="field"><label>وقت البداية</label><input id="pfrom" type="time"></div><div class="field"><label>وقت النهاية</label><input id="pto" type="time"></div></div><div class="actions"><button onclick="addPeriod()">＋ إضافة فترة</button></div>`}function addPeriod(edit=null){let e=active()||draftEdition,name=$('#pname').value.trim(),from=$('#pfrom').value,to=$('#pto').value;if(!name||!from||!to)return toast('أكمل بيانات الفترة',true);if(to<=from)return toast('وقت النهاية يجب أن يكون بعد البداية',true);if(e.periods.some(p=>p.id!==edit&&from<p.to&&to>p.from))return toast('الفترة تتداخل مع فترة أخرى',true);if(edit)Object.assign(e.periods.find(p=>p.id===edit),{name,from,to});else e.periods.push({id:id(),name,from,to});e.periods.sort((a,b)=>a.from.localeCompare(b.from));save();if(active())log((edit?'تعديل':'إضافة')+' فترة '+name);render()}function editPeriod(pid){let p=(active()||draftEdition).periods.find(x=>x.id===pid);modal('تعديل الفترة',`<div class="field"><label>اسم الفترة</label><input id="pname" value="${esc(p.name)}"></div><div class="formgrid"><div class="field"><label>من</label><input id="pfrom" type="time" value="${p.from}"></div><div class="field"><label>إلى</label><input id="pto" type="time" value="${p.to}"></div></div>`,`<button onclick="addPeriod('${pid}');closeModal()">حفظ</button>`) }function delPeriod(pid){let e=active()||draftEdition;if(Object.values(e.levelPlans||{}).some(x=>x.periods.includes(pid)))return toast('أزل الفترة من توزيع المستويات أولًا',true);if(!confirm('حذف الفترة؟'))return;e.periods=e.periods.filter(p=>p.id!==pid);save();render()}
+function calendar(e){return `<h2>أيام الامتحانات والإجازات</h2><p class="muted">حدد أيام الأسبوع التي يمكن إجراء الامتحانات خلالها. بعد ذلك يختار مدير النظام الأيام والفترات المناسبة لكل مستوى على حدة.</p><div class="checks">${DAYS.map((d,i)=>`<label class="check"><input type="checkbox" class="day" value="${i}" ${e.days.includes(i)?'checked':''}>${d}</label>`).join('')}</div><div class="actions"><button onclick="saveDays()">حفظ أيام الامتحانات</button></div><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><h3>الإجازات الرسمية</h3><p class="muted">يستبعد النظام تواريخ الإجازات تلقائيًا عند تكوين مواعيد الامتحانات.</p><div class="tablewrap"><table><tr><th>الإجازة</th><th>التاريخ</th><th>ملاحظات</th><th></th></tr>${e.holidays.map(h=>`<tr><td>${esc(h.name)}</td><td>${h.date}</td><td>${esc(h.note||'—')}</td><td><button class="sm danger" onclick="delHoliday('${h.id}')">حذف</button></td></tr>`).join('')||'<tr><td colspan="4">لا توجد إجازات.</td></tr>'}</table></div><div class="formgrid" style="margin-top:12px"><div class="field"><label>اسم الإجازة</label><input id="hname"></div><div class="field"><label>التاريخ</label><input id="hdate" type="date"></div><div class="field full"><label>ملاحظات</label><input id="hnote"></div></div><div class="actions"><button onclick="addHoliday()">＋ إضافة إجازة</button></div><div class="notice">تاريخ البداية: ${e.start}. ستُنشأ تواريخ كل مستوى تلقائيًا وفق أيام الأسبوع والفترات المختارة، مع استبعاد الإجازات. لا يوجد تاريخ نهاية محدد.</div>`}function dates(e,level=null){let plans=e.levelPlans||{},days=new Set();if(level){(plans[level]?.days||[]).forEach(d=>days.add(d))}else Object.values(plans).forEach(x=>(x.days||[]).forEach(d=>days.add(d)));if(!days.size)return[];let out=[],d=new Date(e.start+'T12:00:00'),hol=new Set((e.holidays||[]).map(h=>h.date));for(let i=0;i<730&&out.length<260;i++,d.setDate(d.getDate()+1)){let x=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;if(days.has(d.getDay())&&!hol.has(x))out.push(x)}return out}function applyDays(){
+  let e = active() || draftEdition;
+  let days = $$('.day:checked').map(x => +x.value).sort((a,b) => a - b);
+  if(!days.length){ toast('اختر يومًا واحدًا على الأقل', true); return false; }
+  e.days = days;
+  for(let l = 1; l <= 4; l++){
+    e.levelPlans[l].days = e.levelPlans[l].days.filter(d => days.includes(d));
+  }
+  save();
+  return true;
+}
+function saveDays(){
+  if(!applyDays()) return;
+  if(active()) log('تعديل أيام الامتحانات');
+  render();
+  toast('تم حفظ أيام الامتحانات');
+}function addHoliday(){persistStep();let e=active()||draftEdition,name=$('#hname').value.trim(),date=$('#hdate').value;if(!name||!date)return toast('أدخل اسم الإجازة وتاريخها',true);if(e.holidays.some(h=>h.date===date))return toast('هذا التاريخ مسجل كإجازة بالفعل',true);e.holidays.push({id:id(),name,date,note:$('#hnote').value.trim()});e.holidays.sort((a,b)=>a.date.localeCompare(b.date));save();if(active())log('إضافة إجازة '+name);render()}function delHoliday(hid){persistStep();let e=active()||draftEdition;e.holidays=e.holidays.filter(h=>h.id!==hid);save();render()}
+
+function distribution(e){
+  if(!e.periods.length) return '<div class="notice warning">أضف الفترات أولًا.</div>';
+  if(!e.days.length) return '<div class="notice warning">حدد أيام الأسبوع المسموح بها أولًا.</div>';
+  ensureEditionShape(e);
+
+  const cards = [1,2,3,4].map(l => {
+    const x = e.levelPlans[l];
+    const dayBoxes = e.days.map(d => `
+        <label class="check">
+          <input type="checkbox" class="lday" data-level="${l}" value="${d}" ${x.days.includes(d) ? 'checked' : ''} onchange="liveCheckDistribution()">
+          ${DAYS[d]}
+        </label>`).join('');
+    const periodBoxes = e.periods.map(p => `
+        <label class="check">
+          <input type="checkbox" class="lperiod" data-level="${l}" value="${p.id}" ${x.periods.includes(p.id) ? 'checked' : ''} onchange="liveCheckDistribution()">
+          <span>${esc(p.name)} <small class="muted">(${p.from}–${p.to})</small></span>
+        </label>`).join('');
+    return `
+      <div class="panel level-card" data-level-box="${l}">
+        <div class="lc-head">
+          <h3>المستوى ${LV[l-1]}</h3>
+          <span class="badge blue" id="badge-l-${l}">${x.days.length} أيام • ${x.periods.length} فترات</span>
+        </div>
+        <b class="lc-label">الأيام المسموح بها لهذا المستوى</b>
+        <div class="checks lc-days">${dayBoxes}</div>
+        <b class="lc-label">الفترات المخصصة لهذا المستوى</b>
+        <div class="checks lc-periods">${periodBoxes}</div>
+      </div>`;
+  }).join('');
+
+  return `
+    <h2>توزيع المستويات على الأيام والفترات</h2>
+    <p class="muted">حدد الأيام والفترات لكل مستوى في كروت منفصلة. يفحص النظام لحظيًا منع اشتراك أي مستويين في نفس اليوم ونفس الفترة.</p>
+    <div id="live-conflict-alert" class="conflict-alert hidden" role="alert"></div>
+    <div class="level-grid">${cards}</div>
+    <div class="actions">
+      <button onclick="saveDistribution(true)" id="save-dist-btn" class="teal">حفظ توزيع المستويات مؤقتاً</button>
+      <button class="light" onclick="clearDist()">مسح الكل</button>
+    </div>
+    <div class="notice">يتم حساب تواريخ الامتحانات الفعلية تلقائياً بناءً على الأيام والفترات المختارة لكل مستوى مع استبعاد الإجازات.</div>
+  `;
+}
+
+// قراءة اختيارات الكروت الأربعة من الواجهة
+function readLevelPlans(){
+  let plans = emptyPlans();
+  for(let l = 1; l <= 4; l++){
+    plans[l].days = $$(`.lday[data-level="${l}"]:checked`).map(x => +x.value);
+    plans[l].periods = $$(`.lperiod[data-level="${l}"]:checked`).map(x => x.value);
+  }
+  return plans;
+}
+
+// الفحص اللحظي للتعارض: يعمل عند أي تغيير وعند تحميل الخطوة الرابعة
+function liveCheckDistribution(){
+  let e = active() || draftEdition;
+  let alertBox = $('#live-conflict-alert');
+  if(!e || !alertBox) return;
+
+  let plans = readLevelPlans();
+  for(let l = 1; l <= 4; l++){
+    let badgeEl = $(`#badge-l-${l}`);
+    if(badgeEl) badgeEl.textContent = `${plans[l].days.length} أيام • ${plans[l].periods.length} فترات`;
+  }
+  $$('.level-card .check').forEach(label => {
+    let input = label.querySelector('input');
+    label.classList.toggle('on', !!(input && input.checked));
+  });
+
+  let conflicts = levelConflicts({levelPlans: plans});
+  let conflictLevels = new Set();
+  conflicts.forEach(c => { conflictLevels.add(c.a); conflictLevels.add(c.b); });
+  $$('[data-level-box]').forEach(box => {
+    box.classList.toggle('conflict', conflictLevels.has(+box.dataset.levelBox));
+  });
+
+  let saveBtn = $('#save-dist-btn');
+  let nextBtn = $('#wizard-next-btn');
+  if(conflicts.length){
+    let shown = conflicts.slice(0, 6).map(c => {
+      let per = e.periods.find(x => x.id === c.p);
+      return `<li>⚠️ تنبيه تعارض: المستوى ${LV[c.a-1]} والمستوى ${LV[c.b-1]} يتشاركان في يوم ${DAYS[c.d]} - الفترة ${esc(per ? per.name : '')}</li>`;
+    }).join('');
+    let more = conflicts.length > 6 ? `<li>و ${conflicts.length - 6} تعارضات أخرى...</li>` : '';
+    alertBox.innerHTML = `<div>يوجد تعارض في التوزيع. عالجه لتفعيل زر الحفظ وزر "التالي":</div><ul>${shown}${more}</ul>`;
+    alertBox.classList.remove('hidden');
+  } else {
+    alertBox.innerHTML = '';
+    alertBox.classList.add('hidden');
+  }
+  if(saveBtn) saveBtn.disabled = conflicts.length > 0;
+  if(nextBtn && step === 4) nextBtn.disabled = conflicts.length > 0;
+}
+
+function levelConflicts(e){let out=[],plans=e.levelPlans||{};for(let a=1;a<=4;a++)for(let b=a+1;b<=4;b++){let A=plans[a]||{days:[],periods:[]},B=plans[b]||{days:[],periods:[]};for(let d of A.days)for(let p of A.periods)if(B.days.includes(d)&&B.periods.includes(p))out.push({a,b,d,p})}return out}
+
+function saveDistribution(showToast=true){
+  let e = active() || draftEdition;
+  if(!e) return false;
+  // إن لم تُعرض الكروت (لا فترات أو لا أيام) فلا يوجد ما يُحفظ
+  if(!$$('.lday, .lperiod').length) return true;
+
+  let plans = readLevelPlans();
+  let conflicts = levelConflicts({levelPlans: plans});
+  if(conflicts.length){
+    liveCheckDistribution();
+    let c = conflicts[0], p = e.periods.find(x => x.id === c.p);
+    toast(`تعارض: المستوى ${LV[c.a-1]} والمستوى ${LV[c.b-1]} اختارا ${DAYS[c.d]} – ${p ? p.name : ''}`, true);
+    return false;
+  }
+  for(let l = 1; l <= 4; l++) e.levelPlans[l] = plans[l];
+  save();
+  if(showToast) toast('تم حفظ وتحديث توزيع المستويات بنجاح');
+  return true;
+}
+
+function clearDist(){if(!confirm('مسح جميع اختيارات توزيع المستويات؟'))return;let e=active()||draftEdition;for(let l=1;l<=4;l++)e.levelPlans[l]={days:[],periods:[]};save();render()}
+function validatePeriods(e){if(!e.periods.length)return false;for(let i=0;i<e.periods.length;i++){let p=e.periods[i];if(!p.name||!p.from||!p.to||p.to<=p.from)return toast('تحقق من اسم ووقت كل فترة',true),false;for(let j=i+1;j<e.periods.length;j++){let q=e.periods[j];if(p.from<q.to&&q.from<p.to)return toast('هناك فترتان متداخلتان زمنيًا',true),false}}return true}
+function editionSummary(e){let conflicts=levelConflicts(e);return `<h2>مراجعة ملخص الإصدار</h2><div class="cols"><div class="panel"><h3>بيانات الإصدار</h3><p><b>${esc(e.name||'—')}</b></p><p>العام الدراسي: ${esc(e.year)}<br>الفصل الدراسي: ${esc(e.semester)}<br>نوع الامتحان: ${esc(e.type)}<br>تاريخ البداية: ${esc(e.start)}</p></div><div class="panel"><h3>الفترات والتقويم</h3><p>عدد الفترات: ${e.periods.length}<br>أيام الأسبوع المسموح بها: ${e.days.map(d=>DAYS[d]).join('، ')}<br>الإجازات: ${e.holidays.length}</p>${e.periods.map(p=>`<span class="badge">${esc(p.name)} ${p.from}–${p.to}</span>`).join(' ')}</div></div><div class="panel"><h3>توزيع المستويات</h3><div class="tablewrap"><table><tr><th>المستوى</th><th>الأيام</th><th>الفترات</th><th>المواعيد الأسبوعية</th></tr>${[1,2,3,4].map(l=>{let x=e.levelPlans[l];return `<tr><td>${LV[l-1]}</td><td>${x.days.map(d=>DAYS[d]).join('، ')||'—'}</td><td>${x.periods.map(id=>e.periods.find(p=>p.id===id)?.name||'').join('، ')||'—'}</td><td>${x.days.length*x.periods.length}</td></tr>`}).join('')}</table></div>${conflicts.length?'<div class="notice warning">يوجد تعارض بين المستويات ويجب إصلاحه.</div>':'<div class="notice success">لا توجد تعارضات بين المستويات.</div>'}</div><div class="notice info">لا يوجد حقل لعدد الأيام المطلوبة ولا تاريخ نهاية للامتحانات. يبدأ التقويم من التاريخ المحدد ويستمر وفق الأيام والفترات المسندة لكل مستوى، مع استبعاد الإجازات.</div>`}
+function activate(eid){db.active=eid;draftEdition=null;step=1;save();log('فتح إصدار');render()}function newEdition(){if(!confirm('إنشاء إصدار جديد؟ سيظل الإصدار الحالي محفوظًا.'))return;db.active=null;draftEdition={id:null,name:'',year:`${startYear()}–${startYear()+1}`,semester:'الفصل الدراسي الأول',type:'الامتحانات النهائية',start:today(),periods:[],days:[],holidays:[],levelPlans:{1:{days:[],periods:[]},2:{days:[],periods:[]},3:{days:[],periods:[]},4:{days:[],periods:[]}},assign:{},tasks:{},archived:false};step=1;save();render()}function archive(){let e=active();if(!e)return;if(!confirm('أرشفة الإصدار الحالي؟'))return;e.archived=true;db.active=null;draftEdition=null;save();log('أرشفة إصدار '+e.name);render()}
+function assign(){let e=active();if(!e)return head('توزيع المسؤوليات','أنشئ إصدارًا أولًا.')+`<section class="panel empty">لا يوجد إصدار نشط.</section>`;let specs=db.users.filter(u=>u.role==='specialist'&&u.active);return head('توزيع المسؤوليات','اربط كل برنامج بالمختص المسؤول عنه في الإصدار الحالي.',`<button onclick="saveAssign()">حفظ الإسنادات</button>`)+(!specs.length?'<div class="notice warning">أنشئ حسابات مختصين أولًا من إدارة المستخدمين.</div>':'')+`<section class="panel"><div class="tablewrap"><table><tr><th>المستوى</th><th>الشعبة / البرنامج</th><th>المختص</th><th>الحالة</th></tr>${programs().map(p=>`<tr><td>${LV[p.level-1]}</td><td>${esc(p.name)}</td><td><select class="assign" data-k="${esc(p.key)}"><option value="">— غير مسند —</option>${specs.map(u=>`<option value="${u.id}" ${e.assign[p.key]===u.id?'selected':''}>${esc(u.name)}</option>`).join('')}</select></td><td>${e.assign[p.key]?'<span class="badge green">مسند</span>':'<span class="badge amber">غير مسند</span>'}</td></tr>`).join('')}</table></div><div class="actions"><button onclick="saveAssign()">حفظ وتفعيل الإسنادات</button></div></section>`}function saveAssign(){let e=active();$$('.assign').forEach(x=>{if(x.value)e.assign[x.dataset.k]=x.value;else delete e.assign[x.dataset.k]});save();log('تحديث إسناد المختصين');render();toast('تم حفظ الإسنادات')}function progress(e){let s=db.users.filter(u=>u.role==='specialist'&&u.active);return s.length?s.map(u=>{let k=Object.keys(e.assign).filter(x=>e.assign[x]===u.id),n=k.filter(x=>['مرسل للمراجعة','معتمد','منشور'].includes(e.tasks[x]?.status)).length,p=k.length?Math.round(n/k.length*100):0;return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between"><b>${esc(u.name)}</b><small>${n}/${k.length} مهام مرسلة أو معتمدة</small></div><div class="progress"><i style="width:${p}%"></i></div></div>`}).join(''):'<div class="empty">لا توجد حسابات مختصين.</div>'}
+function tasks(){let e=active();if(!e)return head('مهامي','لا يوجد إصدار نشط.')+`<section class="panel empty">انتظر تفعيل إصدار وإسناد مهام إليك.</section>`;let keys=Object.keys(e.assign).filter(k=>e.assign[k]===me.id&&programs().some(x=>x.key===k));if(taskKey&&keys.includes(taskKey))return taskEditor(e,taskKey);return head('المهام المسندة إليّ','افتح البرنامج لإدخال المقررات وإرسال الجدول للمراجعة.')+`<div class="notice">الإصدار الحالي: ${esc(e.name)}</div><div class="cols">${keys.map(k=>{let p=programs().find(x=>x.key===k),t=e.tasks[k]||{courses:[],status:'مسودة'};return `<section class="panel"><div style="display:flex;justify-content:space-between"><b>المستوى ${LV[p.level-1]}</b>${badge(t.status)}</div><h3 style="margin-top:8px">${esc(p.name)}</h3><small class="muted">${cnt(t)} مقرر مجدول${planTotalText(e,k,t)}</small><div class="actions"><button onclick="openTask('${esc(k)}')">فتح المهمة</button></div></section>`}).join('')||'<section class="panel empty"><b>لا توجد مهام مسندة</b>سيظهر هنا ما يسنده مدير النظام لحسابك.</section>'}</div>`}function openTask(k){taskKey=k;render()}
+function levelSlots(e,level){let plan=e.levelPlans?.[level]||{days:[],periods:[]},out=[],hol=new Set(e.holidays.map(h=>h.date));if(!plan.days.length||!plan.periods.length)return out;let d=new Date(e.start+'T12:00:00');for(let i=0;i<730&&out.length<160;i++,d.setDate(d.getDate()+1)){let date=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;if(!plan.days.includes(d.getDay())||hol.has(date))continue;for(let pid of plan.periods){let per=e.periods.find(x=>x.id===pid);if(per)out.push({key:date+'|'+pid,label:`${DAYS[d.getDay()]} ${date} – ${per.name} (${per.from}–${per.to})`})}}return out}
+function taskEditor(e, k){
+  let p = programs().find(x => x.key === k);
+  let t = e.tasks[k] || (e.tasks[k] = {courses: [], status: 'مسودة', note: ''});
+  let locked = isLocked(t), slots = levelSlots(e, p.level), items = orderedItems(e, k, t);
+  let planCodes = new Set();
+  items.forEach(it => it.courses.forEach(c => planCodes.add(c.code)));
+  let manualRows = t.courses.map((c, i) => ({c, i})).filter(x => x.c.manual || !planCodes.has(x.c.code));
+  let pr = taskProgress(e, k, t);
+
+  const slotSelect = (c, entry) => {
+    if(locked) return entry && entry.slot ? esc(entry.label) : '—';
+    let shared = sharedSlots(e, p.level, c, k);
+    let sharedKeys = shared.map(x => x.slot);
+    let cur = entry ? entry.slot : '';
+    let valid = !cur || slots.some(s => s.key === cur);
+    let opts = slots.map(s => `<option value="${s.key}" ${cur === s.key ? 'selected' : ''}>${sharedKeys.includes(s.key) ? '★ ' : ''}${esc(s.label)}</option>`).join('');
+    let stale = valid ? '' : `<option value="${esc(cur)}" selected>⚠ موعد لم يعد متاحًا: ${esc(entry.label)}</option>`;
+    let note = '';
+    if(shared.length){
+      let diff = cur && shared.some(x => x.slot !== cur);
+      note = diff
+        ? `<div class="rownote warn">⚠ نفس المقرر محدد في ${esc(shared[0].program)} بموعد مختلف: ${esc(shared[0].label)}</div>`
+        : (!cur ? `<div class="rownote">★ نفس المقرر محدد في ${esc(shared[0].program)}: ${esc(shared[0].label)}</div>` : '');
+    }
+    return `<select onchange="setCourseSlot('${esc(k)}','${esc(c.code)}',this.value)"><option value="">— اختر موعدًا —</option>${stale}${opts}</select>${note}`;
+  };
+  const studentsInput = (c, entry) => locked
+    ? (entry && entry.students ? entry.students : '—')
+    : `<input type="number" min="0" class="stu" value="${entry && entry.students ? entry.students : ''}" onchange="setCourseStudents('${esc(k)}','${esc(c.code)}',this.value)">`;
+
+  let nItems = items.length;
+  let rows = items.map((it, idx) => {
+    let ctrl = locked ? '' : `<span class="handle" draggable="true" title="اسحب لإعادة الترتيب" ondragstart="dragStartItem(event,'${it.gid}')">⠿</span><button class="sm light" ${idx === 0 ? 'disabled' : ''} onclick="moveItem('${esc(k)}','${it.gid}',-1)">▲</button><button class="sm light" ${idx === nItems - 1 ? 'disabled' : ''} onclick="moveItem('${esc(k)}','${it.gid}',1)">▼</button>`;
+    let head = it.elective
+      ? `<tr class="grouprow"><td class="ctrl">${ctrl}</td><td colspan="5">${esc(it.title)} <small class="muted">— يختار الطالب مقررًا واحدًا؛ حدّد موعدًا لكل مقرر متاح (مقرر واحد على الأقل)</small></td></tr>`
+      : '';
+    let body = it.courses.map((c, ci) => {
+      let entry = planEntry(t, c.code);
+      let tag = c.pass ? '<span class="badge">ناجح/راسب</span>' : (it.elective ? '<span class="badge blue">اختياري</span>' : '');
+      let done = entry && entry.slot ? '<span class="badge green">✓</span>' : '';
+      let clear = (!locked && entry && entry.slot) ? `<button class="sm light" title="إلغاء الموعد" onclick="setCourseSlot('${esc(k)}','${esc(c.code)}','')">✕</button>` : '';
+      return `<tr class="${it.elective ? 'optrow' : ''}"><td class="ctrl">${!it.elective && ci === 0 ? ctrl : ''}</td><td>${esc(c.code)}</td><td>${esc(c.name)} ${tag}</td><td>${c.hours}</td><td>${studentsInput(c, entry)}</td><td class="slotcell">${slotSelect(c, entry)} ${done} ${clear}</td></tr>`;
+    }).join('');
+    return `<tbody class="itm" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropItem(event,'${esc(k)}','${it.gid}')">${head}${body}</tbody>`;
+  }).join('');
+
+  let planBlock = items.length
+    ? `<h3 style="margin-top:20px">مقررات البرنامج حسب الخطة الدراسية المعتمدة</h3>
+       <div class="notice ${pr.missing.length ? 'warning' : 'success'}">تم تحديد موعد لـ <b>${pr.done}</b> من <b>${pr.total}</b> متطلب. ${pr.missing.length ? 'المقررات الناجح/راسب اختيارية الجدولة.' : 'كل المتطلبات مجدولة ويمكنك الإرسال للمراجعة.'}</div>
+       <div class="tablewrap"><table class="plantable"><thead><tr><th>ترتيب</th><th>الكود</th><th>اسم المقرر</th><th>ساعات</th><th>عدد الطلاب</th><th>موعد الامتحان</th></tr></thead>${rows}</table></div>`
+    : `<div class="notice warning">${semCode(e) ? 'لا توجد خطة دراسية جاهزة لهذا البرنامج' : 'الفصل الصيفي لا يملك خطة جاهزة'} — أضف المقررات يدويًا من النموذج أدناه.</div>`;
+
+  let manualAdd = locked ? '' : `<h3 style="margin-top:20px">${items.length ? 'إضافة مقرر آخر (خارج الخطة)' : 'إضافة مقرر'}</h3>
+    <div class="formgrid"><div class="field"><label>كود المقرر</label><input id="ccode"></div><div class="field"><label>اسم المقرر</label><input id="cname"></div><div class="field"><label>عدد الطلاب</label><input id="cstudents" type="number" min="1"></div><div class="field"><label>موعد الامتحان</label><select id="cslot"><option value="">اختر موعدًا</option>${slots.map(s => `<option value="${s.key}">${esc(s.label)}</option>`).join('')}</select></div></div>
+    <div class="actions"><button onclick="addCourse('${esc(k)}')">إضافة المقرر</button></div>`;
+
+  let manualTable = manualRows.length
+    ? `<h3 style="margin-top:20px">مقررات مضافة يدويًا</h3><div class="tablewrap"><table><tr><th>الكود</th><th>اسم المقرر</th><th>الطلاب</th><th>الموعد</th><th></th></tr>${manualRows.map(x => `<tr><td>${esc(x.c.code)}</td><td>${esc(x.c.name)}</td><td>${x.c.students || '—'}</td><td>${esc(x.c.label || '—')}</td><td>${locked ? '—' : `<button class="sm danger" onclick="removeCourse('${esc(k)}',${x.i})">حذف</button>`}</td></tr>`).join('')}</table></div>`
+    : '';
+
+  return head('إعداد جدول البرنامج', `${p.name} – المستوى ${LV[p.level-1]}`, `<button class="light" onclick="taskKey=null;render()">رجوع</button>`) +
+    `<section class="panel"><div style="display:flex;justify-content:space-between"><h2>${esc(p.name)}</h2>${badge(t.status)}</div>
+    ${t.note ? `<div class="notice warning">ملاحظات المراجع: ${esc(t.note)}</div>` : ''}
+    <div class="notice">المواعيد المتاحة للمستوى: ${slots.slice(0, 8).map(s => esc(s.label)).join(' | ') || 'لم يحدد مدير النظام أيامًا وفترات لهذا المستوى بعد.'}${slots.length > 8 ? ' | ...' : ''}</div>
+    ${locked ? '<div class="notice warning">تم إرسال الجدول أو اعتماده، والتعديل متوقف حتى إعادته.</div>' : ''}
+    ${planBlock}${manualAdd}${manualTable}
+    ${locked ? '' : `<div class="actions"><button class="light" onclick="saveTask('${esc(k)}')">حفظ كمسودة</button><button class="teal" onclick="submitTask('${esc(k)}')">إرسال للمراجعة</button></div>`}</section>`;
+}
+function addCourse(k){let e=active(),t=e.tasks[k]||(e.tasks[k]={courses:[],status:'مسودة',note:''}),code=$('#ccode').value.trim(),name=$('#cname').value.trim(),students=+$('#cstudents').value,slot=$('#cslot').value;if(!code||!name||students<1||!slot)return toast('أكمل بيانات المقرر واختر موعدًا',true);if(t.courses.some(c=>c.code.toLowerCase()===code.toLowerCase()))return toast('كود المقرر مكرر داخل البرنامج',true);let [date,pid]=slot.split('|'),p=e.periods.find(x=>x.id===pid),day=DAYS[new Date(date+'T12:00:00').getDay()];if(slotClash(t,code,'m:'+code,slot))return toast('يوجد مقرر آخر لنفس الطلاب في هذا الموعد',true);t.courses.push({code,name,students,slot,manual:true,label:`${day} ${date} – ${p.name} (${p.from}–${p.to})`});t.status='قيد الإعداد';t.updated=new Date().toLocaleString('ar-EG');save();log('إضافة مقرر '+code);render()}function saveTask(k){let t=active().tasks[k];if(t){save();toast('تم حفظ المسودة')}}function removeCourse(k,i){active().tasks[k].courses.splice(i,1);save();render()}function submitTask(k){
+  let e = active(), t = e.tasks[k];
+  let pr = taskProgress(e, k, t);
+  if(pr.missing.length){
+    return toast(`لم تُحدد مواعيد لـ ${pr.missing.length} من المتطلبات، مثل: ${pr.missing.slice(0,2).join('، ')}`, true);
+  }
+  t.courses = t.courses.filter(c => c.slot);
+  if(!t.courses.length) return toast('أضف مقررًا أولًا', true);
+  if(!confirm('إرسال الجدول للمراجعة؟')) return;
+t.status='مرسل للمراجعة';t.note='';t.sent=new Date().toLocaleString('ar-EG');t.updated=new Date().toLocaleString('ar-EG');save();log('إرسال جدول '+k);taskKey=null;render()}
+function tracking(){let e=active();if(!e)return head('متابعة الجداول','لا يوجد إصدار نشط.');return head('متابعة الجداول','حالة كل برنامج ومختص في الإصدار الحالي.')+`<section class="panel"><div class="tablewrap"><table><tr><th>المستوى</th><th>البرنامج</th><th>المختص</th><th>المقررات</th><th>الحالة</th><th>تاريخ الإرسال</th><th>آخر تحديث</th></tr>${programs().map(p=>{let t=e.tasks[p.key]||{courses:[],status:'مسودة'};return `<tr><td>${LV[p.level-1]}</td><td>${esc(p.name)}</td><td>${userName(e.assign[p.key])}</td><td>${cnt(t)}${planTotalText(e,p.key,t)}</td><td>${badge(t.status)}</td><td>${t.sent||'—'}</td><td>${t.updated||'—'}</td></tr>`}).join('')}</table></div></section>`}
+function review(){let e=active();if(!e)return head('المراجعة والاعتماد','لا يوجد إصدار نشط.');let rows=Object.entries(e.tasks).filter(([k,t])=>programs().some(x=>x.key===k)&&['مرسل للمراجعة','معتمد','منشور','يحتاج تعديل'].includes(t.status));return head('المراجعة والاعتماد','افحص الجداول المرسلة، واعتمدها أو أعدها للمختص.')+`<section class="panel"><div class="tablewrap"><table><tr><th>المستوى</th><th>البرنامج</th><th>المختص</th><th>المقررات</th><th>الحالة</th><th></th></tr>${rows.map(([k,t])=>{let p=programs().find(x=>x.key===k);return `<tr><td>${LV[p.level-1]}</td><td>${esc(p.name)}</td><td>${userName(e.assign[k])}</td><td>${cnt(t)}</td><td>${badge(t.status)}</td><td><button class="sm" onclick="reviewOne('${esc(k)}')">مراجعة</button></td></tr>`}).join('')||'<tr><td colspan="6">لا توجد جداول مرسلة.</td></tr>'}</table></div></section>`}function reviewOne(k){let t=active().tasks[k],p=programs().find(x=>x.key===k);modal('مراجعة جدول '+p.name,`<div class="tablewrap"><table><tr><th>الكود</th><th>المقرر</th><th>طلاب</th><th>الموعد</th></tr>${t.courses.filter(c=>c.slot).map(c=>`<tr><td>${esc(c.code)}</td><td>${esc(c.name)}</td><td>${c.students||'—'}</td><td>${esc(c.label)}</td></tr>`).join('')}</table></div><div class="field" style="margin-top:12px"><label>ملاحظات المراجعة (مطلوبة عند الإعادة)</label><textarea id="reviewnote">${esc(t.note||'')}</textarea></div>`,`<button class="danger" onclick="reviewAction('${esc(k)}','يحتاج تعديل')">إعادة للتعديل</button><button class="teal" onclick="reviewAction('${esc(k)}','معتمد')">اعتماد</button>`)}function reviewAction(k,s){if(!can('approve'))return toast('لا تملك صلاحية الاعتماد',true);let t=active().tasks[k],note=$('#reviewnote').value.trim();if(s==='يحتاج تعديل'&&!note)return toast('اكتب سبب الإعادة',true);t.status=s;t.note=s==='يحتاج تعديل'?note:'';t.updated=new Date().toLocaleString('ar-EG');save();log(s+' '+k);closeModal();render();toast('تم تحديث حالة الجدول')}
+function published(){let e=active();if(!e)return head('الجدول المجمّع','لا يوجد إصدار نشط.');let rows=[];Object.entries(e.tasks).forEach(([k,t])=>{if(['معتمد','منشور'].includes(t.status)){let p=programs().find(x=>x.key===k);if(!p)return;t.courses.filter(c=>c.slot).forEach(c=>rows.push({...c,level:p.level,program:p.name,slot:c.slot}))}});rows.sort((a,b)=>a.slot.localeCompare(b.slot));return head('الجدول المجمّع','يعرض الجداول المعتمدة فقط.',`<button onclick="window.print()">طباعة / PDF</button><button class="light" onclick="exportPub('xls')">Excel</button><button class="light" onclick="exportPub('doc')">Word</button>`)+`<section class="panel"><div style="text-align:center"><h2>كلية العلوم – جامعة سوهاج</h2><b>${esc(e.name)}</b><div class="muted">${e.year} – ${e.semester}</div></div><div class="tablewrap"><table id="pubtable"><tr><th>التاريخ</th><th>الفترة</th><th>المستوى</th><th>البرنامج</th><th>الكود</th><th>المقرر</th><th>الطلاب</th></tr>${rows.map(c=>{let [d,pid]=c.slot.split('|'),p=e.periods.find(x=>x.id===pid);return `<tr><td>${d}</td><td>${p?`${p.name} ${p.from}–${p.to}`:''}</td><td>${LV[c.level-1]}</td><td>${esc(c.program)}</td><td>${esc(c.code)}</td><td>${esc(c.name)}</td><td>${c.students||'—'}</td></tr>`}).join('')||'<tr><td colspan="7">لا توجد جداول معتمدة حتى الآن.</td></tr>'}</table></div><div class="sigs"><div>توقيع المختص</div><div>مدير إدارة شؤون الطلاب</div><div>وكيل الكلية لشؤون التعليم والطلاب</div><div>عميد الكلية</div></div></section>`}
+function users(){return head('إدارة المستخدمين','إنشاء حسابات المختصين والمراجعين وإدارة حالة الحسابات.',`<button onclick="addUserModal()">＋ إضافة مستخدم</button>`)+`<section class="panel"><div class="tablewrap"><table><tr><th>الاسم</th><th>اسم المستخدم</th><th>الدور</th><th>الحالة</th><th>آخر دخول</th><th>إجراءات</th></tr>${db.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.username)}</td><td>${roleName(u.role)}</td><td>${u.active?'نشط':'معطل'}</td><td>${u.last||'—'}</td><td>${u.username==='admin'?'حساب أساسي':`<button class="sm light" onclick="toggleUser('${u.id}')">${u.active?'تعطيل':'تفعيل'}</button> <button class="sm light" onclick="resetPass('${u.id}')">تغيير كلمة المرور</button> <button class="sm light" onclick="permsModal('${u.id}')">الصلاحيات</button>`}</td></tr>`).join('')}</table></div></section>`}function addUserModal(){modal('إنشاء حساب مستخدم',`<div class="field"><label>الاسم الكامل</label><input id="newname"></div><div class="formgrid"><div class="field"><label>اسم المستخدم</label><input id="newuser"></div><div class="field"><label>كلمة المرور</label><input id="newpass" type="password"></div></div><div class="field"><label>نوع الحساب</label><select id="newrole"><option value="specialist">مختص</option><option value="reviewer">مراجع</option><option value="viewer">مشاهد</option><option value="admin">مدير نظام</option></select></div>`,`<button onclick="createUser()">إنشاء الحساب</button>`)}async function createUser(){let name=$('#newname').value.trim(),username=$('#newuser').value.trim(),pass=$('#newpass').value,role=$('#newrole').value;if(!name||!username||pass.length<4)return toast('أكمل البيانات وكلمة المرور (4 أحرف على الأقل)',true);if(db.users.some(u=>u.username===username))return toast('اسم المستخدم موجود بالفعل',true);db.users.push({id:id(),name,username,password:await hash(pass),role,active:true});save();log('إنشاء حساب '+username);closeModal();render()}function toggleUser(uid){let u=db.users.find(x=>x.id===uid);u.active=!u.active;save();log('تغيير حالة '+u.username);render()}function resetPass(uid){let p=prompt('كلمة المرور الجديدة (4 أحرف على الأقل)');if(!p)return;if(p.length<4)return toast('كلمة المرور قصيرة',true);(async()=>{db.users.find(x=>x.id===uid).password=await hash(p);save();log('إعادة تعيين كلمة مرور');toast('تم تغيير كلمة المرور')})()}function changePassword(){let p=prompt('أدخل كلمة المرور الجديدة (4 أحرف على الأقل)');if(!p)return;if(p.length<4)return toast('كلمة المرور قصيرة',true);(async()=>{me.password=await hash(p);save();log('تغيير كلمة المرور');toast('تم تغيير كلمة المرور')})()}
+function logTable(rows){return rows.length?`<div class="tablewrap"><table><tr><th>التاريخ والوقت</th><th>المستخدم</th><th>العملية</th></tr>${rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.user)}</td><td>${esc(x.action)}</td></tr>`).join('')}</table></div>`:'<div class="empty">لا توجد عمليات مسجلة.</div>'}
+function modal(title,body,buttons){$('#modalroot').innerHTML=`<div class="modalbg" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>${esc(title)}</h3>${body}<div class="actions">${buttons}<button class="light" onclick="closeModal()">إغلاق</button></div></div></div>`}function closeModal(){$('#modalroot').innerHTML=''}function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='exam-platform-backup.json';a.click();URL.revokeObjectURL(a.href);log('تصدير نسخة احتياطية')}
+window.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('#login').classList.contains('hidden'))login();if(e.key==='Escape')closeModal()});init().catch(err=>console.error('init failed',err));
+</script></body></html>

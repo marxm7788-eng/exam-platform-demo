@@ -741,14 +741,15 @@ if (!pool.length) return toast('لا يوجد ملاحظون مؤهلون (مع�
 let cs = allocCourses(e), comms = [];
 cs.forEach(c => { let A = allocGet(e, c); (A ? A.list : []).forEach(x => comms.push({ c, x })); });
 if (!comms.length) return toast('أنشئ اللجان أولًا من زر «تحرير اللجان» ثم أعد التوزيع', true);
-if (!confirm(`سيوزّع النظام ${pool.length} ملاحظًا مؤهلًا على ${comms.length} لجنة بقاعدة: ملاحظان على الأقل لكل لجنة أو ملاحظ لكل 30 طالبًا، دون تعيين نفس الشخص في موعدين متزامنين، ودون تغيير أي تعيين يدوي قائم. متابعة؟`)) return;
+if (!comms.some(({ x }) => +x.obs > 0)) return toast('حدد «عدد الملاحظين المطلوب» لكل لجنة من «تحرير اللجان» أولًا', true);
+if (!confirm(`سيوزّع النظام ${pool.length} ملاحظًا مؤهلًا على اللجان بالعدد الذي حددته لكل لجنة، دون تعيين نفس الشخص في موعدين متزامنين، ودون تغيير أي تعيين يدوي قائم. متابعة؟`)) return;
 let busy = {};
 comms.forEach(({ c, x }) => (x.staff || []).forEach(s => (busy[c.slot] = busy[c.slot] || new Set()).add(s)));
 let qi = 0, added = 0;
 comms.forEach(({ c, x }) => {
 x.staff = x.staff || [];
 let cur = x.staff.filter(s => { let o = db.observers.find(o => o.id === s); return o && o.role === 'ملاحظ'; }).length;
-let target = Math.max(2, Math.ceil((+x.n || 0) / 30));
+let target = +x.obs || 0;
 for (let i = cur; i < target; i++) {
 let pick = null;
 for (let t = 0; t < pool.length; t++) { let cand = pool[(qi + t) % pool.length]; if (!busy[c.slot] || !busy[c.slot].has(cand.id)) { pick = cand; qi = (qi + t + 1) % pool.length; break; } }
@@ -757,7 +758,7 @@ x.staff.push(pick.id); (busy[c.slot] = busy[c.slot] || new Set()).add(pick.id); 
 }
 });
 save(); log('توزيع الملاحظين تلقائيًا: ' + added + ' تعيين'); render();
-toast(added ? 'تم توزيع ' + added + ' ملاحظًا. راجع اللجان وعدّل يدويًا عند الحاجة.' : 'كل اللجان مكتملة الملاحظين بالفعل');
+toast(added ? 'تم توزيع ' + added + ' ملاحظًا. راجع اللجان وعدّل يدويًا عند الحاجة.' : 'كل اللجان مكتملة بالعدد المحدد بالفعل');
 }
 const _ap7 = allocPage;
 allocPage = function () {
@@ -786,24 +787,36 @@ let [code, name] = v.split('|');
 $('#ccode').value = code; $('#cname').value = name; window._xcarry = true;
 toast('تمت تعبئة المقرر المنقول. أكمل عدد الطلاب والموعد ثم اضغط «إضافة المقرر»');
 }
-const _genRun7 = genRun;
 genRun = function (e, keys) {
-let res = _genRun7(e, keys), P = programs(), dayOf = s => String(s).split('|')[0];
-let used = [];
+let P = programs(), used = [], res = { props: [], left: [] }, dayOf = s => String(s).split('|')[0];
 Object.entries(e.tasks || {}).forEach(([k, t]) => { let p = P.find(x => x.key === k); if (p) (t.courses || []).filter(c => c.slot).forEach(c => used.push({ level: p.level, slot: c.slot, k, code: c.code })); });
-res.props.forEach(x => { let p = P.find(q => q.key === x.k); used.push({ level: p ? p.level : 0, slot: x.slot, k: x.k, code: x.code }); });
 keys.forEach(k => {
 let p = P.find(x => x.key === k); if (!p) return;
-let t = e.tasks[k] || { courses: [] }; if (isLocked(t)) return;
-let slots = levelSlots(e, p.level); if (!slots.length) return;
-(t.courses || []).filter(c => c.manual && !c.slot).forEach(c => {
+let t = e.tasks[k] || { courses: [], status: 'مسودة' };
+if (isLocked(t)) { res.left.push({ k, pn: p.name, code: '', name: 'كل المقررات', why: 'الجدول مُرسل أو معتمد ولا يُعدَّل' }); return; }
+let slots = levelSlots(e, p.level);
+if (!slots.length) { res.left.push({ k, pn: p.name, code: '', name: 'كل المقررات', why: 'لم تُحدَّد أيام وفترات لهذا المستوى' }); return; }
+let core = [], carries = [];
+planItems(e, k).forEach(it => {
+if (it.elective) { if (!it.courses.some(c => { let x = planEntry(t, c.code); return x && x.slot; })) res.left.push({ k, pn: p.name, code: '', name: it.title, why: 'مجموعة اختيارية: اختر المقرر يدويًا' }); return; }
+let c = it.courses[0]; if (c.pass) return;
+let x = planEntry(t, c.code); if (x && x.slot) return;
+core.push(c);
+});
+(t.courses || []).filter(c => c.manual && !c.slot).forEach(c => carries.push(c));
+let trySched = (c, carry) => {
 let mine = used.filter(u => u.k === k).map(u => dayOf(u.slot));
 let cand = slots.filter(s => !mine.includes(dayOf(s.key)) && !used.some(u => u.level !== p.level && u.slot === s.key) && !used.some(u => u.level === p.level && dayOf(u.slot) === dayOf(s.key) && u.slot !== s.key));
-if (!cand.length) { res.left.push({ k, pn: p.name, code: c.code, name: c.name, why: 'مقرر منقول/يدوي: لا موعد متاح بعد جدولة المقررات الأساسية' }); return; }
+if (!cand.length) { res.left.push({ k, pn: p.name, code: c.code, name: c.name, why: carry ? 'مقرر منقول/يدوي: لا موعد متاح' : 'لا يوجد موعد يحقق: مقرر واحد للمستوى في اليوم، ومستوى واحد في الفترة' }); return; }
 let best = cand[0];
 used.push({ level: p.level, slot: best.key, k, code: c.code });
-res.props.push({ k, pn: p.name, code: c.code, name: c.name + ' (منقول)', slot: best.key, label: best.label, carry: true });
-});
+res.props.push({ k, pn: p.name, code: c.code, name: c.name + (carry ? ' (منقول)' : ''), slot: best.key, label: best.label, carry: !!carry });
+};
+let ci = 0, mi = 0;
+while (ci < core.length || mi < carries.length) {
+if (ci < core.length) trySched(core[ci++], false);
+if (mi < carries.length) trySched(carries[mi++], true);
+}
 });
 return res;
 };
@@ -842,4 +855,9 @@ let en = planEntry(t, x.code); if (en && en.slot === x.slot) { setCourseSlot(x.k
 }
 });
 e.genLast = null; save(); log('تراجع عن اقتراح المواعيد التلقائي: ' + n); render(); toast('تم التراجع عن ' + n + ' موعد (المعدّل يدويًا بعد التطبيق لم يُلمس)');
+};
+allocDraw = function (c) {
+let e = active(); c = c || allocCourses(e).find(x => x.k === _ae.k && x.code === _ae.code); let L = _ae.list;
+let body = `<p class="muted">${esc2(c.name)} • ${esc2(c.code)} • ${c.n || '؟'} طالب</p><div class="formgrid"><div class="field"><label>المحاضر (اختياري، يظهر في الجدول المطبوع)</label><input value="${esc2(_ae.lect)}" onchange="_ae.lect=this.value"></div><div class="field"><label>عدد المتخلفين (اختياري)</label><input type="number" min="0" value="${esc2(_ae.carry)}" onchange="_ae.carry=this.value"></div></div>${L.map((x, q) => `<div class="panel" style="padding:8px;margin:6px 0"><div class="formgrid"><div class="field"><label>القاعة</label><select onchange="_ae.list[${q}].room=this.value">${db.rooms.map(r => `<option value="${r.id}" ${r.id === x.room ? 'selected' : ''}>${esc2(roomLabel(r))} (${r.cap})</option>`).join('')}</select></div><div class="field"><label>عدد الطلاب</label><input type="number" min="1" value="${x.n}" onchange="_ae.list[${q}].n=+this.value"></div><div class="field"><label>عدد الملاحظين المطلوب (تحدده أنت)</label><input type="number" min="0" value="${x.obs != null ? x.obs : ''}" placeholder="0" onchange="_ae.list[${q}].obs=+this.value"></div></div>${OB_ROLES.map(r => `<details><summary>${r} (${(x.staff || []).filter(s => (db.observers.find(o => o.id === s) || {}).role === r).length}${r === 'ملاحظ' ? ' / ' + (+x.obs || 0) : ''})</summary>${db.observers.filter(o => o.role === r).map(o => `<label class="check" style="display:block"><input type="checkbox" ${(x.staff || []).includes(o.id) ? 'checked' : ''} onchange="allocStaff(${q},'${o.id}',this.checked)"> ${esc2(o.name)}</label>`).join('') || '<span class="muted">لا أحد مضاف</span>'}</details>`).join('')}<button class="sm light" onclick="_ae.list.splice(${q},1);allocDraw()">حذف اللجنة</button></div>`).join('') || '<p class="muted">لا لجان بعد.</p>'}<button class="light" ${db.rooms.length ? '' : 'disabled'} onclick="_ae.list.push({room:db.rooms[0].id,n:${c.n || 1},obs:0,staff:[]});allocDraw()">＋ إضافة لجنة</button>`;
+modal('لجان وبيانات المقرر', body, `<button onclick="allocSave()">حفظ</button>`);
 };

@@ -932,4 +932,97 @@ c.lect = l;
 });
 if (bad) return toast('أدخل عدد الطلاب لكل مقرر (1 على الأقل)', true);
 save(); log('حفظ مدخلات مقررات الصيفي'); swSetStep(k, 3);
-  }
+}
+/* ext9: settings page - proctoring mode (وضع المراقبة) master switch + safe faculty settings.
+Toggling never deletes data; it only shows/hides the committees layer. */
+function mig9() {
+db.settings = db.settings || {};
+if (db.settings.invig == null) db.settings.invig = true;
+if (db.settings.defObs == null) db.settings.defObs = 0;
+if (db.settings.autoLock == null) db.settings.autoLock = 30;
+db.sec = db.sec || { fails: 0, until: 0 };
+}
+try { mig9(); } catch (e) {}
+function invigOn() { mig9(); return !!db.settings.invig; }
+function setInvig(v) { mig9(); db.settings.invig = !!v; save(); log(v ? 'تفعيل وضع المراقبة' : 'إيقاف وضع المراقبة'); render(); toast(v ? 'وضع المراقبة مفعّل: صفحتا الملاحظين وتوزيع اللجان ظاهرتان' : 'وضع المراقبة موقوف: أُخفيت صفحات اللجان ولم يُحذف أي بيان'); }
+function setDefObs(v) { mig9(); db.settings.defObs = Math.max(0, +v || 0); save(); log('تعيين العدد الافتراضي للملاحظين: ' + db.settings.defObs); render(); }
+(function () {
+PAGES.push(['settings', 'الإعدادات']);
+ROLE_PERMS.admin = PAGES.map(x => x[0]).filter(k => k !== 'tasks').concat('approve');
+ICONS.settings = '⚙';
+})();
+const _m9 = menu;
+menu = function () { return _m9().filter(([k]) => invigOn() || (k !== 'observers' && k !== 'alloc')); };
+const _d9 = dashboard;
+dashboard = function () {
+if (page === 'settings') return settingsPage();
+if (!invigOn() && (page === 'observers' || page === 'alloc')) page = 'dashboard';
+return _d9();
+};
+function setRow(title, desc, control) {
+return `<div class="panel" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:240px"><b>${title}</b><p class="muted" style="margin:4px 0 0">${desc}</p></div><div>${control}</div></div>`;
+}
+function settingsPage() {
+mig9();
+let on = invigOn();
+return head('الإعدادات', 'إعدادات عامة للمنصة. التغيير يحفظ فورًا في هذا المتصفح ويدخل في النسخة الاحتياطية، ولا يحذف أي بيانات.') +
+`<h2>اللجان والمراقبة</h2>` +
+setRow('وضع المراقبة (تفعيل وضع المراقبة)', 'عند التفعيل تظهر كل أدوات اللجان: إعداد اللجان، إدخال أسماء السادة الأساتذة، الملاحظون والمراقبون ورؤساء اللجان وتوزيعهم. عند الإيقاف تعمل المنصة بدون هذه الطبقة — مع بقاء كل البيانات محفوظة كما هي.',
+`<span class="badge ${on ? 'green' : ''}" style="margin-inline-end:8px">${on ? 'مفعّل' : 'موقوف'}</span><button class="${on ? 'light' : 'teal'}" onclick="setInvig(${on ? 0 : 1})">${on ? 'إيقاف' : 'تفعيل'}</button>`) +
+setRow('العدد الافتراضي للملاحظين في اللجنة الجديدة', 'عند إنشاء لجنة جديدة يُملأ حقل «عدد الملاحظين المطلوب» بهذا العدد، ويمكن تغييره لكل لجنة على حدة. صفر يعني بلا قيمة افتراضية.',
+`<input type="number" min="0" max="20" value="${db.settings.defObs}" style="max-width:90px" onchange="setDefObs(this.value)">`) +
+`<h2 style="margin-top:18px">الأمان</h2>` +
+setRow('تسجيل الخروج التلقائي عند عدم النشاط', 'عدد الدقائق بلا نشاط قبل تسجيل الخروج تلقائيًا. صفر يعني إيقاف الميزة. (حماية على مستوى هذا المتصفح)',
+`<input type="number" min="0" max="240" value="${db.settings.autoLock}" style="max-width:90px" onchange="setAutoLock(this.value)">`) +
+setRow('قفل محاولات الدخول', 'بعد 5 محاولات دخول فاشلة يُقفل تسجيل الدخول 5 دقائق على هذا المتصفح. حماية محلية رادعة — الحماية الحقيقية من التخمين تحتاج خادمًا.', `<span class="badge green">مفعّل دائمًا</span>`) +
+`<h2 style="margin-top:18px">إعدادات أخرى</h2>` +
+setRow('المظهر الداكن', 'متاح من زر الهلال في الشريط العلوي لكل مستخدم، ويُحفظ لكل متصفح.', `<span class="badge blue">موجود بالفعل</span>`) +
+setRow('النسخ الاحتياطي والاستعادة', 'من قائمة الحساب (الصورة الرمزية أعلى الصفحة): تصدير نسخة احتياطية كاملة تشمل الإعدادات والقاعات والملاحظين والإصدارات.', `<span class="badge blue">موجود بالفعل</span>`) +
+`<section class="panel" style="margin-top:14px"><h2>مقترحات إعدادات قادمة (بانتظار اختياركم)</h2><p class="muted">لم تُنفّذ بعد — بانتظار تأكيد إدارة الكلية:</p><ul style="margin:8px 0;padding-inline-start:20px;line-height:2">
+<li>إخفاء شارة «بيانات تجريبية» عند العرض الرسمي أمام القيادات.</li>
+<li>منع (بدل التنبيه فقط) وجود مقررين في القاعة نفسها بالفترة نفسها.</li>
+<li>قاعدة تباعد تلقائية: يوم راحة بين امتحانين لنفس المستوى.</li>
+<li>تخصيص اسم الكلية والشعار في الترويسة والمطبوعات.</li>
+<li>مدة السماح قبل اعتبار جدول المختص «متأخرًا» في صفحة المتابعة.</li></ul></section>`;
+}
+login = function () {
+(async () => {
+if (!db) return;
+mig9();
+let now = Date.now();
+if (db.sec.until > now) {
+let m = Math.ceil((db.sec.until - now) / 60000);
+$('#loginerr').textContent = `محاولات كثيرة فاشلة. حاول بعد ${m} دقيقة.`;
+$('#loginerr').classList.remove('hidden');
+return;
+}
+let u = $('#lu').value.trim(), p = await hash($('#lp').value), x = db.users.find(a => a.username === u && a.password === p && a.active);
+if (!x) {
+db.sec.fails++;
+if (db.sec.fails >= 5) { db.sec.until = Date.now() + 5 * 60000; db.sec.fails = 0; log('قفل تسجيل الدخول مؤقتًا بعد محاولات فاشلة'); }
+save();
+$('#loginerr').textContent = db.sec.until > Date.now() ? 'تم قفل تسجيل الدخول 5 دقائق بعد 5 محاولات فاشلة.' : 'بيانات الدخول غير صحيحة أو الحساب غير نشط';
+$('#loginerr').classList.remove('hidden');
+return;
+}
+db.sec.fails = 0; db.sec.until = 0;
+me = x; x.last = new Date().toLocaleString('ar-EG');
+log('تسجيل الدخول');
+$('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+$('#who').textContent = me.name; $('#role').textContent = roleName(me.role);
+page = menu()[0] ? menu()[0][0] : 'published';
+save(); render();
+})();
+};
+function setAutoLock(v) { mig9(); db.settings.autoLock = Math.max(0, +v || 0); save(); log('تعيين الخروج التلقائي: ' + db.settings.autoLock + ' دقيقة'); render(); }
+let _lastAct = Date.now();
+['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => { _lastAct = Date.now(); }, { passive: true }));
+setInterval(() => {
+try {
+mig9();
+if (me && db.settings.autoLock > 0 && Date.now() - _lastAct >= db.settings.autoLock * 60000) {
+logout();
+let e2 = $('#loginerr'); if (e2) { e2.textContent = 'تم تسجيل الخروج تلقائيًا بسبب عدم النشاط.'; e2.classList.remove('hidden'); }
+}
+} catch (e) {}
+}, 30000);

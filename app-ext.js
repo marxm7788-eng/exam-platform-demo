@@ -625,3 +625,221 @@ if(page==='dashboard'){let hero=D.querySelector('.hero');if(hero&&!hero.querySel
 D.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{buildBrand();buildTabs()},400)});
 window.addEventListener('resize',()=>{try{buildTabs();hl()}catch(e){}});
 })();
+/* ext7: facility hierarchy (building>floor>room,type,hours), staff academic ranks + observer auto-distribution,
+cross-term carry-over courses, generator core-first ordering */
+const OB_RANKS = ['أستاذ', 'أستاذ مساعد', 'مدرس', 'مدرس مساعد', 'معيد'];
+const OB_DOC = ['أستاذ', 'أستاذ مساعد', 'مدرس'];
+const OB_JUNIOR = ['مدرس مساعد', 'معيد'];
+const ROOM_TYPES = ['قاعة', 'مدرج', 'معمل'];
+function mig7() {
+db.rooms = db.rooms || [];
+db.rooms.forEach(r => { r.bldg = r.bldg || ''; r.floor = r.floor || ''; r.type = ROOM_TYPES.includes(r.type) ? r.type : 'قاعة'; r.hours = r.hours || ''; });
+db.observers = db.observers || [];
+db.observers.forEach(o => { o.rank = o.rank || ''; });
+}
+try { mig7(); } catch (e) {}
+function roomLabel(r) { return r.name + (r.bldg ? ' — ' + r.bldg + (r.floor ? '، ' + r.floor : '') : ''); }
+rooms = function () {
+mig7();
+let rows = db.rooms.slice().sort((a, b) => (a.bldg + a.floor + a.name).localeCompare(b.bldg + b.floor + b.name, 'ar'));
+return head('القاعات والمباني', 'نظّم القاعات في مبانٍ وأدوار، وحدد نوع كل قاعة (قاعة، مدرج، معمل) وسعتها وساعات تشغيلها. تُحفظ في هذا المتصفح وتدخل في النسخة الاحتياطية.',
+`<button onclick="roomsExport()">تصدير القاعات</button><label class="check light" style="cursor:pointer;margin:0">استيراد قاعات<input type="file" accept=".json" style="display:none" onchange="roomsImport(this)"></label>`) +
+`<div class="stats">${stat('إجمالي القاعات', db.rooms.length)}${stat('المباني', new Set(db.rooms.map(r => r.bldg).filter(x => x)).size)}${ROOM_TYPES.map(t => stat(t, db.rooms.filter(r => r.type === t).length)).join('')}</div>
+<section class="panel"><h2>القاعات</h2><div class="tablewrap"><table><tr><th>المبنى</th><th>الدور</th><th>اسم القاعة</th><th>النوع</th><th>السعة</th><th>ساعات التشغيل</th><th></th></tr>${rows.map(r => `<tr><td>${esc(r.bldg) || '—'}</td><td>${esc(r.floor) || '—'}</td><td><b>${esc(r.name)}</b></td><td><span class="badge ${r.type === 'مدرج' ? 'blue' : r.type === 'معمل' ? 'amber' : ''}">${esc(r.type)}</span></td><td>${r.cap}</td><td>${esc(r.hours) || '—'}</td><td><button class="sm light" onclick="editRoom('${r.id}')">تعديل</button> <button class="sm danger" onclick="delRoom('${r.id}')">حذف</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">لا توجد قاعات.</td></tr>'}</table></div></section>
+<section class="panel"><h2>إضافة قاعة</h2><div class="formgrid"><div class="field"><label>المبنى</label><input id="rbldg" placeholder="مثال: مبنى أ"></div><div class="field"><label>الدور</label><input id="rfloor" placeholder="مثال: الدور الأول"></div><div class="field"><label>اسم القاعة</label><input id="rname"></div><div class="field"><label>النوع</label><select id="rtype">${ROOM_TYPES.map(t => `<option>${t}</option>`).join('')}</select></div><div class="field"><label>السعة (عدد الطلاب)</label><input id="rcap" type="number" min="1"></div><div class="field"><label>ساعات التشغيل (تُدخل يدويًا)</label><input id="rhours" placeholder="مثال: 9ص–5م"></div></div><div class="actions"><button onclick="addRoom()">＋ إضافة قاعة</button></div></section>`;
+};
+function addRoom() {
+mig7();
+let name = $('#rname').value.trim(), cap = +$('#rcap').value, bldg = $('#rbldg').value.trim(), floor = $('#rfloor').value.trim(), type = $('#rtype').value, hours = $('#rhours').value.trim();
+if (!name || cap < 1) return toast('أدخل اسم القاعة وسعتها', true);
+if (db.rooms.some(r => r.name === name)) return toast('اسم القاعة مكرر', true);
+db.rooms.push({ id: id(), name, cap, bldg, floor, type, hours }); save(); log('إضافة قاعة ' + name); render();
+}
+function editRoom(rid) {
+let r = db.rooms.find(x => x.id === rid); if (!r) return;
+window._er = rid;
+modal('تعديل القاعة', `<div class="formgrid"><div class="field"><label>المبنى</label><input id="ef-bldg" value="${esc(r.bldg)}"></div><div class="field"><label>الدور</label><input id="ef-floor" value="${esc(r.floor)}"></div><div class="field"><label>اسم القاعة</label><input id="ef-name" value="${esc(r.name)}"></div><div class="field"><label>النوع</label><select id="ef-type">${ROOM_TYPES.map(t => `<option ${r.type === t ? 'selected' : ''}>${t}</option>`).join('')}</select></div><div class="field"><label>السعة</label><input id="ef-cap" type="number" min="1" value="${r.cap}"></div><div class="field"><label>ساعات التشغيل</label><input id="ef-hours" value="${esc(r.hours)}"></div></div>`, `<button onclick="roomSave()">حفظ</button>`);
+}
+function roomSave() {
+let r = db.rooms.find(x => x.id === window._er); if (!r) return;
+let name = $('#ef-name').value.trim(), cap = +$('#ef-cap').value;
+if (!name || cap < 1) return toast('أدخل اسم القاعة وسعتها', true);
+if (db.rooms.some(x => x.id !== r.id && x.name === name)) return toast('اسم القاعة مكرر', true);
+Object.assign(r, { name, cap, bldg: $('#ef-bldg').value.trim(), floor: $('#ef-floor').value.trim(), type: $('#ef-type').value, hours: $('#ef-hours').value.trim() });
+save(); log('تعديل قاعة ' + name); closeModal(); render();
+}
+roomsImport = function (inp) {
+let f = inp.files[0]; if (!f) return; inp.value = '';
+f.text().then(t => {
+try {
+let o = JSON.parse(t), a = (o && o.rooms) || o; if (!Array.isArray(a)) throw 0;
+let ok = a.filter(r => r && r.name && +r.cap >= 1), add = ok.filter(r => !db.rooms.some(x => x.name === r.name));
+if (!confirm(`سيتم إضافة ${add.length} قاعة جديدة وتجاهل ${ok.length - add.length} مكررة. متابعة؟`)) return;
+add.forEach(r => db.rooms.push({ id: id(), name: String(r.name), cap: +r.cap, bldg: String(r.bldg || ''), floor: String(r.floor || ''), type: ROOM_TYPES.includes(r.type) ? r.type : 'قاعة', hours: String(r.hours || '') }));
+save(); log(`استيراد ${add.length} قاعة`); render(); toast(`تمت إضافة ${add.length} قاعة`);
+} catch (e) { toast('ملف القاعات غير صالح', true); }
+});
+};
+function obRankOK(role, rank) {
+if (!rank) return true; // سجلات قديمة بلا رتبة
+if (role === 'ملاحظ') return OB_JUNIOR.includes(rank);
+return OB_DOC.includes(rank);
+}
+observersPage = function () {
+mig7();
+let L = db.observers.filter(o => (!obF.r || o.role === obF.r) && (!obF.q || (o.name + o.dept + o.phone + o.rank).includes(obF.q)));
+let cnt = r => db.observers.filter(o => o.role === r).length;
+return head('الملاحظون والمراقبون', 'رفع بيانات هيئة التدريس والمعيدين بالرتبة العلمية من ملف Excel بنموذج موحّد، وتبقى محفوظة للإصدارات التالية.', `<button onclick="obTemplate()">تنزيل نموذج Excel</button><label class="check light" style="cursor:pointer;margin:0">رفع ملف Excel / CSV<input type="file" accept=".xlsx,.csv" style="display:none" onchange="obImport(this)"></label><button class="light" onclick="obExport()">تصدير CSV</button>`) +
+`<div class="stats">${stat('الإجمالي', db.observers.length)}${OB_ROLES.map(r => stat(r, cnt(r))).join('')}</div>
+<div class="notice">القواعد: الملاحظ يكون معيدًا أو مدرسًا مساعدًا ويوزَّع تلقائيًا من صفحة «توزيع اللجان». المراقب ورئيس اللجنة من هيئة التدريس (أستاذ، أستاذ مساعد، مدرس) ويُعيَّنان يدويًا. البيانات محفوظة في قاعدة بيانات هذا المتصفح وتدخل في النسخ الاحتياطي.</div>
+<div class="panel" style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"><input placeholder="بحث بالاسم أو الجهة أو الرتبة أو الهاتف" value="${esc(obF.q)}" style="max-width:300px" onchange="obF.q=this.value;render()"><div class="seg"><button class="${obF.r ? '' : 'on'}" onclick="obF.r='';render()">الكل</button>${OB_ROLES.map(r => `<button class="${obF.r === r ? 'on' : ''}" onclick="obF.r='${r}';render()">${r}</button>`).join('')}</div></div>
+<section class="panel"><h2>إضافة يدوية</h2><div class="formgrid"><div class="field"><label>الاسم</label><input id="obn"></div><div class="field"><label>الدور في اللجان</label><select id="obr">${OB_ROLES.map(r => `<option>${r}</option>`).join('')}</select></div><div class="field"><label>الرتبة العلمية</label><select id="obk">${OB_RANKS.map(r => `<option>${r}</option>`).join('')}</select></div><div class="field"><label>القسم / الجهة</label><input id="obd"></div><div class="field"><label>الهاتف</label><input id="obp"></div></div><div class="actions"><button onclick="obAdd()">＋ إضافة</button></div></section>
+<section class="panel"><div class="tablewrap"><table><tr><th>الاسم</th><th>الدور</th><th>الرتبة</th><th>القسم / الجهة</th><th>الهاتف</th><th></th></tr>${L.map(o => `<tr><td>${esc2(o.name)}</td><td><span class="badge ${o.role === 'رئيس لجنة' ? 'amber' : o.role === 'مراقب' ? 'blue' : 'green'}">${esc2(o.role)}</span></td><td>${esc2(o.rank) || '—'}</td><td>${esc2(o.dept) || '—'}</td><td>${esc2(o.phone) || '—'}</td><td><button class="sm light" onclick="obDel('${o.id}')">حذف</button></td></tr>`).join('') || '<tr><td colspan="6" class="empty">لا توجد بيانات. نزّل النموذج وارفعه بعد تعبئته.</td></tr>'}</table></div></section>`;
+};
+obAdd = function () {
+let n = $('#obn').value.trim(), r = $('#obr').value, k = $('#obk').value, d = $('#obd').value.trim(), p = $('#obp').value.trim();
+if (!n) return toast('اكتب الاسم', true);
+if (!obRankOK(r, k)) return toast(r === 'ملاحظ' ? 'الملاحظ يجب أن يكون معيدًا أو مدرسًا مساعدًا' : 'المراقب ورئيس اللجنة يجب أن يكونا من هيئة التدريس', true);
+if (db.observers.some(o => o.name === n && o.role === r)) return toast('الاسم مكرر بنفس الدور', true);
+db.observers.push({ id: id(), name: n, role: r, rank: k, dept: d, phone: p }); save(); log(`إضافة ${r}: ${n}`); render();
+};
+obExport = function () {
+let q = v => '"' + String(v || '').replace(/"/g, '""') + '"';
+dl('observers.csv', new Blob(['\ufeff' + [['الاسم', 'الدور الوظيفي', 'الرتبة', 'القسم / الجهة', 'الهاتف'].join(',')].concat(db.observers.map(o => [o.name, o.role, o.rank, o.dept, o.phone].map(q).join(','))).join('\n')], { type: 'text/csv;charset=utf-8' }));
+};
+obTemplate = function () {
+let cols = ['الاسم', 'الدور الوظيفي', 'الرتبة', 'القسم / الجهة', 'الهاتف'];
+let rows = [cols, ['مثال: اسم الملاحظ', 'ملاحظ', 'معيد', 'قسم الكيمياء', '01000000000'], ['مثال: اسم المراقب', 'مراقب', 'مدرس', 'قسم الفيزياء', ''], ['مثال: اسم رئيس اللجنة', 'رئيس لجنة', 'أستاذ', 'قسم الرياضيات', '']];
+let col = i => String.fromCharCode(65 + i), x = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+let sheet = '<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView rightToLeft="1" workbookViewId="0"/></sheetViews><cols><col min="1" max="5" width="28" customWidth="1"/></cols><sheetData>' + rows.map((r, i) => `<row r="${i + 1}">` + r.map((v, j) => `<c r="${col(j)}${i + 1}" t="inlineStr"><is><t>${x(v)}</t></is></c>`).join('') + '</row>').join('') + '</sheetData></worksheet>';
+dl('نموذج-الملاحظين-والمراقبين.xlsx', zipStore([['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'], ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'], ['xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="البيانات" sheetId="1" r:id="rId1"/></sheets></workbook>'], ['xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>'], ['xl/worksheets/sheet1.xml', sheet]]));
+log('تنزيل نموذج الملاحظين والمراقبين');
+};
+obImport = async function (inp) {
+let f = inp.files[0]; if (!f) return; inp.value = '';
+let rows; try { rows = /\.xlsx$/i.test(f.name) ? await readXlsx(await f.arrayBuffer()) : parseCsv(await f.text()); } catch (e) { return toast('تعذر قراءة الملف. استخدم النموذج المنزّل (xlsx أو csv)', true); }
+rows = rows.filter(r => r && r.some(x => String(x || '').trim())); if (!rows.length) return toast('الملف فارغ', true);
+let h = rows[0].map(x => String(x || '').trim()), ix = n => h.indexOf(n);
+if (ix('الاسم') < 0 || ix('الدور الوظيفي') < 0) return toast('الصف الأول يجب أن يحتوي العمودين: الاسم، الدور الوظيفي (استخدم النموذج)', true);
+mig7();
+let good = [], dup = 0, bad = [], seen = new Set(db.observers.map(o => o.name + '|' + o.role));
+rows.slice(1).forEach((r, i) => {
+let g = n => ix(n) < 0 ? '' : String(r[ix(n)] || '').trim(), name = g('الاسم'), role = g('الدور الوظيفي'), rank = g('الرتبة');
+if (/^مثال/.test(name)) return;
+if (!name || !OB_ROLES.includes(role) || (rank && !OB_RANKS.includes(rank)) || !obRankOK(role, rank)) { bad.push(i + 2); return; }
+let key = name + '|' + role; if (seen.has(key)) { dup++; return; } seen.add(key);
+good.push({ id: id(), name, role, rank, dept: g('القسم / الجهة'), phone: g('الهاتف') });
+});
+window._obGood = good;
+modal('معاينة الاستيراد', `<div class="stats"><div class="stat"><span>سيُضاف</span><strong>${good.length}</strong></div><div class="stat"><span>مكرر (يُتجاهل)</span><strong>${dup}</strong></div><div class="stat"><span>غير صالح</span><strong>${bad.length}</strong></div></div>${bad.length ? `<div class="notice warning">صفوف غير صالحة (اسم فارغ، أو دور/رتبة لا يحققان القاعدة: الملاحظ معيد أو مدرس مساعد، والمراقب ورئيس اللجنة من هيئة التدريس): ${bad.slice(0, 15).join('، ')}</div>` : ''}${good.slice(0, 8).map(o => `<div class="ovrow"><span>${esc2(o.name)}</span><i>${esc2(o.role)}${o.rank ? ' • ' + esc2(o.rank) : ''}</i></div>`).join('')}`, good.length ? `<button onclick="obCommit()">استيراد ${good.length} سجل</button>` : '');
+};
+function allocAuto() {
+let e = active(); if (!e) return toast('لا يوجد إصدار نشط', true);
+mig7();
+let pool = db.observers.filter(o => o.role === 'ملاحظ' && (OB_JUNIOR.includes(o.rank) || !o.rank));
+if (!pool.length) return toast('لا يوجد ملاحظون مؤهلون (معيد أو مدرس مساعد) في بيانات الملاحظين', true);
+let cs = allocCourses(e), comms = [];
+cs.forEach(c => { let A = allocGet(e, c); (A ? A.list : []).forEach(x => comms.push({ c, x })); });
+if (!comms.length) return toast('أنشئ اللجان أولًا من زر «تحرير اللجان» ثم أعد التوزيع', true);
+if (!confirm(`سيوزّع النظام ${pool.length} ملاحظًا مؤهلًا على ${comms.length} لجنة بقاعدة: ملاحظان على الأقل لكل لجنة أو ملاحظ لكل 30 طالبًا، دون تعيين نفس الشخص في موعدين متزامنين، ودون تغيير أي تعيين يدوي قائم. متابعة؟`)) return;
+let busy = {};
+comms.forEach(({ c, x }) => (x.staff || []).forEach(s => (busy[c.slot] = busy[c.slot] || new Set()).add(s)));
+let qi = 0, added = 0;
+comms.forEach(({ c, x }) => {
+x.staff = x.staff || [];
+let cur = x.staff.filter(s => { let o = db.observers.find(o => o.id === s); return o && o.role === 'ملاحظ'; }).length;
+let target = Math.max(2, Math.ceil((+x.n || 0) / 30));
+for (let i = cur; i < target; i++) {
+let pick = null;
+for (let t = 0; t < pool.length; t++) { let cand = pool[(qi + t) % pool.length]; if (!busy[c.slot] || !busy[c.slot].has(cand.id)) { pick = cand; qi = (qi + t + 1) % pool.length; break; } }
+if (!pick) break;
+x.staff.push(pick.id); (busy[c.slot] = busy[c.slot] || new Set()).add(pick.id); added++;
+}
+});
+save(); log('توزيع الملاحظين تلقائيًا: ' + added + ' تعيين'); render();
+toast(added ? 'تم توزيع ' + added + ' ملاحظًا. راجع اللجان وعدّل يدويًا عند الحاجة.' : 'كل اللجان مكتملة الملاحظين بالفعل');
+}
+const _ap7 = allocPage;
+allocPage = function () {
+let h = _ap7(); if (typeof h !== 'string') return h;
+h = h.replace('التوزيع يدوي بالكامل ولا يوجد توليد تلقائي.', 'المراقبون ورؤساء اللجان يُعيَّنون يدويًا، والملاحظون يمكن توزيعهم تلقائيًا بالزر المجاور ثم تعديلهم يدويًا.');
+if (me.role === 'admin') h = h.replace('<button onclick="allocCsv()">', '<button onclick="allocAuto()">توزيع الملاحظين تلقائيًا</button><button onclick="allocCsv()">');
+return h;
+};
+function xCourses(e, k) {
+let sem = semCode(e), cat = CATALOG[k]; if (!cat) return [];
+let sems = sem ? [sem === '1' ? '2' : '1'] : ['1', '2'], out = [];
+sems.forEach(s => (cat[s] || []).forEach(c => {
+if (c.g) c.o.forEach(o => { if (o[3] !== 'p') out.push({ code: o[0], name: o[1], sem: s }); });
+else if (c[3] !== 'p') out.push({ code: c[0], name: c[1], sem: s });
+}));
+return out;
+}
+function xOptions(e, k) {
+let xs = xCourses(e, k);
+if (!xs.length) return '<option value="">لا توجد مقررات في الفصل الآخر</option>';
+return '<option value="">اختر المقرر المنقول…</option>' + xs.map(c => `<option value="${esc(c.code)}|${esc(c.name)}">[${c.sem === '1' ? 'الفصل الأول' : 'الفصل الثاني'}] ${esc(c.code)} — ${esc(c.name)}</option>`).join('');
+}
+function pickXCourse() {
+let v = $('#xsel').value; if (!v) return toast('اختر مقررًا من القائمة أولًا', true);
+let [code, name] = v.split('|');
+$('#ccode').value = code; $('#cname').value = name; window._xcarry = true;
+toast('تمت تعبئة المقرر المنقول. أكمل عدد الطلاب والموعد ثم اضغط «إضافة المقرر»');
+}
+const _genRun7 = genRun;
+genRun = function (e, keys) {
+let res = _genRun7(e, keys), P = programs(), dayOf = s => String(s).split('|')[0];
+let used = [];
+Object.entries(e.tasks || {}).forEach(([k, t]) => { let p = P.find(x => x.key === k); if (p) (t.courses || []).filter(c => c.slot).forEach(c => used.push({ level: p.level, slot: c.slot, k, code: c.code })); });
+res.props.forEach(x => { let p = P.find(q => q.key === x.k); used.push({ level: p ? p.level : 0, slot: x.slot, k: x.k, code: x.code }); });
+keys.forEach(k => {
+let p = P.find(x => x.key === k); if (!p) return;
+let t = e.tasks[k] || { courses: [] }; if (isLocked(t)) return;
+let slots = levelSlots(e, p.level); if (!slots.length) return;
+(t.courses || []).filter(c => c.manual && !c.slot).forEach(c => {
+let mine = used.filter(u => u.k === k).map(u => dayOf(u.slot));
+let cand = slots.filter(s => !mine.includes(dayOf(s.key)) && !used.some(u => u.level !== p.level && u.slot === s.key) && !used.some(u => u.level === p.level && dayOf(u.slot) === dayOf(s.key) && u.slot !== s.key));
+if (!cand.length) { res.left.push({ k, pn: p.name, code: c.code, name: c.name, why: 'مقرر منقول/يدوي: لا موعد متاح بعد جدولة المقررات الأساسية' }); return; }
+let best = cand[0];
+used.push({ level: p.level, slot: best.key, k, code: c.code });
+res.props.push({ k, pn: p.name, code: c.code, name: c.name + ' (منقول)', slot: best.key, label: best.label, carry: true });
+});
+});
+return res;
+};
+genApply = function () {
+let e = active(), r = _gp; if (!e || !r) return;
+let items = [];
+r.props.forEach(x => {
+let t = e.tasks[x.k] || (e.tasks[x.k] = { courses: [], status: 'مسودة', note: '' });
+if (t && isLocked(t)) return;
+if (x.carry) {
+let c = (t.courses || []).find(c => c.manual && c.code === x.code);
+if (!c || c.slot || slotClash(t, c.code, 'm:' + c.code, x.slot)) return;
+let [date, pid] = x.slot.split('|'), pp = e.periods.find(z => z.id === pid), day = DAYS[new Date(date + 'T12:00:00').getDay()];
+c.slot = x.slot; c.label = `${day} ${date} – ${pp.name} (${pp.from}–${pp.to})`;
+items.push({ k: x.k, code: x.code, slot: x.slot, carry: true });
+} else {
+if (t && planEntry(t, x.code) && planEntry(t, x.code).slot) return;
+setCourseSlot(x.k, x.code, x.slot);
+let en = e.tasks[x.k] && planEntry(e.tasks[x.k], x.code);
+if (en && en.slot === x.slot) items.push({ k: x.k, code: x.code, slot: x.slot });
+}
+});
+e.genLast = { at: new Date().toLocaleString('ar-EG'), by: me.name, items };
+save(); log('تطبيق اقتراح المواعيد التلقائي: ' + items.length + ' مقرر'); closeModal(); render(); toast('تم تطبيق ' + items.length + ' موعد');
+};
+genUndo = function () {
+let e = active(); if (!e || !e.genLast) return;
+let n = 0;
+e.genLast.items.forEach(x => {
+let t = e.tasks[x.k]; if (!t || isLocked(t) || !(me.role === 'admin' || e.assign[x.k] === me.id)) return;
+if (x.carry) {
+let c = (t.courses || []).find(c => c.manual && c.code === x.code);
+if (c && c.slot === x.slot) { c.slot = ''; c.label = ''; n++; }
+} else {
+let en = planEntry(t, x.code); if (en && en.slot === x.slot) { setCourseSlot(x.k, x.code, ''); n++; }
+}
+});
+e.genLast = null; save(); log('تراجع عن اقتراح المواعيد التلقائي: ' + n); render(); toast('تم التراجع عن ' + n + ' موعد (المعدّل يدويًا بعد التطبيق لم يُلمس)');
+};

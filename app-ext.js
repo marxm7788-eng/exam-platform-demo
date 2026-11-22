@@ -3,7 +3,7 @@ let enterFlag=false,asgSpec='',asgLevel=1,asgCat='g',asgSel=new Set(),pubTab='ma
 const ICONS={dashboard:'◈',setup:'⚙',assign:'⇄',tracking:'◔',review:'✓',published:'▦',users:'☺',rooms:'▣',logs:'≡',tasks:'✎'};
 const _render=render;
 render=function(){_render();
-$$('#nav button').forEach(b=>{let k=(b.getAttribute('onclick')||'').match(/go\('(\w+)'\)/);let t=b.textContent;b.innerHTML=`<span class="ic">${ICONS[k&&k[1]]||'•'}</span><span>${t}</span>`});
+$$('#nav button').forEach(b=>{let k=(b.getAttribute('onclick')||'').match(/go\('(\w+)'\)/);let t=b.textContent;b.innerHTML=`<span class="ic">${ICONS[k&&k[1]]||'•'}\uFE0E</span><span>${t}</span>`});
 let av=document.getElementById('av');if(av&&me)av.textContent=(me.name||'؟').trim().charAt(0);
 let c=$('#content');c.classList.remove('leaving','entering');
 if(enterFlag){enterFlag=false;[...c.children].forEach((el,i)=>el.style.setProperty('--i',i));c.classList.add('entering');countUp(c);window.scrollTo({top:0})}
@@ -527,7 +527,7 @@ let mw=D.getElementById('tabMoreWrap');
 if(btns.length>MAXTABS){if(!mw){mw=D.createElement('div');mw.id='tabMoreWrap';mw.innerHTML=`<button type="button" id="tabMoreBtn">المزيد ▾</button><div id="tabMoreMenu" hidden></div>`;nav.parentElement.appendChild(mw);
 mw.querySelector('#tabMoreBtn').onclick=ev=>{ev.stopPropagation();let m2=mw.querySelector('#tabMoreMenu');m2.hidden=!m2.hidden};
 D.addEventListener('click',()=>{let m2=mw.querySelector('#tabMoreMenu');if(m2)m2.hidden=true})}
-let menu=mw.querySelector('#tabMoreMenu');menu.innerHTML=btns.slice(MAXTABS).map(b=>{let key=keyOf(b);return `<button type="button" data-go="${key}" class="${b.classList.contains('active')?'active':''}">${ICONS[key]||'•'} ${b.textContent.trim()} ${badgeFor(key,c)}</button>`}).join('');
+let menu=mw.querySelector('#tabMoreMenu');menu.innerHTML=btns.slice(MAXTABS).map(b=>{let key=keyOf(b);return `<button type="button" data-go="${key}" class="${b.classList.contains('active')?'active':''}">${ICONS[key]||'\u2022'}\uFE0E ${b.textContent.trim()} ${badgeFor(key,c)}</button>`}).join('');
 menu.querySelectorAll('button').forEach(x=>x.onclick=()=>{menu.hidden=true;go(x.dataset.go)});
 mw.style.display=''}
 else if(mw)mw.style.display='none';
@@ -553,14 +553,6 @@ w.innerHTML=`<button type="button" id="avBtn"><span class="avx">${esc((me.name||
 top.appendChild(w);
 w.querySelector('#avBtn').onclick=ev=>{ev.stopPropagation();let m=w.querySelector('#avMenu');m.hidden=!m.hidden};
 D.addEventListener('click',()=>{let m=w.querySelector('#avMenu');if(m)m.hidden=true})}
-function buildRail(){if(D.getElementById('rail')||!me||innerWidth<=900)return;
-let r=D.createElement('div');r.id='rail';D.body.appendChild(r);paintRail()}
-function paintRail(){let r=D.getElementById('rail');if(!r)return;if(innerWidth<=900){r.style.display='none';return}r.style.display='';
-let c=counts(),items=menu();
-let prime=can('setup')?`<button type="button" class="prime" title="إنشاء / فتح إصدار" onclick="go('setup')">＋</button>`:'';
-r.innerHTML=prime+items.map(([k,n])=>`<button type="button" class="${page===k?'active':''}" title="${esc(n)}" onclick="go('${k}')">${ICONS[k]||'•'}${badgeForRail(k,c)}</button>`).join('')
-+`<div class="sep"></div><button type="button" title="الوضع الداكن / الفاتح" onclick="setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark')">☾</button>`;
-function badgeForRail(k,c2){let n=c2[k]||0;return n?`<span class="rb">${n}</span>`:''}}
 function courseName(code){try{for(let p of programs()){let c=(p.courses||[]).find(x=>x.code===code);if(c)return c.name}}catch(e){}return code}
 function nextExam(){let e=active&&active();if(!e)return null;let today=tdy(),best=null;
 Object.entries(e.tasks||{}).forEach(([k,t])=>{if(!['معتمد','منشور'].includes(t.status))return;
@@ -590,12 +582,46 @@ let i=h.indexOf('<div class="cols">');
 h= h.replace('<div class="ringwrap>', '<div class="ringwrap>');
 if(i>-1)h=h.slice(0,i)+panel+h.slice(i);else h+=panel;
 return h};
+function buildClock(){let top=D.querySelector('.top');if(!top||D.getElementById('clock'))return;
+let c=D.createElement('div');c.id='clock';c.innerHTML='<b id="clkT"></b><small id="clkD"></small>';
+let av=D.getElementById('avWrap');top.insertBefore(c,av||null);
+let tick=()=>{let n=new Date(),t=D.getElementById('clkT'),d=D.getElementById('clkD');if(!t)return;
+t.textContent=n.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+if(d)d.textContent=n.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})};
+tick();setInterval(tick,1000)}
+function nStore(){if(typeof db==='undefined'||!db)return[];if(!db.notifs)db.notifs=[];return db.notifs}
+function nPush(o){if(typeof db==='undefined'||!db||!me)return;db.notifs=nStore();db.notifs.unshift(Object.assign({id:Math.random().toString(36).slice(2),by:me.id,at:new Date().toISOString(),read:[]},o));db.notifs=db.notifs.slice(0,60);save()}
+function nFromLog(a){let e=typeof active==='function'?active():null;if(!e||!me)return;let m,pn=typeof progName==='function'?progName:x=>x;
+if(m=/^إرسال جدول (.+)$/.exec(a))nPush({type:'review',t:'جدول بانتظار المراجعة',b:`أرسل ${me.name} جدول ${pn(m[1])} للمراجعة والاعتماد`,go:'review',roles:['admin','reviewer']});
+else if(m=/^معتمد (.+)$/.exec(a))nPush({type:'ok',t:'تم اعتماد الجدول',b:`اعتُمد جدول ${pn(m[1])} وأصبح جاهزًا للتجميع`,go:'tasks',user:(e.assign||{})[m[1]]});
+else if(m=/^يحتاج تعديل (.+)$/.exec(a)){let nt=(e.tasks||{})[m[1]];nPush({type:'warn',t:'أُعيد الجدول للتعديل',b:`${pn(m[1])}${nt&&nt.note?': '+nt.note:''}`,go:'tasks',user:(e.assign||{})[m[1]]})}
+else if(m=/^إنشاء إصدار (.+)$/.exec(a))nPush({type:'info',t:'إصدار جديد',b:`أنشأ ${me.name} ${m[1]}`,go:'setup',roles:['admin','specialist','reviewer','viewer']});
+else if(m=/^أرشفة إصدار (.+)$/.exec(a))nPush({type:'info',t:'أرشفة إصدار',b:`أُرشف ${m[1]} وأصبح للاطلاع فقط`,go:'setup',roles:['admin','specialist','reviewer','viewer']})}
+if(typeof log==='function'){const _logN=log;log=function(a){_logN(a);try{nFromLog(a)}catch(e){console.warn('notif',e)}}}
+function myNotifs(){if(!me||typeof db==='undefined'||!db)return[];return nStore().filter(n=>n.by!==me.id&&((n.roles&&n.roles.includes(me.role))||(n.user&&n.user===me.id)))}
+function ago(iso){let s=(Date.now()-new Date(iso).getTime())/1000;if(s<90)return'الآن';let m=Math.floor(s/60);if(m<60)return`منذ ${m} د`;let h=Math.floor(m/60);if(h<24)return h===1?'منذ ساعة':h===2?'منذ ساعتين':`منذ ${h} ساعات`;let d=Math.floor(h/24);return d===1?'أمس':`منذ ${d} أيام`}
+function buildNotif(){let top=D.querySelector('.top');if(!top||!me)return;let w=D.getElementById('ntWrap');
+if(!w){w=D.createElement('div');w.id='ntWrap';w.innerHTML='<button type="button" id="ntBtn" title="الإشعارات"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="ntBadge" hidden></span></button><div id="ntMenu" hidden></div>';
+let av=D.getElementById('avWrap');top.insertBefore(w,av||null);
+w.querySelector('#ntBtn').onclick=ev=>{ev.stopPropagation();let m2=w.querySelector('#ntMenu');m2.hidden=!m2.hidden;if(!m2.hidden)paintNotif()};
+D.addEventListener('click',()=>{let m2=w.querySelector('#ntMenu');if(m2)m2.hidden=true})}
+let list=myNotifs(),un=list.filter(n=>!n.read.includes(me.id)).length,bd=w.querySelector('#ntBadge');
+bd.hidden=!un;if(un)bd.textContent=un>9?'9+':un}
+window._nt={list:()=>myNotifs(),store:()=>nStore()};
+function paintNotif(){let m2=D.getElementById('ntMenu');if(!m2||!me)return;let list=myNotifs().slice(0,15);
+m2.innerHTML=`<div class="ntHead"><span>الإشعارات</span>${list.length?'<button type="button" class="text-btn" id="ntAll">تحديد الكل كمقروء</button>':''}</div>`
++(list.map(n=>{let un=!n.read.includes(me.id);return `<button type="button" class="ntItem ${un?'un':''}" data-id="${n.id}"><i class="dot ${n.type||'info'}"></i><span class="ntTx"><b>${esc(n.t)}</b><small>${esc(n.b||'')}</small><em>${ago(n.at)}</em></span></button>`}).join('')||'<div class="ntEmpty">لا توجد إشعارات بعد. ستظهر هنا طلبات المراجعة والاعتمادات والتنبيهات.</div>');
+m2.querySelectorAll('.ntItem').forEach(x=>x.onclick=()=>{let n=nStore().find(y=>y.id===x.dataset.id);
+if(n&&!n.read.includes(me.id)){n.read.push(me.id);save()}
+m2.hidden=true;if(n&&n.go&&typeof go==='function')go(n.go);buildNotif()});
+let all=m2.querySelector('#ntAll');
+if(all)all.onclick=ev=>{ev.stopPropagation();myNotifs().forEach(n=>{if(!n.read.includes(me.id))n.read.push(me.id)});save();paintNotif();buildNotif()}}
 const _render6=render;
 render=function(){_render6();
-try{buildBrand();buildTabs();buildAvatar();buildRail();paintRail();
+try{buildBrand();buildTabs();buildAvatar();buildClock();buildNotif();
 let nxh=D.querySelector('.hero .ringwrap');
 if(page==='dashboard'){let hero=D.querySelector('.hero');if(hero&&!hero.querySelector('.nx')){let rw=hero.querySelector('.ringwrap');if(rw)rw.insertAdjacentHTML('beforebegin',heroNext())}}
 }catch(e){console.warn('shell',e)}};
 D.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{buildBrand();buildTabs()},400)});
-window.addEventListener('resize',()=>{try{buildTabs();hl();paintRail()}catch(e){}});
+window.addEventListener('resize',()=>{try{buildTabs();hl()}catch(e){}});
 })();

@@ -420,3 +420,13 @@ document.head.insertAdjacentHTML('beforeend','<style>.modal .actions{position:st
 const _te5=taskEditor;taskEditor=function(e,k){let h=_te5(e,k);if(typeof h!=='string')return h;let t=e.tasks[k]||{courses:[]};if(isLocked(t))return h;
 return h.replace('<div class="actions"><button class="light" onclick="saveTask','<div class="actions"><button class="light" onclick="genPreview(\''+esc(k)+'\')">اقتراح مواعيد تلقائي</button>'+(e.genLast&&e.genLast.items.some(x=>x.k===k)?'<button class="light" onclick="genUndo()">تراجع عن آخر اقتراح</button>':'')+'<button class="light" onclick="saveTask')};
 const _tr5=tracking;tracking=function(){let h=_tr5();if(typeof h!=='string'||me.role!=='admin')return h;let e=active();return h+`<section class="panel" style="margin-top:14px"><h3>اقتراح المواعيد تلقائيًا</h3><p class="muted">للمقررات الإجبارية غير المجدولة في كل البرامج غير المُرسلة. لا يغيّر ما حددته يدويًا.</p><div class="actions"><button onclick="genPreview('all')">اقتراح لكل البرامج</button>${e&&e.genLast?'<button class="light" onclick="genUndo()">تراجع عن آخر اقتراح</button>':''}</div></section>`};
+(function(){
+const names=['addCourse','removeCourse','allocSave','allocDrop','allocEdit','allocCourses','allocStaff','allocCsv','genApply','genUndo','moveItem','applyOrder','clearDist','reviewAction','saveAssign','saveDays','saveDetails','saveDistribution','saveTask','setCourseExtra','setCourseSlot','setCourseStudents','setDue','setDueAll','submitTask','addHoliday','delHoliday','addPeriod','delPeriod','addRoom','delRoom','applyDays'];
+names.forEach(n=>{let f;try{f=eval('typeof '+n+"==='function'?"+n+':null')}catch(x){}
+if(!f)return;
+const w=function(){let e=null;try{e=active()}catch(x){}
+if(e&&e.archived){try{toast('هذا الإصدار مؤرشف وللعرض فقط. لا يمكن تعديله.',true)}catch(x){}return}
+return f.apply(this,arguments)};
+try{eval(n+'=w')}catch(x){}
+});
+})();

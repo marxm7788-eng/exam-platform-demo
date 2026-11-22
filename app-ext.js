@@ -458,3 +458,33 @@ if(t){t.insertAdjacentElement('afterend',mk());let h=document.createElement('sma
 put();document.addEventListener('DOMContentLoaded',put);setTimeout(put,500);
 const _r6=rooms;rooms=function(){return _r6()+`<section class="panel"><h2>البيانات التجريبية</h2><p class="muted">يحمّل إصدارًا تجريبيًا كاملًا لكل برامج الكلية. تُحفظ نسخة من الوضع الحالي قبل الاستبدال.</p><div class="actions"><button onclick="loadSample()">تحميل البيانات التجريبية الكاملة</button></div></section>`};
 })();
+(function(){
+const D=document,body=D.body;
+const side=()=>D.getElementById('side');
+function setOpen(o){let s=side();if(!s)return;s.classList.toggle('open',o);body.classList.toggle('side-open',o);D.querySelectorAll('.mobile').forEach(b=>b.setAttribute('aria-expanded',o?'true':'false'));s.setAttribute('aria-hidden',o||innerWidth>900?'false':'true')}
+window.toggleSide=function(){setOpen(!side().classList.contains('open'))};
+window.closeSide=function(){setOpen(false)};
+function build(){let s=side();if(!s)return;
+if(!D.getElementById('sideBackdrop')){let b=D.createElement('div');b.id='sideBackdrop';b.className='side-backdrop';b.onclick=closeSide;(D.getElementById('app')||D.body).insertBefore(b,s)}
+if(!s.querySelector('.side-close')){let c=D.createElement('button');c.type='button';c.className='side-close';c.setAttribute('aria-label','إغلاق القائمة');c.textContent='✕';c.onclick=closeSide;s.appendChild(c)}
+D.querySelectorAll('.mobile').forEach(b=>{b.setAttribute('aria-label','فتح القائمة');b.setAttribute('aria-controls','side');b.setAttribute('aria-expanded','false')});
+let top=D.querySelector('.top');if(top&&!D.getElementById('themeBtn')){let t=D.createElement('button');t.type='button';t.id='themeBtn';t.className='light';t.onclick=()=>setTheme(cur()==='dark'?'light':'dark');let anchor=top.querySelector(':scope>button.light');top.insertBefore(t,anchor||null);}
+paint()}
+const cur=()=>D.documentElement.dataset.theme==='dark'?'dark':'light';
+function paint(){let d=cur()==='dark';[D.getElementById('themeBtn'),D.getElementById('loginTheme')].forEach(b=>{if(!b)return;b.textContent=d?'☀':'☾';b.title=d?'الوضع الفاتح':'الوضع الداكن';b.setAttribute('aria-label',d?'التبديل إلى الوضع الفاتح':'التبديل إلى الوضع الداكن');b.setAttribute('aria-pressed',d?'true':'false')});
+let m=D.querySelector('meta[name=theme-color]');if(m)m.content=d?'#0b0b0b':'#0b2540'}
+window.setTheme=function(m){D.documentElement.dataset.theme=m==='dark'?'dark':'light';try{localStorage.setItem('sohag_theme',m==='dark'?'dark':'light')}catch(x){}paint()};
+let saved=null;try{saved=localStorage.getItem('sohag_theme')}catch(x){}
+if(!saved&&matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)saved='dark';
+D.documentElement.dataset.theme=saved==='dark'?'dark':'light';
+if(!D.getElementById('loginTheme')){let l=D.createElement('button');l.type='button';l.id='loginTheme';l.onclick=()=>setTheme(cur()==='dark'?'light':'dark');D.body.appendChild(l)}
+const hideLT=()=>{let l=D.getElementById('loginTheme'),lg=D.getElementById('login');if(l&&lg)l.style.display=lg.classList.contains('hidden')?'none':''};
+const _r7=render;render=function(){let r=_r7.apply(this,arguments);build();closeSide();hideLT();return r};
+const _lg=login;login=function(){let r=_lg.apply(this,arguments);setTimeout(()=>{build();hideLT()},900);return r};
+D.addEventListener('keydown',e=>{if(e.key==='Escape')closeSide()});
+addEventListener('resize',()=>{if(innerWidth>900)closeSide()});
+let tx=null;D.addEventListener('touchstart',e=>{tx={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
+D.addEventListener('touchend',e=>{if(!tx||innerWidth>900)return;let dx=e.changedTouches[0].clientX-tx.x,dy=Math.abs(e.changedTouches[0].clientY-tx.y);let open=side()&&side().classList.contains('open');
+if(Math.abs(dx)>60&&dy<50){if(open&&dx>0)closeSide();else if(!open&&dx<0&&tx.x>innerWidth-24&&D.getElementById('app')&&!D.getElementById('app').classList.contains('hidden'))setOpen(true)}tx=null},{passive:true});
+D.addEventListener('DOMContentLoaded',()=>{paint();hideLT()});paint();hideLT();
+})();

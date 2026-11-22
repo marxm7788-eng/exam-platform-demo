@@ -861,3 +861,75 @@ let e = active(); c = c || allocCourses(e).find(x => x.k === _ae.k && x.code ===
 let body = `<p class="muted">${esc2(c.name)} • ${esc2(c.code)} • ${c.n || '؟'} طالب</p><div class="formgrid"><div class="field"><label>المحاضر (اختياري، يظهر في الجدول المطبوع)</label><input value="${esc2(_ae.lect)}" onchange="_ae.lect=this.value"></div><div class="field"><label>عدد المتخلفين (اختياري)</label><input type="number" min="0" value="${esc2(_ae.carry)}" onchange="_ae.carry=this.value"></div></div>${L.map((x, q) => `<div class="panel" style="padding:8px;margin:6px 0"><div class="formgrid"><div class="field"><label>القاعة</label><select onchange="_ae.list[${q}].room=this.value">${db.rooms.map(r => `<option value="${r.id}" ${r.id === x.room ? 'selected' : ''}>${esc2(roomLabel(r))} (${r.cap})</option>`).join('')}</select></div><div class="field"><label>عدد الطلاب</label><input type="number" min="1" value="${x.n}" onchange="_ae.list[${q}].n=+this.value"></div><div class="field"><label>عدد الملاحظين المطلوب (تحدده أنت)</label><input type="number" min="0" value="${x.obs != null ? x.obs : ''}" placeholder="0" onchange="_ae.list[${q}].obs=+this.value"></div></div>${OB_ROLES.map(r => `<details><summary>${r} (${(x.staff || []).filter(s => (db.observers.find(o => o.id === s) || {}).role === r).length}${r === 'ملاحظ' ? ' / ' + (+x.obs || 0) : ''})</summary>${db.observers.filter(o => o.role === r).map(o => `<label class="check" style="display:block"><input type="checkbox" ${(x.staff || []).includes(o.id) ? 'checked' : ''} onchange="allocStaff(${q},'${o.id}',this.checked)"> ${esc2(o.name)}</label>`).join('') || '<span class="muted">لا أحد مضاف</span>'}</details>`).join('')}<button class="sm light" onclick="_ae.list.splice(${q},1);allocDraw()">حذف اللجنة</button></div>`).join('') || '<p class="muted">لا لجان بعد.</p>'}<button class="light" ${db.rooms.length ? '' : 'disabled'} onclick="_ae.list.push({room:db.rooms[0].id,n:${c.n || 1},obs:0,staff:[]});allocDraw()">＋ إضافة لجنة</button>`;
 modal('لجان وبيانات المقرر', body, `<button onclick="allocSave()">حفظ</button>`);
 };
+/* ext8: summer-term wizard - pick open courses, set per-course inputs, then generate.
+Shows inside the task editor for editions whose semester has no ready plan (الفصل الصيفي). */
+window._swStep = window._swStep || {};
+function swAllCourses(k) {
+let cat = CATALOG[k], out = [];
+if (!cat) return out;
+['1', '2'].forEach(s => (cat[s] || []).forEach(c => {
+if (c.g) c.o.forEach(o => { if (o[3] !== 'p') out.push({ code: o[0], name: o[1], sem: s }); });
+else if (c[3] !== 'p') out.push({ code: c[0], name: c[1], sem: s });
+}));
+return out;
+}
+function swStep(k) { return window._swStep[k] || 1; }
+function swSetStep(k, n) { window._swStep[k] = n; render(); }
+function summerWizard(e, k, t, locked) {
+let p = programs().find(x => x.key === k) || { name: k, level: 0 };
+let st = swStep(k);
+let steps = ['اختيار المقررات المفتوحة', 'مدخلات كل مقرر', 'التوليد'];
+let head3 = `<h3 style="margin-top:20px">معالج الفصل الصيفي</h3>
+<div class="notice">البرنامج: <b>${esc(p.name)}</b> — المستوى ${LV[p.level - 1] || p.level} • الفصل الحالي: <b>${esc(e.semester)}</b>. لا خطة جاهزة للفصل الصيفي: حدّد المقررات المفتوحة هذا الفصل، ثم مدخلات كل مقرر، ثم ولّد المواعيد.</div>
+<div class="steps" style="margin-bottom:14px">${steps.map((n, i) => `<div class="step ${st === i + 1 ? 'active' : st > i + 1 ? 'done' : ''}"><b>${String(i + 1).padStart(2, '0')}</b>${n}</div>`).join('')}</div>`;
+if (locked) return head3 + '<div class="notice warning">الجدول مُرسل أو معتمد؛ المعالج للقراءة فقط.</div>';
+let manual = (t.courses || []).filter(c => c.manual);
+if (st === 1) {
+let bySem = s => swAllCourses(k).filter(c => c.sem === s);
+let grp = (s, label) => {
+let cs = bySem(s);
+if (!cs.length) return '';
+return `<h4>${label}</h4>${cs.map(c => {
+let on = manual.some(m => m.code === c.code);
+return `<label class="check" style="display:block;padding:4px 0"><input type="checkbox" ${on ? 'checked' : ''} onchange="swToggle('${esc(k)}','${esc(c.code)}','${esc(c.name).replace(/'/g, "\\'")}',this.checked)"> <b>${esc(c.code)}</b> ${esc(c.name)}</label>`;
+}).join('')}`;
+};
+return head3 + `<section class="panel"><h2>الخطوة 1: المقررات المفتوحة هذا الفصل</h2>
+<p class="muted">علّم على المقررات التي ستُفتح في الفصل الصيفي لهذا البرنامج (من خطتي الفصلين الأول والثاني). العدد المختار: <b>${manual.length}</b></p>
+${grp('1', 'مقررات الفصل الدراسي الأول')}${grp('2', 'مقررات الفصل الدراسي الثاني')}
+<div class="actions"><button class="teal" ${manual.length ? '' : 'disabled'} onclick="swSetStep('${esc(k)}',2)">التالي: مدخلات المقررات</button></div></section>`;
+}
+if (st === 2) {
+if (!manual.length) { window._swStep[k] = 1; return summerWizard(e, k, t, locked); }
+return head3 + `<section class="panel"><h2>الخطوة 2: مدخلات كل مقرر</h2>
+<p class="muted">عدد الطلاب والمحاضر لكل مقرر مفتوح. المحاضر يظهر في الجدول المطبوع.</p>
+<div class="tablewrap"><table><tr><th>الكود</th><th>المقرر</th><th>عدد الطلاب</th><th>المحاضر</th></tr>${manual.map((c, i) => `<tr><td>${esc(c.code)}</td><td>${esc(c.name)}</td><td><input type="number" min="1" value="${c.students || ''}" id="sws${i}" style="max-width:110px"></td><td><input value="${esc(c.lect || '')}" id="swl${i}" placeholder="اسم المحاضر"></td></tr>`).join('')}</table></div>
+<div class="actions"><button class="light" onclick="swSetStep('${esc(k)}',1)">السابق</button><button class="teal" onclick="swSaveInputs('${esc(k)}')">حفظ المدخلات والانتقال للتوليد</button></div></section>`;
+}
+return head3 + `<section class="panel"><h2>الخطوة 3: التوليد</h2>
+<p class="muted">سيولّد النظام المواعيد بالتبادل (أساسي ثم منقول بالتناوب) للمقررات غير المجدولة، دون تغيير ما حددته يدويًا. راجع المعاينة ثم طبّق.</p>
+<div class="tablewrap"><table><tr><th>الكود</th><th>المقرر</th><th>الطلاب</th><th>المحاضر</th><th>الموعد</th></tr>${manual.map(c => `<tr><td>${esc(c.code)}</td><td>${esc(c.name)}</td><td>${c.students || '—'}</td><td>${esc(c.lect || '—')}</td><td>${c.slot ? esc(c.label || c.slot) + ' <span class="badge green">✓</span>' : '<span class="badge amber">لم يُجدول</span>'}</td></tr>`).join('')}</table></div>
+<div class="actions"><button class="light" onclick="swSetStep('${esc(k)}',2)">السابق</button><button onclick="genPreview('${esc(k)}')">اقتراح المواعيد تلقائيًا</button></div></section>`;
+}
+function swToggle(k, code, name, on) {
+let e = active(), t = e.tasks[k] || (e.tasks[k] = { courses: [], status: 'مسودة', note: '' });
+if (isLocked(t)) return;
+let i = (t.courses || []).findIndex(c => c.manual && c.code === code);
+if (on && i < 0) { t.courses.push({ code, name, students: 0, slot: '', manual: true, summer: true, label: '' }); t.status = t.status === 'مسودة' ? 'قيد الإعداد' : t.status; t.updated = new Date().toLocaleString('ar-EG'); save(); log('فتح مقرر صيفي ' + code); }
+if (!on && i >= 0) {
+if (t.courses[i].slot) return toast('ألغِ موعد المقرر أولًا', true);
+t.courses.splice(i, 1); save(); log('إغلاق مقرر صيفي ' + code);
+}
+render();
+}
+function swSaveInputs(k) {
+let e = active(), t = e.tasks[k]; if (!t || isLocked(t)) return;
+let manual = (t.courses || []).filter(c => c.manual), bad = 0;
+manual.forEach((c, i) => {
+let s = +($('#sws' + i) ? $('#sws' + i).value : 0), l = $('#swl' + i) ? $('#swl' + i).value.trim() : '';
+if (s >= 1) { c.students = s; } else bad++;
+c.lect = l;
+});
+if (bad) return toast('أدخل عدد الطلاب لكل مقرر (1 على الأقل)', true);
+save(); log('حفظ مدخلات مقررات الصيفي'); swSetStep(k, 3);
+  }

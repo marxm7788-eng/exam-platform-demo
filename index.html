@@ -1183,10 +1183,14 @@ function taskEditor(e, k){
 
   let manualAdd = locked ? '' : `<h3 style="margin-top:20px">${items.length ? 'إضافة مقرر آخر (خارج الخطة)' : 'إضافة مقرر'}</h3>
     <div class="formgrid"><div class="field"><label>كود المقرر</label><input id="ccode"></div><div class="field"><label>اسم المقرر</label><input id="cname"></div><div class="field"><label>عدد الطلاب</label><input id="cstudents" type="number" min="1"></div><div class="field"><label>موعد الامتحان</label><select id="cslot"><option value="">اختر موعدًا</option>${slots.map(s => `<option value="${s.key}">${esc(s.label)}</option>`).join('')}</select></div></div>
-    <div class="actions"><button onclick="addCourse('${esc(k)}')">إضافة المقرر</button></div>`;
+    <div class="actions"><button onclick="addCourse('${esc(k)}')">إضافة المقرر</button></div>
+    <h3 style="margin-top:20px">إضافة مقرر منقول من فصل آخر</h3>
+    <div class="notice">للطلاب المتخلفين أو الخريجين: اختر مقررًا من خطة الفصل الآخر لنفس البرنامج، وسيُعامل كمقرر منقول ويُجدول تلقائيًا بعد المقررات الأساسية.</div>
+    <div class="formgrid"><div class="field full"><label>المقرر من الفصل الآخر</label><select id="xsel">${xOptions(e,k)}</select></div></div>
+    <div class="actions"><button class="light" onclick="pickXCourse()">تعبئة بيانات المقرر المنقول</button></div>`;
 
   let manualTable = manualRows.length
-    ? `<h3 style="margin-top:20px">مقررات مضافة يدويًا</h3><div class="tablewrap"><table><tr><th>الكود</th><th>اسم المقرر</th><th>الطلاب</th><th>الموعد</th><th></th></tr>${manualRows.map(x => `<tr><td>${esc(x.c.code)}</td><td>${esc(x.c.name)}</td><td>${x.c.students || '—'}</td><td>${esc(x.c.label || '—')}</td><td>${locked ? '—' : `<button class="sm danger" onclick="removeCourse('${esc(k)}',${x.i})">حذف</button>`}</td></tr>`).join('')}</table></div>`
+    ? `<h3 style="margin-top:20px">مقررات مضافة يدويًا / منقولة</h3><div class="tablewrap"><table><tr><th>الكود</th><th>اسم المقرر</th><th>الطلاب</th><th>الموعد</th><th></th></tr>${manualRows.map(x => `<tr><td>${esc(x.c.code)}</td><td>${esc(x.c.name)} ${x.c.carry?'<span class="badge amber">منقول</span>':''}</td><td>${x.c.students || '—'}</td><td>${esc(x.c.label || '—')}</td><td>${locked ? '—' : `<button class="sm danger" onclick="removeCourse('${esc(k)}',${x.i})">حذف</button>`}</td></tr>`).join('')}</table></div>`
     : '';
 
   return head('إعداد جدول البرنامج', `${p.name} – المستوى ${LV[p.level-1]}`, `<button class="light" onclick="taskKey=null;render()">رجوع</button>`) +
@@ -1197,7 +1201,7 @@ function taskEditor(e, k){
     ${planBlock}${manualAdd}${manualTable}
     ${locked ? '' : `<div class="actions"><button class="light" onclick="saveTask('${esc(k)}')">حفظ كمسودة</button><button class="teal" onclick="submitTask('${esc(k)}')">إرسال للمراجعة</button></div>`}</section>`;
 }
-function addCourse(k){let e=active(),t=e.tasks[k]||(e.tasks[k]={courses:[],status:'مسودة',note:''}),code=$('#ccode').value.trim(),name=$('#cname').value.trim(),students=+$('#cstudents').value,slot=$('#cslot').value;if(!code||!name||students<1||!slot)return toast('أكمل بيانات المقرر واختر موعدًا',true);if(t.courses.some(c=>c.code.toLowerCase()===code.toLowerCase()))return toast('كود المقرر مكرر داخل البرنامج',true);let [date,pid]=slot.split('|'),p=e.periods.find(x=>x.id===pid),day=DAYS[new Date(date+'T12:00:00').getDay()];if(slotClash(t,code,'m:'+code,slot))return toast('يوجد مقرر آخر لنفس الطلاب في هذا الموعد',true);t.courses.push({code,name,students,slot,manual:true,label:`${day} ${date} – ${p.name} (${p.from}–${p.to})`});t.status='قيد الإعداد';t.updated=new Date().toLocaleString('ar-EG');save();log('إضافة مقرر '+code);render()}function saveTask(k){let t=active().tasks[k];if(t){save();toast('تم حفظ المسودة')}}function removeCourse(k,i){active().tasks[k].courses.splice(i,1);save();render()}function submitTask(k){
+function addCourse(k){let e=active(),t=e.tasks[k]||(e.tasks[k]={courses:[],status:'مسودة',note:''}),code=$('#ccode').value.trim(),name=$('#cname').value.trim(),students=+$('#cstudents').value,slot=$('#cslot').value;if(!code||!name||students<1||!slot)return toast('أكمل بيانات المقرر واختر موعدًا',true);if(t.courses.some(c=>c.code.toLowerCase()===code.toLowerCase()))return toast('كود المقرر مكرر داخل البرنامج',true);let [date,pid]=slot.split('|'),p=e.periods.find(x=>x.id===pid),day=DAYS[new Date(date+'T12:00:00').getDay()];if(slotClash(t,code,'m:'+code,slot))return toast('يوجد مقرر آخر لنفس الطلاب في هذا الموعد',true);t.courses.push({code,name,students,slot,manual:true,carry:!!window._xcarry,label:`${day} ${date} – ${p.name} (${p.from}–${p.to})`});window._xcarry=false;t.status='قيد الإعداد';t.updated=new Date().toLocaleString('ar-EG');save();log('إضافة مقرر '+code);render()}function saveTask(k){let t=active().tasks[k];if(t){save();toast('تم حفظ المسودة')}}function removeCourse(k,i){active().tasks[k].courses.splice(i,1);save();render()}function submitTask(k){
   let e = active(), t = e.tasks[k];
   let pr = taskProgress(e, k, t);
   if(pr.missing.length){

@@ -62,7 +62,7 @@ let ctl=`<div class="panel" style="margin-bottom:16px;display:flex;gap:14px;flex
 if(pubTab==='list')return base.replace(/<div style="text-align:center"><h2>[\s\S]*?<\/div><\/div>/,offHead('جميع المستويات')).replace('<section class="panel">',ctl+'<section class="panel">');
 let hidden=base.replace('<section class="panel">','<section class="panel" style="display:none">');
 let headBlock=base.match(/^<div class="head">[\s\S]*?<\/div><\/div>/)[0];
-let title=offHead('المستوى '+LV[pubLevel-1]);let sigs='<div class="sigs"><div>توقيع المختص</div><div>مدير إدارة شؤون الطلاب</div><div>وكيل الكلية لشؤون التعليم والطلاب</div><div>عميد الكلية</div></div>';
+let title=offHead('المستوى '+LV[pubLevel-1]);let sigs='<div class="sigs">'+offSigs(active()).map(s=>'<div>'+esc(s[0])+(s[1]?'<br><small style="font-weight:400">'+esc(s[1])+'</small>':'')+'</div>').join('')+'</div>';
 return headBlock+ctl+title+mx+sigs+hidden.replace(headBlock,'')};
 const tdy=()=>{let d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const nowS=()=>new Date().toLocaleString('ar-EG');
@@ -971,6 +971,8 @@ setRow('وضع المراقبة (تفعيل وضع المراقبة)', 'عند �
 `<span class="badge ${on ? 'green' : ''}" style="margin-inline-end:8px">${on ? 'مفعّل' : 'موقوف'}</span><button class="${on ? 'light' : 'teal'}" onclick="setInvig(${on ? 0 : 1})">${on ? 'إيقاف' : 'تفعيل'}</button>`) +
 setRow('العدد الافتراضي للملاحظين في اللجنة الجديدة', 'عند إنشاء لجنة جديدة يُملأ حقل «عدد الملاحظين المطلوب» بهذا العدد، ويمكن تغييره لكل لجنة على حدة. صفر يعني بلا قيمة افتراضية.',
 `<input type="number" min="0" max="20" value="${db.settings.defObs}" style="max-width:90px" onchange="setDefObs(this.value)">`) +
+`<h2 style="margin-top:18px">التوقيعات على الجداول المطبوعة</h2>` +
+`<section class="panel"><p class="muted">تُطبع تحت كل جدول: اسم الدور وتحته الاسم. اسم المختص يُملأ تلقائيًا من حساب منشئ الجدول، وأي اسم يُدخل في «بيانات الطباعة الرسمية» لإصدار معيّن يقدَّم على المدخل هنا.</p><div class="formgrid"><div class="field"><label>مدير شئون الطلاب</label><input id="sig-sa" value="${esc((db.settings.sig||{}).sa||'')}"></div><div class="field"><label>وكيل الكلية</label><input id="sig-vice" value="${esc((db.settings.sig||{}).vice||'')}"></div><div class="field"><label>عميد الكلية</label><input id="sig-dean" value="${esc((db.settings.sig||{}).dean||'')}"></div></div><div class="actions"><button onclick="saveSigNames()">حفظ أسماء التوقيعات</button></div></section>` +
 `<h2 style="margin-top:18px">الأمان</h2>` +
 setRow('تسجيل الخروج التلقائي عند عدم النشاط', 'عدد الدقائق بلا نشاط قبل تسجيل الخروج تلقائيًا. صفر يعني إيقاف الميزة. (حماية على مستوى هذا المتصفح)',
 `<input type="number" min="0" max="240" value="${db.settings.autoLock}" style="max-width:90px" onchange="setAutoLock(this.value)">`) +
@@ -1026,3 +1028,24 @@ let e2 = $('#loginerr'); if (e2) { e2.textContent = 'تم تسجيل الخرو�
 }
 } catch (e) {}
 }, 30000);
+function spAutoName(e) {
+let ids = new Set();
+Object.entries(e.tasks || {}).forEach(([k, t]) => { if ((t.courses || []).some(c => c.slot) && e.assign && e.assign[k]) ids.add(e.assign[k]); });
+return ids.size ? [...ids].map(userName).join('، ') : '';
+}
+offSigs = function (e) {
+mig9();
+let N = (typeof prn === 'function' ? (prn(e).names || []) : []);
+let S = db.settings.sig || {};
+return [
+['توقيع المختص', N[0] || spAutoName(e)],
+['مدير إدارة شؤون الطلاب', N[1] || S.sa || ''],
+['وكيل الكلية لشؤون التعليم والطلاب', N[2] || S.vice || ''],
+['عميد الكلية', N[3] || S.dean || '']
+];
+};
+function saveSigNames() {
+mig9();
+db.settings.sig = { sa: $('#sig-sa').value.trim(), vice: $('#sig-vice').value.trim(), dean: $('#sig-dean').value.trim() };
+save(); log('حفظ أسماء التوقيعات'); toast('تم حفظ أسماء التوقيعات');
+  }

@@ -1179,7 +1179,7 @@ function taskEditor(e, k){
     ? `<h3 style="margin-top:20px">مقررات البرنامج حسب الخطة الدراسية المعتمدة</h3>
        <div class="notice ${pr.missing.length ? 'warning' : 'success'}">تم تحديد موعد لـ <b>${pr.done}</b> من <b>${pr.total}</b> متطلب. ${pr.missing.length ? 'المقررات الناجح/راسب اختيارية الجدولة.' : 'كل المتطلبات مجدولة ويمكنك الإرسال للمراجعة.'}</div>
        <div class="tablewrap"><table class="plantable"><thead><tr><th>ترتيب</th><th>الكود</th><th>اسم المقرر</th><th>ساعات</th><th>عدد الطلاب</th><th>موعد الامتحان</th></tr></thead>${rows}</table></div>`
-    : `<div class="notice warning">${semCode(e) ? 'لا توجد خطة دراسية جاهزة لهذا البرنامج' : 'الفصل الصيفي لا يملك خطة جاهزة'} — أضف المقررات يدويًا من النموذج أدناه.</div>`;
+    : (semCode(e) ? `<div class="notice warning">لا توجد خطة دراسية جاهزة لهذا البرنامج — أضف المقررات يدويًا من النموذج أدناه.</div>` : summerWizard(e, k, t, locked));
 
   let manualAdd = locked ? '' : `<h3 style="margin-top:20px">${items.length ? 'إضافة مقرر آخر (خارج الخطة)' : 'إضافة مقرر'}</h3>
     <div class="formgrid"><div class="field"><label>كود المقرر</label><input id="ccode"></div><div class="field"><label>اسم المقرر</label><input id="cname"></div><div class="field"><label>عدد الطلاب</label><input id="cstudents" type="number" min="1"></div><div class="field"><label>موعد الامتحان</label><select id="cslot"><option value="">اختر موعدًا</option>${slots.map(s => `<option value="${s.key}">${esc(s.label)}</option>`).join('')}</select></div></div>

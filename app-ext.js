@@ -1260,3 +1260,98 @@ return h;
 // after the distribution view renders, mount period selects + run the live check
 const _pqRender=render;
 render=function(){_pqRender();if(typeof page!=='undefined'&&page==='setup'&&step===4){pqRenderPers();liveCheckDistribution()}};
+// ===== ext12: مركز التقارير — student-facing vs internal reports =====
+(function(){
+PAGES.push(['reports','مركز التقارير']);
+if(!ROLE_PERMS.admin.includes('reports'))ROLE_PERMS.admin.push('reports');
+// slot label helper: "الأحد، ٢ نوفمبر • الفترة الأولى 09:00–11:00"
+function rpSlotLabel(e,key,short){
+let[d,pid]=key.split('|'),p=e.periods.find(x=>x.id===pid)||{name:'فترة'};
+let dt=new Date(d+'T12:00:00');
+let ds=dt.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'});
+let tm=(p.from&&p.to)?` (${p.from}–${p.to})`:'';
+return short?`${ds}`:`${ds} • ${p.name}${tm}`;
+}
+function rpCourses(e,okOnly){
+let ok=['معتمد','منشور'],P=programs(),out=[];
+Object.entries(e.tasks).forEach(([k,t])=>{
+let p=P.find(x=>x.key===k);if(!p)return;
+if(okOnly&&!ok.includes(t.status))return;
+(t.courses||[]).filter(c=>c.slot).forEach(c=>out.push({k,code:c.code,name:c.name,n:+c.students||0,slot:c.slot,prog:p.name,lv:p.level}));
+});
+return out.sort((a,b)=>a.slot.localeCompare(b.slot)||a.lv-b.lv);
+}
+function rpRoomName(id){let r=db.rooms.find(x=>x.id===id);return r?esc(r.name):'؟'}
+function rpStaff(ids,role){return (ids||[]).map(i=>db.observers.find(o=>o.id===i)).filter(o=>o&&(!role||o.role===role)).map(o=>esc(o.name)).join('، ')||'—'}
+// ---- report bodies ----
+function rpBodyStudent(e){
+let out='';
+[1,2,3,4].forEach(l=>{
+let rows=rpCourses(e,true).filter(c=>c.lv===l);
+out+=`<h3 style="color:var(--navy);margin:18px 0 8px">${LV[l-1]}</h3>`;
+if(!rows.length){out+='<p class="muted">لا توجد مقررات معتمدة لهذا المستوى بعد.</p>';return}
+out+=`<table class="rep"><tr><th>التاريخ</th><th>الفترة</th><th>المقرر</th><th>البرنامج / الشعبة</th></tr>`+
+rows.map(c=>`<tr><td>${rpSlotLabel(e,c.slot,true)}</td><td>${esc((e.periods.find(p=>p.id===c.slot.split('|')[1])||{}).name||'')}</td><td>${esc(c.name)}<br><small>${esc(c.code)}</small></td><td>${esc(c.prog)}</td></tr>`).join('')+'</table>';
+});
+return out;
+}
+function rpBodyCommittees(e){
+let cs=rpCourses(e,false),rows='',noComm=[];
+cs.forEach(c=>{
+let A=allocGet(e,c);
+if(!A||!A.list||!A.list.length){noComm.push(c);return}
+A.list.forEach((x,q)=>{
+rows+=`<tr>${q===0?`<td rowspan="${A.list.length}">${rpSlotLabel(e,c.slot,true)}<br><small>${esc((e.periods.find(p=>p.id===c.slot.split('|')[1])||{}).name||'')}</small></td><td rowspan="${A.list.length}">${esc(c.name)}<br><small>${esc(c.code)} • ${esc(c.prog)} • ${LV[c.lv-1]}</small></td>`:''}<td>${rpRoomName(x.room)}</td><td>${x.n||c.n||'—'}</td><td>${rpStaff(x.staff,'رئيس لجنة')}</td><td>${rpStaff(x.staff,'مراقب')}</td><td>${rpStaff(x.staff,'ملاحظ')}</td></tr>`;
+});
+});
+let html=`<table class="rep"><tr><th>التاريخ / الفترة</th><th>المقرر</th><th>القاعة (اللجنة)</th><th>عدد الطلاب</th><th>رئيس اللجنة</th><th>المراقب</th><th>الملاحظون</th></tr>${rows||'<tr><td colspan="7">لم توزَّع لجان بعد من صفحة توزيع اللجان.</td></tr>'}</table>`;
+if(noComm.length)html+=`<p class="notice warning">مقررات لها مواعيد ولم توزَّع لها لجان بعد (${noComm.length}): ${noComm.map(c=>esc(c.name)).join('، ')}</p>`;
+return html;
+}
+function rpBodyInvig(e){
+let per={};
+Object.entries(e.alloc||{}).forEach(([ck,A])=>{
+let [k,code]=ck.split('|'),t=e.tasks[k],c=t&&(t.courses||[]).find(x=>x.code===code);
+let p=programs().find(x=>x.key===k);
+(A.list||[]).forEach(x=>(x.staff||[]).forEach(si=>{
+let o=db.observers.find(z=>z.id===si);if(!o)return;
+(per[o.id]=per[o.id]||{o,rows:[]}).rows.push({slot:A.slot,room:x.room,course:c?c.name:code,prog:p?p.name:k,role:o.role});
+}));
+});
+let ids=Object.keys(per);
+if(!ids.length)return '<p class="muted">لم تُسند مهام ملاحظة بعد من صفحة توزيع اللجان.</p>';
+return ids.map(i=>{
+let g=per[i];g.rows.sort((a,b)=>a.slot.localeCompare(b.slot));
+return `<h3 style="color:var(--navy);margin:18px 0 8px">${esc(g.o.name)} <small>(${esc(g.o.role)}${g.o.dept?' • '+esc(g.o.dept):''})</small></h3>`+
+`<table class="rep"><tr><th>التاريخ</th><th>الفترة</th><th>القاعة</th><th>المقرر</th><th>البرنامج</th><th>الدور</th></tr>`+
+g.rows.map(r=>`<tr><td>${rpSlotLabel(e,r.slot,true)}</td><td>${esc((e.periods.find(p=>p.id===r.slot.split('|')[1])||{}).name||'')}</td><td>${rpRoomName(r.room)}</td><td>${esc(r.course)}</td><td>${esc(r.prog)}</td><td>${esc(r.role)}</td></tr>`).join('')+'</table>';
+}).join('');
+}
+const RP_DEFS=[
+{id:'students',title:'جدول الامتحانات — نسخة الطلاب',aud:'للطلاب',cls:'green',desc:'المواعيد المعتمدة لكل مستوى: التاريخ والفترة والمقرر والبرنامج. صالح للنشر للطلاب.',body:rpBodyStudent,extra:'نسخة مخصصة للطلاب'},
+{id:'committees',title:'كشوف اللجان بالملاحظين',aud:'داخلي',cls:'amber',desc:'كل لجنة: القاعة والمقرر وعدد الطلاب ورئيس اللجنة والمراقب والملاحظون. للاستخدام الداخلي.',body:rpBodyCommittees,extra:'تقرير داخلي — لا يُنشر للطلاب'},
+{id:'invig',title:'جدول مهام الملاحظين',aud:'داخلي',cls:'amber',desc:'لكل ملاحظ أو مراقب أو رئيس لجنة: مواعيده وقاعاته ومقرراته. للاستخدام الداخلي.',body:rpBodyInvig,extra:'تقرير داخلي — لا يُنشر للطلاب'}
+];
+let rpCur=null;
+window.reportsPage=function(){
+let e=active();
+if(!e)return head('مركز التقارير','لا يوجد إصدار نشط.')+'<section class="panel empty">أنشئ إصدارًا أولًا.</section>';
+let cards=RP_DEFS.map(r=>`<section class="panel" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0 0 4px">${r.title} <span class="badge ${r.cls}">${r.aud}</span></h2><p class="muted" style="margin:0">${r.desc}</p></div><div class="actions no-print" style="margin-top:0"><button class="light sm" onclick="rpView('${r.id}')">معاينة</button><button class="sm" onclick="rpExp('${r.id}','print')">طباعة / PDF</button><button class="sm light" onclick="rpExp('${r.id}','doc')">Word</button><button class="sm light" onclick="rpExp('${r.id}','xls')">Excel</button></div></div></section>`).join('');
+let prev=rpCur?`<section class="panel"><h2>معاينة: ${RP_DEFS.find(r=>r.id===rpCur).title}</h2><div class="tablewrap">${RP_DEFS.find(r=>r.id===rpCur).body(e)}</div></section>`:'';
+return head('مركز التقارير','كل تقرير يُطبع أو يُصدَّر Word وExcel بالترويسة الرسمية. التقارير الموسومة «للطلاب» صالحة للنشر، و«داخلي» للإدارة فقط.')+cards+prev;
+};
+window.rpView=function(id){rpCur=rpCur===id?null:id;render()};
+window.rpExp=function(id,kind){
+let e=active(),r=RP_DEFS.find(x=>x.id===id);if(!e||!r)return;
+let body=r.body(e).replace(/class="rep"/g,'border="1" cellspacing="0" style="width:100%;border-collapse:collapse"').replace(/class="[^"]*"/g,'').replace(/var\(--navy\)/g,'#173451');
+let doc=`<html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>@page{size:A4 landscape;margin:8mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;direction:rtl;font-size:11pt;color:#1d2733}table{border-collapse:collapse;width:100%}td,th{border:1px solid #444;padding:6px 8px;text-align:right;font-size:10pt;vertical-align:top}th{background:#eee}h3{margin:14px 0 6px}.offhead{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}.oh-c{text-align:center;flex:1}.oh-c b{display:block;font-size:14pt}.oh-c span{display:block;font-size:10pt}</style></head><body>${offHead(r.extra)}<h2 style="text-align:center;margin:10px 0">${r.title}</h2>${body}</body></html>`;
+if(kind==='print'){let w=window.open('','_blank');w.document.write(doc);w.document.close();w.focus();setTimeout(()=>w.print(),400);log('طباعة تقرير: '+r.title);return}
+let mime=kind==='doc'?'application/msword':'application/vnd.ms-excel';
+dl(`report-${r.id}.${kind}`,new Blob(['﻿'+doc],{type:mime}));
+log('تصدير تقرير '+r.title+' ('+kind+')');
+toast('تم تجهيز ملف التقرير');
+};
+// wire in: unknown pages fall back to dashboard() in render's page map
+const _d12=dashboard;
+dashboard=function(){if(page==='reports')return reportsPage();return _d12()};
+})();

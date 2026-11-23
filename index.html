@@ -818,8 +818,178 @@ button.ntItem:hover{background:#eef4fb;transform:none;box-shadow:none}
 .fltIn{flex:1;border:0!important;background:transparent!important;box-shadow:none!important;padding:8px 4px;font-size:13px;color:var(--ink,#192b3d);outline:none}
 .fltIn::placeholder{color:#9db0c4}
 .fltCnt{font-size:11.5px;font-weight:700;color:#0e6e6a;white-space:nowrap}
+
+/* ===== theme6: unified palette + true dark mode + topbar/nav polish (21:57 round) ===== */
+
+/* ---------- unified palette: deep navy + teal only (brass/blue retired) ---------- */
+:root{
+ --ink:#16324F;--navy:#16324F;--navy2:#24486B;
+ --teal:#0E8582;--emerald:#0E8582;--brass:#0E8582;--brass2:#17A09C;
+ --bg:#F4F6FA;--paper:#F4F6FA;--line:#E3E8F0;--muted:#66707E;
+ --grad:linear-gradient(135deg,#16324F,#0E6E6A);
+}
+/* every accent gradient goes navy→teal; blue and gold are gone */
+.stat:before{background:linear-gradient(180deg,#16324F,#0E8582)}
+.stat strong{background:linear-gradient(120deg,#16324F,#0E8582);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.nav button.active{background:linear-gradient(120deg,#16324F,#0E8582);box-shadow:0 8px 20px -6px #16324f66}
+button.teal{background:linear-gradient(135deg,#0E8582,#16324F)}
+.panel button.teal,.modal button.teal,.head .actions button.teal{background:linear-gradient(135deg,#0E8582,#16324F)!important}
+.progress i{background:linear-gradient(90deg,#16324F,#0E8582)}
+.step.active{background:linear-gradient(135deg,#16324F,#0E8582)}
+.head h1:before{background:linear-gradient(180deg,#0E8582,#16324F)}
+.loginbox button,.loginbox .logo{background:linear-gradient(135deg,#16324F,#0E8582)!important}
+.ring{background:conic-gradient(#17A09C calc(var(--p)*1%),#ffffff1c 0)}
+#topbarTabs .tab-hl{background:linear-gradient(120deg,#16324F,#0E8582)}
+#topbarTabs .tbadge{background:#0E8582}
+#topbarTabs button.active .tbadge{background:rgba(255,255,255,.22)}
+.hero small{color:#9be0dd}
+.gsIt .ic{background:#0e858214;color:#0E6E6A}
+.ntItem .dot.review{background:#16324F}
+.check:has(input:checked){background:#e7f4f2;border-color:#0E8582}
+
+/* ---------- login: nothing but the login card before sign-in ---------- */
+#login{position:fixed;inset:0;z-index:70;overflow:auto}
+body:has(#login:not(.hidden)){overflow:hidden}
+/* the art panel stats stay factual (18 programs / 4 levels / 6 special programs) */
+
+/* ---------- topbar: neat aligned row + actions cluster ---------- */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 18px}
+#topActs{display:flex;align-items:center;gap:8px;margin-inline-start:auto;order:2}
+#topActs #savechip{font-size:11px;padding:4px 10px}
+#clock{text-align:center;line-height:1.25;padding-inline:6px}
+#clock b{font-size:14px;color:var(--ink);display:block}
+#clock small{font-size:10.5px;color:var(--muted);display:block}
+#themeBtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;padding:0;font-size:16px}
+#topbarTabs{order:3;width:100%;flex-wrap:wrap;border-radius:18px}
+#topbarTabs #nav{display:flex;flex-wrap:wrap;gap:3px;overflow:visible;width:100%}
+#tabMoreWrap{display:none!important}
+@media(max-width:900px){#topbarTabs{display:none}}
+
+/* ---------- dashboard concise status strip ---------- */
+.dstatus{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.dstatus .ds-it{background:rgba(255,255,255,.66);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:7px 14px;font-size:12.5px;color:#41546b;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px -6px #0b254022}
+.dstatus .ds-it b{color:#16324F;font-size:13.5px}
+.dstatus .ds-it.ok b{color:#0E6E6A}
+.dstatus .ds-it.warn b{color:#a66b12}
+
+/* ---------- release settings: saved state ---------- */
+.savedstate .svhead{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.savedstate .svok{background:#eaf7f0;color:#23845b;font-weight:800;border-radius:999px;padding:6px 14px;font-size:13px;flex:none}
+.savedstate .svgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.savedstate .svrow{background:#f6f9fc;border:1px solid #e6edf4;border-radius:12px;padding:10px 14px}
+.savedstate .svrow span{display:block;font-size:11px;color:#66707E}
+.savedstate .svrow b{font-size:14px;color:#16324F}
+
+/* ---------- notifications: per-item dismiss button ---------- */
+.ntX{flex:none;width:26px;height:26px;border-radius:8px;background:transparent;color:#0E6E6A;font-size:13px;font-weight:800;display:grid;place-items:center;box-shadow:none;padding:0}
+.ntX:hover{background:#0e858214;transform:none}
+
+/* =====================================================================
+   TRUE DARK MODE: refined deep navy / charcoal (replaces the invert hack)
+   ===================================================================== */
+html[data-theme=dark]{filter:none!important;background:#0D1620}
+html[data-theme=dark] img,html[data-theme=dark] video,html[data-theme=dark] .side,html[data-theme=dark] .login-art,html[data-theme=dark] .hero,html[data-theme=dark] .bar,html[data-theme=dark] .av,html[data-theme=dark] .pav,html[data-theme=dark] .stepcard .num,html[data-theme=dark] .side-backdrop,html[data-theme=dark] #loginTheme,html[data-theme=dark] #ntBadge,html[data-theme=dark] #login .bgslides,html[data-theme=dark] #login .bgslides img{filter:none!important}
+html[data-theme=dark] body{
+ background:
+  radial-gradient(1100px 500px at 85% -10%, #0e858214, transparent 60%),
+  radial-gradient(900px 480px at -10% 15%, #16324f22, transparent 60%),
+  linear-gradient(160deg,#101C2A 0%,#0C1520 60%,#0B131D 100%)!important;
+ color:#D9E4EF;
+}
+html[data-theme=dark] .panel,html[data-theme=dark] .stat,html[data-theme=dark] .pair-card,html[data-theme=dark] .stepcard{
+ background:rgba(24,37,53,.78);border:1px solid rgba(255,255,255,.08);
+ box-shadow:0 1px 2px #00000030,0 18px 44px -18px #00000066;
+}
+html[data-theme=dark] .top{background:rgba(13,23,34,.82);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 6px 24px -12px #00000066}
+html[data-theme=dark] #topBrand{color:#E8F0F7}
+html[data-theme=dark] #topBrand small{color:#8FA6BB}
+html[data-theme=dark] #pagetitle{color:#E8F0F7}
+html[data-theme=dark] #editionlabel{color:#8FA6BB}
+html[data-theme=dark] #clock b{color:#E8F0F7}
+html[data-theme=dark] #clock small{color:#8FA6BB}
+html[data-theme=dark] #topbarTabs{background:#142436;border-color:#223850}
+html[data-theme=dark] #topbarTabs button{color:#9FB4C8}
+html[data-theme=dark] #topbarTabs button:hover{color:#E8F0F7}
+html[data-theme=dark] #topbarTabs button.active{color:#fff}
+html[data-theme=dark] #themeBtn,html[data-theme=dark] #ntBtn,html[data-theme=dark] #avBtn,html[data-theme=dark] button.light{
+ background:rgba(30,45,63,.85);border-color:#2A3F58;color:#D9E4EF;
+}
+html[data-theme=dark] .head h1{color:#E8F0F7}
+html[data-theme=dark] .head p{color:#8FA6BB}
+html[data-theme=dark] .panel h2,html[data-theme=dark] .panel h3{color:#E8F0F7}
+html[data-theme=dark] .stat span{color:#8FA6BB}
+html[data-theme=dark] .stat strong{background:linear-gradient(120deg,#E8F0F7,#5EC8C3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+html[data-theme=dark] input,html[data-theme=dark] select,html[data-theme=dark] textarea{
+ background:#101D2B!important;border-color:#2A3F58!important;color:#E8F0F7!important;
+}
+html[data-theme=dark] input::placeholder{color:#5F738A}
+html[data-theme=dark] .tablewrap{background:rgba(24,37,53,.6);border-color:#223850}
+html[data-theme=dark] table{background:transparent}
+html[data-theme=dark] th{background:#1A2C40;color:#9FB4C8}
+html[data-theme=dark] td{color:#D9E4EF;border-bottom-color:#223850}
+html[data-theme=dark] tbody tr:hover td{background:#0e858212}
+html[data-theme=dark] .badge{background:#223850;color:#B9CADD}
+html[data-theme=dark] .badge.green{background:#0f3d33;color:#5EC8A9}
+html[data-theme=dark] .badge.amber{background:#3d2f12;color:#E3B45C}
+html[data-theme=dark] .badge.redtag{background:#3d1a1e;color:#E58A93}
+html[data-theme=dark] .badge.blue{background:#16304a;color:#7FB3E8}
+html[data-theme=dark] .notice{background:#14304A;color:#9CC3E8;border-color:#1f4465}
+html[data-theme=dark] .notice.warning{background:#3A2E12;color:#E3B45C;border-color:#54441c}
+html[data-theme=dark] .empty{color:#8FA6BB}
+html[data-theme=dark] .empty b{color:#E8F0F7}
+html[data-theme=dark] .muted{color:#8FA6BB}
+html[data-theme=dark] .modal{background:#162534;border:1px solid #223850}
+html[data-theme=dark] .modal h3{color:#E8F0F7}
+html[data-theme=dark] .modalbg{background:#050b12cc}
+html[data-theme=dark] .check{background:#142436;border-color:#223850;color:#D9E4EF}
+html[data-theme=dark] .check:has(input:checked){background:#0f3d33;border-color:#0E8582}
+html[data-theme=dark] .step{background:#142436;border-color:#223850;color:#8FA6BB}
+html[data-theme=dark] .step b{color:#D9E4EF}
+html[data-theme=dark] .step.active{background:linear-gradient(135deg,#16324F,#0E8582);color:#fff}
+html[data-theme=dark] .step.active b{color:#fff}
+html[data-theme=dark] .step.done{background:#0f2e28;border-color:#1c4a3f}
+html[data-theme=dark] .progress{background:#1C2C3F}
+html[data-theme=dark] .tabs button{background:#142436;color:#9FB4C8}
+html[data-theme=dark] .tabs button.active{background:var(--grad);color:#fff}
+html[data-theme=dark] .fltbar{background:rgba(24,37,53,.78);border-color:#223850;color:#5F738A}
+html[data-theme=dark] .fltIn{color:#E8F0F7!important}
+html[data-theme=dark] .fltIn::placeholder{color:#5F738A}
+html[data-theme=dark] .fltCnt{color:#5EC8C3}
+html[data-theme=dark] .dstatus .ds-it{background:rgba(24,37,53,.78);border-color:rgba(255,255,255,.08);color:#9FB4C8}
+html[data-theme=dark] .dstatus .ds-it b{color:#E8F0F7}
+html[data-theme=dark] .dstatus .ds-it.ok b{color:#5EC8C3}
+html[data-theme=dark] .dstatus .ds-it.warn b{color:#E3B45C}
+html[data-theme=dark] .savedstate .svrow{background:#142436;border-color:#223850}
+html[data-theme=dark] .savedstate .svrow b{color:#E8F0F7}
+html[data-theme=dark] .savedstate .svrow span{color:#8FA6BB}
+html[data-theme=dark] .savedstate .svok{background:#0f3d33;color:#5EC8A9}
+html[data-theme=dark] #ntMenu,html[data-theme=dark] #avMenu,html[data-theme=dark] #tabMoreMenu{
+ background:rgba(22,35,50,.97);border-color:#223850;box-shadow:0 24px 60px -18px #00000088;
+}
+html[data-theme=dark] .ntHead{color:#E8F0F7;border-bottom-color:#223850;background:rgba(22,35,50,.97)}
+html[data-theme=dark] .ntSec{color:#5F738A}
+html[data-theme=dark] .ntItem{color:#D9E4EF}
+html[data-theme=dark] button.ntItem:hover{background:#1c3048}
+html[data-theme=dark] .ntItem.un{background:#17304a}
+html[data-theme=dark] .ntItem.un:hover{background:#1b3a58}
+html[data-theme=dark] .ntItem.alert{background:#2e2712}
+html[data-theme=dark] .ntItem .ntTx small{color:#8FA6BB}
+html[data-theme=dark] .ntItem .ntTx b{color:#E8F0F7}
+html[data-theme=dark] .ntEmpty{color:#5F738A}
+html[data-theme=dark] .ntX{color:#5EC8C3}
+html[data-theme=dark] .ntX:hover{background:#0e858220}
+html[data-theme=dark] #avMenu button{color:#D9E4EF;background:transparent;box-shadow:none}
+html[data-theme=dark] #avMenu button:hover{background:#1c3048}
+html[data-theme=dark] .field label{color:#8FA6BB}
+html[data-theme=dark] .foot{color:#5F738A}
+html[data-theme=dark] .toast{background:#1E2D3F;color:#E8F0F7;border:1px solid #223850}
+html[data-theme=dark] .toast.err{background:#5a2026}
+html[data-theme=dark] .text-btn{color:#5EC8C3}
+html[data-theme=dark] .sidebottom button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+html[data-theme=dark] .arow .ti b{color:#E8F0F7}
+html[data-theme=dark] .loginbox p{color:#A8C4DC!important}
 </style><link rel="stylesheet" href="cairo.css"></head><body>
-<div id="login"><div class="login-art"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><div class="art-copy"><span class="eyebrow">كلية العلوم • جامعة سوهاج</span><h2>جداول الامتحانات،<br><em>منظّمة من البداية للنهاية</em></h2><p>من توزيع المسؤوليات على المختصين، إلى المراجعة والاعتماد، حتى الجدول النهائي المجمّع للطباعة والتصدير.</p><div class="art-stats"><div><b>15</b><small>برنامجاً</small></div><div><b>4</b><small>مستويات</small></div><div><b>6</b><small>برامج خاصة</small></div></div></div></div><div class="login-panel"><div class="loginbox"><div class="brandrow"><img data-lg alt=""><div><h1>منصة إدارة جداول الامتحانات</h1><p>كلية العلوم – جامعة سوهاج</p></div></div><div class="field"><label>اسم المستخدم</label><input id="lu" value="admin"></div><div class="field"><label>كلمة المرور</label><input id="lp" type="password" placeholder="أدخل كلمة المرور" onkeydown="if(event.key==='Enter')login()"></div><div id="loginerr" class="notice warning hidden"></div><button style="width:100%" onclick="login()">تسجيل الدخول</button><div class="foot">سجّل الدخول ببيانات حسابك المعتمد من إدارة الكلية.</div></div></div></div>
+<div id="login"><div class="login-art"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><div class="art-copy"><span class="eyebrow">كلية العلوم • جامعة سوهاج</span><h2>جداول الامتحانات،<br><em>منظّمة من البداية للنهاية</em></h2><p>من توزيع المسؤوليات على المختصين، إلى المراجعة والاعتماد، حتى الجدول النهائي المجمّع للطباعة والتصدير.</p><div class="art-stats"><div><b>18</b><small>برنامجاً</small></div><div><b>4</b><small>مستويات</small></div><div><b>6</b><small>برامج خاصة</small></div></div></div></div><div class="login-panel"><div class="loginbox"><div class="brandrow"><img data-lg alt=""><div><h1>منصة إدارة جداول الامتحانات</h1><p>كلية العلوم – جامعة سوهاج</p></div></div><div class="field"><label>اسم المستخدم</label><input id="lu" placeholder="اسم المستخدم"></div><div class="field"><label>كلمة المرور</label><input id="lp" type="password" placeholder="أدخل كلمة المرور" onkeydown="if(event.key==='Enter')login()"></div><div id="loginerr" class="notice warning hidden"></div><button style="width:100%" onclick="login()">تسجيل الدخول</button><div class="foot">سجّل الدخول ببيانات حسابك المعتمد من إدارة الكلية.</div></div></div></div>
 <div id="app" class="app hidden"><aside id="side" class="side"><div class="brand"><img data-lg alt=""><div><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div></div><div class="profile"><span class="av" id="av">م</span><div><b id="who">مدير النظام</b><small id="role">مدير النظام</small></div></div><div><div class="navtitle" style="margin-bottom:6px">القائمة الرئيسية</div><div id="nav" class="nav"></div></div><div class="sidebottom"><button onclick="backup()">تصدير نسخة احتياطية</button><button onclick="logout()">تسجيل الخروج</button></div></aside><section class="main"><header class="top"><div style="display:flex;align-items:center;gap:9px"><button class="mobile light" onclick="toggleSide()">☰</button><div><b id="pagetitle">لوحة التحكم</b><small id="editionlabel">لا يوجد إصدار نشط</small></div></div><button class="light" onclick="changePassword()">تغيير كلمة المرور</button></header><main id="content" class="content"></main></section></div><div id="modalroot"></div><div id="toastroot"></div>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],LV=['الأول','الثاني','الثالث','الرابع'],SP=['الإحصاء الرياضي والبرمجة','الكيمياء الحيوية','الفيزياء الحيوية الطبية','التكنولوجيا الحيوية الجزيئية','البيولوجيا الجزيئية والطفيليات','الجيولوجيا الهندسية ومواد البناء'],G1=['شعبة العلوم البيولوجية','شعبة العلوم الفيزيائية','شعبة العلوم الجيولوجية'],P2=['الميكروبيولوجي والكيمياء','علم الحيوان والكيمياء','النبات والكيمياء','الكيمياء','الفيزياء','الرياضيات','الجيولوجيا والكيمياء','الجيوفيزياء','الجيولوجيا'],DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];let db,me=null,page='dashboard',step=1,taskKey=null,draftEdition=null;

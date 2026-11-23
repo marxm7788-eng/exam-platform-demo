@@ -1327,24 +1327,66 @@ return `<h3 style="color:var(--navy);margin:18px 0 8px">${esc(g.o.name)} <small>
 g.rows.map(r=>`<tr><td>${rpSlotLabel(e,r.slot,true)}</td><td>${esc((e.periods.find(p=>p.id===r.slot.split('|')[1])||{}).name||'')}</td><td>${rpRoomName(r.room)}</td><td>${esc(r.course)}</td><td>${esc(r.prog)}</td><td>${esc(r.role)}</td></tr>`).join('')+'</table>';
 }).join('');
 }
+// ---- per-person duty sheets (individual distribution) ----
+function rpPer(e){
+let per={};
+Object.entries(e.alloc||{}).forEach(([ck,A])=>{
+let [k,code]=ck.split('|'),t=e.tasks[k],c=t&&(t.courses||[]).find(x=>x.code===code);
+let p=programs().find(x=>x.key===k);
+(A.list||[]).forEach(x=>(x.staff||[]).forEach(si=>{
+let o=db.observers.find(z=>z.id===si);if(!o)return;
+(per[o.id]=per[o.id]||{o,rows:[]}).rows.push({slot:A.slot,room:x.room,course:c?c.name:code,prog:p?p.name:k,role:o.role});
+}));
+});
+Object.values(per).forEach(g=>g.rows.sort((a,b)=>a.slot.localeCompare(b.slot)));
+return per;
+}
+function rpSheetRows(e,g){return g.rows.map(r=>`<tr><td>${rpSlotLabel(e,r.slot,true)}</td><td>${esc((e.periods.find(p=>p.id===r.slot.split('|')[1])||{}).name||'')}</td><td>${rpRoomName(r.room)}</td><td>${esc(r.course)}</td><td>${esc(r.prog)}</td><td>${esc(r.role)}</td></tr>`).join('')}
+function rpBodySheetsPrev(e){
+let per=rpPer(e),ids=Object.keys(per);
+if(!ids.length)return '<p class="muted">لم تُسند مهام ملاحظة بعد من صفحة توزيع اللجان.</p>';
+return '<div class="setgrid">'+ids.map(i=>{
+let g=per[i];
+return `<section class="panel" style="margin:0"><h2 style="font-size:15px;margin:0 0 2px">${esc(g.o.name)}</h2><p class="muted" style="margin:0 0 8px">${esc(g.o.role)}${g.o.dept?' • '+esc(g.o.dept):''} • ${g.rows.length} ${g.rows.length===1?'مهمة':'مهام'}</p><div class="tablewrap"><table><tr><th>التاريخ</th><th>الفترة</th><th>القاعة</th><th>المقرر</th></tr>`+g.rows.map(r=>`<tr><td>${rpSlotLabel(e,r.slot,true)}</td><td>${esc((e.periods.find(p=>p.id===r.slot.split('|')[1])||{}).name||'')}</td><td>${rpRoomName(r.room)}</td><td>${esc(r.course)}</td></tr>`).join('')+'</table></div></section>';
+}).join('')+'</div>';
+}
+function rpBodySheetsPrint(e){
+let per=rpPer(e),ids=Object.keys(per);
+if(!ids.length)return '<p>لم تُسند مهام ملاحظة بعد.</p>';
+return ids.map(i=>{
+let g=per[i];
+return `<div style="page-break-after:always">${offHead('كشف مهام فردي')}<h2 style="text-align:center;margin:10px 0">كشف مهام الملاحظة</h2><p style="text-align:center;margin:0 0 12px"><b>${esc(g.o.name)}</b> — ${esc(g.o.role)}${g.o.dept?' • '+esc(g.o.dept):''}</p><table border="1" cellspacing="0" style="width:100%;border-collapse:collapse"><tr><th>التاريخ</th><th>الفترة</th><th>القاعة</th><th>المقرر</th><th>البرنامج</th><th>الدور</th></tr>${rpSheetRows(e,g)}</table><p style="margin-top:26px">استلمت مهامي كما هي موضحة أعلاه. &nbsp;&nbsp; التوقيع: ..............................</p></div>`;
+}).join('');
+}
 const RP_DEFS=[
 {id:'students',title:'جدول الامتحانات — نسخة الطلاب',aud:'للطلاب',cls:'green',desc:'المواعيد المعتمدة لكل مستوى: التاريخ والفترة والمقرر والبرنامج. صالح للنشر للطلاب.',body:rpBodyStudent,extra:'نسخة مخصصة للطلاب'},
 {id:'committees',title:'كشوف اللجان بالملاحظين',aud:'داخلي',cls:'amber',desc:'كل لجنة: القاعة والمقرر وعدد الطلاب ورئيس اللجنة والمراقب والملاحظون. للاستخدام الداخلي.',body:rpBodyCommittees,extra:'تقرير داخلي — لا يُنشر للطلاب'},
-{id:'invig',title:'جدول مهام الملاحظين',aud:'داخلي',cls:'amber',desc:'لكل ملاحظ أو مراقب أو رئيس لجنة: مواعيده وقاعاته ومقرراته. للاستخدام الداخلي.',body:rpBodyInvig,extra:'تقرير داخلي — لا يُنشر للطلاب'}
+{id:'invig',title:'جدول مهام الملاحظين',aud:'داخلي',cls:'amber',desc:'لكل ملاحظ أو مراقب أو رئيس لجنة: مواعيده وقاعاته ومقرراته. للاستخدام الداخلي.',body:rpBodyInvig,extra:'تقرير داخلي — لا يُنشر للطلاب'},
+{id:'sheets',title:'كشوف المهام الفردية',aud:'للتوزيع',cls:'green',desc:'صفحة مستقلة بترويسة رسمية لكل معيد أو دكتور: مهامه بالتاريخ والفترة والقاعة والمقرر، مع سطر استلام وتوقيع. تُطبع صفحة لكل شخص وتُوزَّع عليه.',body:rpBodySheetsPrev,printBody:rpBodySheetsPrint,extra:'كشف مهام فردي'}
 ];
 let rpCur=null;
 window.reportsPage=function(){
 let e=active();
 if(!e)return head('مركز التقارير','لا يوجد إصدار نشط.')+'<section class="panel empty">أنشئ إصدارًا أولًا.</section>';
-let cards=RP_DEFS.map(r=>`<section class="panel" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0 0 4px">${r.title} <span class="badge ${r.cls}">${r.aud}</span></h2><p class="muted" style="margin:0">${r.desc}</p></div><div class="actions no-print" style="margin-top:0"><button class="light sm" onclick="rpView('${r.id}')">معاينة</button><button class="sm" onclick="rpExp('${r.id}','print')">طباعة / PDF</button><button class="sm light" onclick="rpExp('${r.id}','doc')">Word</button><button class="sm light" onclick="rpExp('${r.id}','xls')">Excel</button></div></div></section>`).join('');
+db.pubs=db.pubs||{};
+let cards=RP_DEFS.map(r=>{let pub=db.pubs[r.id];
+let pubBd=pub?` <span class="badge green">منشور • ${new Date(pub.at).toLocaleDateString('ar-EG',{day:'numeric',month:'long'})} • ${esc(pub.by||'')}</span>`:'';
+return `<section class="panel" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><h2 style="margin:0 0 4px">${r.title} <span class="badge ${r.cls}">${r.aud}</span>${pubBd}</h2><p class="muted" style="margin:0">${r.desc}</p></div><div class="actions no-print" style="margin-top:0"><button class="light sm" onclick="rpView('${r.id}')">معاينة</button><button class="sm" onclick="rpExp('${r.id}','print')">طباعة / PDF</button><button class="sm light" onclick="rpExp('${r.id}','doc')">Word</button><button class="sm light" onclick="rpExp('${r.id}','xls')">Excel</button><button class="sm ${pub?'danger':'teal'}" onclick="rpPub('${r.id}')">${pub?'إلغاء النشر':'نشر للتوزيع'}</button></div></div></section>`}).join('');
 let prev=rpCur?`<section class="panel"><h2>معاينة: ${RP_DEFS.find(r=>r.id===rpCur).title}</h2><div class="tablewrap">${RP_DEFS.find(r=>r.id===rpCur).body(e)}</div></section>`:'';
-return head('مركز التقارير','كل تقرير يُطبع أو يُصدَّر Word وExcel بالترويسة الرسمية. التقارير الموسومة «للطلاب» صالحة للنشر، و«داخلي» للإدارة فقط.')+cards+prev;
+return head('مركز التقارير','كل تقرير يُطبع أو يُصدَّر Word وExcel بالترويسة الرسمية. «نشر للتوزيع» يعلّم التقرير معتمدًا وجاهزًا داخل المنصة مع تاريخ النشر، والتوزيع الفعلي يكون بطباعة الملف أو مشاركته.')+cards+prev;
 };
 window.rpView=function(id){rpCur=rpCur===id?null:id;render()};
+window.rpPub=function(id){
+db.pubs=db.pubs||{};let r=RP_DEFS.find(x=>x.id===id);if(!r)return;
+if(db.pubs[id]){delete db.pubs[id];save();log('إلغاء نشر تقرير: '+r.title);toast('أُلغي نشر «'+r.title+'»');render();return}
+db.pubs[id]={at:new Date().toISOString(),by:me?me.name:''};
+save();log('نشر تقرير للتوزيع: '+r.title);toast('نُشر «'+r.title+'» — جاهز للطباعة والتوزيع');render();
+};
 window.rpExp=function(id,kind){
 let e=active(),r=RP_DEFS.find(x=>x.id===id);if(!e||!r)return;
-let body=r.body(e).replace(/class="rep"/g,'border="1" cellspacing="0" style="width:100%;border-collapse:collapse"').replace(/class="[^"]*"/g,'').replace(/var\(--navy\)/g,'#173451');
-let doc=`<html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>@page{size:A4 landscape;margin:8mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;direction:rtl;font-size:11pt;color:#1d2733}table{border-collapse:collapse;width:100%}td,th{border:1px solid #444;padding:6px 8px;text-align:right;font-size:10pt;vertical-align:top}th{background:#eee}h3{margin:14px 0 6px}.offhead{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}.oh-c{text-align:center;flex:1}.oh-c b{display:block;font-size:14pt}.oh-c span{display:block;font-size:10pt}</style></head><body>${offHead(r.extra)}<h2 style="text-align:center;margin:10px 0">${r.title}</h2>${body}</body></html>`;
+let body=r.printBody?r.printBody(e):r.body(e).replace(/class="rep"/g,'border="1" cellspacing="0" style="width:100%;border-collapse:collapse"').replace(/class="[^"]*"/g,'').replace(/var\(--navy\)/g,'#173451');
+let pg=r.printBody?'portrait':'landscape';
+let doc=`<html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>@page{size:A4 ${pg};margin:8mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;direction:rtl;font-size:11pt;color:#1d2733}table{border-collapse:collapse;width:100%}td,th{border:1px solid #444;padding:6px 8px;text-align:right;font-size:10pt;vertical-align:top}th{background:#eee}h3{margin:14px 0 6px}.offhead{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}.oh-c{text-align:center;flex:1}.oh-c b{display:block;font-size:14pt}.oh-c span{display:block;font-size:10pt}</style></head><body>${r.printBody?'':offHead(r.extra)+'<h2 style="text-align:center;margin:10px 0">'+r.title+'</h2>'}${body}</body></html>`;
 if(kind==='print'){let w=window.open('','_blank');w.document.write(doc);w.document.close();w.focus();setTimeout(()=>w.print(),400);log('طباعة تقرير: '+r.title);return}
 let mime=kind==='doc'?'application/msword':'application/vnd.ms-excel';
 dl(`report-${r.id}.${kind}`,new Blob(['﻿'+doc],{type:mime}));
@@ -1355,3 +1397,198 @@ toast('تم تجهيز ملف التقرير');
 const _d12=dashboard;
 dashboard=function(){if(page==='reports')return reportsPage();return _d12()};
 })();
+// ===== ext13: structural redesign — grouped sidebar, global search, unified notifications, settings hub =====
+// All data and behavior preserved; this file only reorganizes the shell.
+// ---------- grouped navigation ----------
+const G13 = [
+{ t: 'الرئيسية', items: ['dashboard', 'tasks'] },
+{ t: 'التخطيط والإعداد', items: ['setup', 'assign'] },
+{ t: 'المتابعة والاعتماد', items: ['tracking', 'review', 'published'] },
+{ t: 'اللجان والملاحظون', items: ['observers', 'alloc'] },
+{ t: 'التقارير والبيانات', items: ['reports', 'rooms', 'logs'] },
+{ t: 'الإدارة', items: ['users', 'settings'] },
+];
+const I13 = { dashboard: '⌂', tasks: '☐', setup: '⚙', assign: '⇄', tracking: '◎', review: '✔', published: '▦', observers: '◉', alloc: '⊞', reports: '◫', rooms: '▤', logs: '☰', users: '●', settings: '✦' };
+function counts13() {
+let e = typeof active === 'function' ? active() : null, c = { review: 0, tracking: 0, tasks: 0 };
+if (!e || !me) return c;
+Object.keys(e.assign || {}).forEach(k => {
+let t = (e.tasks || {})[k] || { status: 'مسودة' };
+if (t.status === 'مرسل للمراجعة' && can('approve')) c.review++;
+if (typeof isLate === 'function' && isLate(t)) c.tracking++;
+if (e.assign[k] === me.id && ['مسودة', 'قيد الإعداد', 'يحتاج تعديل'].includes(t.status)) c.tasks++;
+});
+return c;
+}
+function buildSideNav13() {
+let nav = document.getElementById('nav'); if (!nav || typeof menu !== 'function') return;
+// move nav back to the sidebar if ext6 relocated it into the topbar
+if (nav._home && nav.parentElement !== nav._home) nav._home.appendChild(nav);
+let m = menu(), c = counts13(), keys = m.map(x => x[0]), names = {};
+m.forEach(([k, n]) => names[k] = n);
+let used = new Set(), html = '';
+G13.forEach(g => {
+let its = g.items.filter(k => keys.includes(k));
+if (!its.length) return;
+its.forEach(k => used.add(k));
+html += `<div class="navgrp"><b>${g.t}</b>` + its.map(k => {
+let n = c[k] || 0;
+return `<button type="button" class="${page === k ? 'active' : ''}" onclick="go('${k}')"><span class="ic">${I13[k] || '•'}</span><span class="lbl">${names[k]}</span>${n ? `<span class="tbadge">${n}</span>` : ''}</button>`;
+}).join('') + '</div>';
+});
+let rest = keys.filter(k => !used.has(k));
+if (rest.length) html += `<div class="navgrp"><b>أخرى</b>` + rest.map(k => `<button type="button" class="${page === k ? 'active' : ''}" onclick="go('${k}')"><span class="ic">${I13[k] || '•'}</span><span class="lbl">${names[k]}</span></button>`).join('') + '</div>';
+nav.innerHTML = html;
+}
+// ---------- global search ----------
+function gsEnsure() {
+if (document.getElementById('gsWrap')) return;
+let top = document.querySelector('.top'); if (!top) return;
+let w = document.createElement('div');
+w.id = 'gsWrap';
+w.innerHTML = `<input id="gsInput" type="search" placeholder="بحث شامل: صفحة، مقرر، ملاحظ، قاعة…" autocomplete="off" aria-label="بحث شامل"><div id="gsDrop" hidden></div>`;
+let nt = document.getElementById('ntWrap');
+top.insertBefore(w, nt || top.children[1] || null);
+let inp = w.querySelector('#gsInput');
+inp.addEventListener('input', () => gsPaint());
+inp.addEventListener('focus', () => { if (inp.value.trim()) gsPaint(); });
+inp.addEventListener('keydown', ev => {
+if (ev.key === 'Escape') { inp.value = ''; gsClose(); inp.blur(); }
+if (ev.key === 'Enter') { let f = w.querySelector('#gsDrop .gsIt'); if (f) { ev.preventDefault(); f.click(); } }
+});
+document.addEventListener('click', ev => { if (!w.contains(ev.target)) gsClose(); });
+}
+function gsClose() { let d = document.getElementById('gsDrop'); if (d) d.hidden = true; }
+function gsResults(q) {
+q = q.trim(); if (!q) return null;
+let out = { pages: [], courses: [], observers: [], users: [], rooms: [] }, L = s => (s || '').toString();
+let e = typeof active === 'function' ? active() : null;
+menu().forEach(([k, n]) => { if (L(n).includes(q)) out.pages.push({ k, n }); });
+if (e && typeof planItems === 'function' && typeof programs === 'function') {
+try {
+programs().forEach(p => {
+(planItems(e, p.key) || []).forEach(it => (it.courses || []).forEach(c => {
+if (L(c.name).includes(q) || L(c.code).includes(q)) out.courses.push({ code: c.code, n: c.name, p: p.name, lv: LV[+p.key[0] - 1] || '' });
+}));
+});
+} catch (x) { }
+out.courses = out.courses.slice(0, 6);
+}
+if (typeof invigOn === 'function' && invigOn() && db.observers)
+db.observers.forEach(o => { if (L(o.name).includes(q)) out.observers.push(o); });
+out.observers = out.observers.slice(0, 5);
+if (typeof can === 'function' && can('users'))
+db.users.forEach(u => { if (L(u.name).includes(q) || L(u.username).includes(q)) out.users.push(u); });
+out.users = out.users.slice(0, 5);
+(db.rooms || []).forEach(r => { if (L(r.name).includes(q)) out.rooms.push(r); });
+out.rooms = out.rooms.slice(0, 5);
+return out;
+}
+function gsPaint() {
+let inp = document.getElementById('gsInput'), d = document.getElementById('gsDrop'); if (!inp || !d) return;
+let r = gsResults(inp.value);
+if (!r) { gsClose(); return; }
+let h = '', any = false;
+const grp = (t, rows) => { if (!rows.length) return ''; any = true; return `<div class="gsGrp"><b>${t}</b>${rows}</div>`; };
+h += grp('الصفحات', r.pages.map(x => `<button type="button" class="gsIt" data-k="${x.k}"><span class="ic">${I13[x.k] || '•'}</span><span><b>${esc(x.n)}</b><small>صفحة</small></span></button>`).join(''));
+h += grp('المقررات', r.courses.map(x => `<button type="button" class="gsIt" data-k="tracking" data-t="المقرر «${esc(x.n)}» ضمن جداول ${esc(x.p)} — يظهر في صفحة متابعة الجداول"><span class="ic">✎</span><span><b>${esc(x.n)}</b><small>${esc(x.code)} • ${esc(x.p)} • المستوى ${esc(x.lv)}</small></span></button>`).join(''));
+h += grp('الملاحظون', r.observers.map(x => `<button type="button" class="gsIt" data-k="observers"><span class="ic">◉</span><span><b>${esc(x.name)}</b><small>${esc(x.role || 'ملاحظ')}</small></span></button>`).join(''));
+h += grp('المستخدمون', r.users.map(x => `<button type="button" class="gsIt" data-k="users"><span class="ic">●</span><span><b>${esc(x.name)}</b><small>${esc(x.username)} • ${esc(roleName(x.role))}</small></span></button>`).join(''));
+h += grp('القاعات', r.rooms.map(x => `<button type="button" class="gsIt" data-k="rooms"><span class="ic">▤</span><span><b>${esc(x.name)}</b><small>سعة ${x.cap}</small></span></button>`).join(''));
+if (!any) h = '<div class="gsEmpty">لا توجد نتائج مطابقة. جرّب اسم مقرر أو كوده أو اسم صفحة.</div>';
+d.innerHTML = h; d.hidden = false;
+d.querySelectorAll('.gsIt').forEach(b => b.onclick = () => {
+let k = b.dataset.k, t = b.dataset.t;
+inp.value = ''; gsClose();
+if (k && typeof go === 'function') go(k);
+if (t) setTimeout(() => toast(t), 250);
+});
+}
+// ---------- unified notifications ----------
+function paintNotif13() {
+let m2 = document.getElementById('ntMenu'); if (!m2 || !me) return;
+let list = (window._nt ? _nt.list() : []).slice(0, 12);
+let alerts = typeof notices === 'function' ? notices() : [];
+let h = `<div class="ntHead"><span>الإشعارات والتنبيهات</span>${list.length ? '<button type="button" class="text-btn" id="ntAll13">تحديد الكل كمقروء</button>' : ''}</div>`;
+if (alerts.length) h += `<div class="ntSec">تنبيهات تحتاج انتباهك</div>` + alerts.map(([a, b]) =>
+`<div class="ntItem alert"><i class="dot warn"></i><span class="ntTx"><b>${esc(a)}</b><small>${esc(b)}</small></span></div>`).join('');
+h += `<div class="ntSec">آخر التحديثات</div>`;
+h += list.length ? list.map(n => {
+let un = !n.read.includes(me.id);
+return `<button type="button" class="ntItem ${un ? 'un' : ''}" data-id="${n.id}"><i class="dot ${n.type || 'info'}"></i><span class="ntTx"><b>${esc(n.t)}</b><small>${esc(n.b || '')}</small><em>${ago(n.at)}</em></span></button>`;
+}).join('') : '<div class="ntEmpty">لا توجد إشعارات بعد. ستظهر هنا طلبات المراجعة والاعتمادات.</div>';
+m2.innerHTML = h;
+m2.querySelectorAll('button.ntItem').forEach(x => x.onclick = () => {
+let n = _nt.store().find(y => y.id === x.dataset.id);
+if (n && !n.read.includes(me.id)) { n.read.push(me.id); save(); }
+m2.hidden = true; if (n && n.go && typeof go === 'function') go(n.go);
+});
+let all = m2.querySelector('#ntAll13');
+if (all) all.onclick = ev => {
+ev.stopPropagation();
+_nt.list().forEach(n => { if (!n.read.includes(me.id)) n.read.push(me.id); });
+save(); paintNotif13(); badge13();
+};
+}
+function badge13() {
+let bd = document.getElementById('ntBadge'); if (!bd || !me) return;
+let un = window._nt ? _nt.list().filter(n => !n.read.includes(me.id)).length : 0;
+let al = typeof notices === 'function' ? notices().length : 0;
+let t = un + al;
+bd.hidden = !t; if (t) bd.textContent = t > 9 ? '9+' : t;
+}
+function wireNotif13() {
+let btn = document.getElementById('ntBtn'); if (!btn) return;
+btn.onclick = ev => {
+ev.stopPropagation();
+let m2 = document.getElementById('ntMenu'); if (!m2) return;
+m2.hidden = !m2.hidden; if (!m2.hidden) paintNotif13();
+};
+}
+// ---------- settings hub ----------
+settingsPage = function () {
+mig9();
+let on = invigOn();
+let dark = document.documentElement.dataset.theme === 'dark';
+return head('الإعدادات', 'كل إعدادات المنصة في مكان واحد. التغيير يُحفظ فورًا في هذا المتصفح ويدخل في النسخة الاحتياطية، ولا يحذف أي بيانات.') +
+`<div class="setgrid">` +
+`<section class="panel"><h2>✦ الحساب والأمان</h2>` +
+setRow('تغيير كلمة المرور', 'تغيير كلمة مرور حسابك الحالي. استخدم كلمة قوية لا تقل عن 4 أحرف.', `<button class="light" onclick="changePassword()">تغيير كلمة المرور</button>`) +
+setRow('تسجيل الخروج التلقائي عند عدم النشاط', 'عدد الدقائق بلا نشاط قبل تسجيل الخروج تلقائيًا. صفر يعني إيقاف الميزة.', `<input type="number" min="0" max="240" value="${db.settings.autoLock}" style="max-width:90px" onchange="setAutoLock(this.value)">`) +
+setRow('قفل محاولات الدخول', 'بعد 5 محاولات دخول فاشلة يُقفل تسجيل الدخول 5 دقائق على هذا المتصفح.', `<span class="badge green">مفعّل دائمًا</span>`) +
+`</section>` +
+`<section class="panel"><h2>☾ المظهر</h2>` +
+setRow('الوضع الداكن', 'التبديل بين الوضع الفاتح والداكن. يُحفظ لكل متصفح، ويمكن أيضًا من زر الهلال في الشريط العلوي.', `<button class="light" onclick="setTheme('${dark ? 'light' : 'dark'}');render()">${dark ? 'التحويل إلى الفاتح ☀' : 'التحويل إلى الداكن ☾'}</button>`) +
+`</section>` +
+`<section class="panel"><h2>◉ اللجان والمراقبة</h2>` +
+setRow('وضع المراقبة', 'عند التفعيل تظهر كل أدوات اللجان: الملاحظون والمراقبون ورؤساء اللجان وتوزيعهم. عند الإيقاف تعمل المنصة بدون هذه الطبقة مع بقاء كل البيانات محفوظة.',
+`<span class="badge ${on ? 'green' : ''}" style="margin-inline-end:8px">${on ? 'مفعّل' : 'موقوف'}</span><button class="${on ? 'light' : 'teal'}" onclick="setInvig(${on ? 0 : 1})">${on ? 'إيقاف' : 'تفعيل'}</button>`) +
+setRow('العدد الافتراضي للملاحظين في اللجنة الجديدة', 'يُملأ حقل «عدد الملاحظين المطلوب» بهذا العدد عند إنشاء لجنة، ويمكن تغييره لكل لجنة على حدة. صفر يعني بلا قيمة افتراضية.',
+`<input type="number" min="0" max="20" value="${db.settings.defObs}" style="max-width:90px" onchange="setDefObs(this.value)">`) +
+`</section>` +
+`<section class="panel"><h2>▤ النسخ الاحتياطي والاستعادة</h2>` +
+setRow('تصدير نسخة احتياطية', 'ملف JSON كامل يشمل الإعدادات والقاعات والملاحظين والإصدارات والجداول.', `<button class="light" onclick="backup()">تصدير الآن</button>`) +
+setRow('استعادة من ملف', 'اختر ملف نسخة احتياطية سابقة لاستعادته. تُستبدل البيانات الحالية بمحتوى الملف.', `<label class="light" style="display:inline-block;padding:9px 14px;border-radius:9px;cursor:pointer">اختيار ملف<input type="file" accept=".json" style="display:none" onchange="restoreFile(this)"></label>`) +
+setRow('النسخة التلقائية', 'استعادة آخر نسخة تلقائية محفوظة في هذا المتصفح.', `<button class="light" onclick="restoreAuto()">استعادة</button>`) +
+`</section>` +
+`</div>` +
+`<h2 style="margin-top:6px">التوقيعات على الجداول المطبوعة</h2>` +
+`<section class="panel"><p class="muted">تُطبع تحت كل جدول: اسم الدور وتحته الاسم. اسم المختص يُملأ تلقائيًا من حساب منشئ الجدول، وأي اسم يُدخل في «بيانات الطباعة الرسمية» لإصدار معيّن يقدَّم على المدخل هنا.</p><div class="formgrid"><div class="field"><label>مدير شئون الطلاب</label><input id="sig-sa" value="${esc((db.settings.sig || {}).sa || '')}"></div><div class="field"><label>وكيل الكلية</label><input id="sig-vice" value="${esc((db.settings.sig || {}).vice || '')}"></div><div class="field"><label>عميد الكلية</label><input id="sig-dean" value="${esc((db.settings.sig || {}).dean || '')}"></div></div><div class="actions"><button onclick="saveSigNames()">حفظ أسماء التوقيعات</button></div></section>`;
+};
+// ---------- shell fixup after every render ----------
+function fixShell13() {
+try {
+buildSideNav13();
+gsEnsure();
+wireNotif13();
+badge13();
+// retire the old scattered alerts pill (ext2) — hide it (removing makes ext2 re-add its wrap)
+let old = document.getElementById('bell'); if (old) old.style.display = 'none';
+// dedupe the save chips that accumulated from earlier re-renders
+let chips = document.querySelectorAll('#savechip');
+chips.forEach((c, i) => { if (i > 0) { let p = c.parentElement; if (p && p.parentElement === document.querySelector('.top')) p.remove(); else c.remove(); } });
+} catch (e) { console.warn('ext13', e); }
+}
+const _r13 = render;
+render = function () { _r13(); fixShell13(); };
+window.addEventListener('resize', () => { try { buildSideNav13() } catch (e) { } });

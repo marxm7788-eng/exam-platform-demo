@@ -1373,7 +1373,7 @@ return `<section class="panel" style="margin-bottom:12px"><div style="display:fl
 let prev=rpCur?`<section class="panel"><h2>معاينة: ${RP_DEFS.find(r=>r.id===rpCur).title}</h2><div class="tablewrap">${RP_DEFS.find(r=>r.id===rpCur).body(e)}</div></section>`:'';
 return head('مركز التقارير','كل تقرير يُطبع أو يُصدَّر Word وExcel بالترويسة الرسمية. «نشر للتوزيع» يعلّم التقرير معتمدًا وجاهزًا داخل المنصة مع تاريخ النشر، والتوزيع الفعلي يكون بطباعة الملف أو مشاركته.')+cards+prev;
 };
-window.rpView=function(id){rpCur=rpCur===id?null:id;render()};
+window.rpView=function(id){if(!RP_DEFS.some(r=>r.id===id))return;rpCur=rpCur===id?null:id;render()};
 window.rpPub=function(id){
 db.pubs=db.pubs||{};let r=RP_DEFS.find(x=>x.id===id);if(!r)return;
 if(db.pubs[id]){delete db.pubs[id];save();log('إلغاء نشر تقرير: '+r.title);toast('أُلغي نشر «'+r.title+'»');render();return}

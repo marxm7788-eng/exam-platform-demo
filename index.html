@@ -889,6 +889,23 @@ async function seedDemo(){
   demoFill(e, '2|الفيزياء', true, 'مرسل للمراجعة');
   demoFill(e, '1|شعبة العلوم البيولوجية', true, 'معتمد');
   demoFill(e, '2|الكيمياء', false, 'قيد الإعداد');
+   // demo observers + committee assignments (sample names, not academic data)
+   db.observers = [
+     {id: 'ob1', name: 'د. أحمد سامي (اسم تجريبي)', role: 'رئيس لجنة', dept: 'الكيمياء', phone: ''},
+     {id: 'ob2', name: 'د. منى عبد الرحمن (اسم تجريبي)', role: 'رئيس لجنة', dept: 'الفيزياء', phone: ''},
+     {id: 'ob3', name: 'د. خالد فؤاد (اسم تجريبي)', role: 'مراقب', dept: 'الرياضيات', phone: ''},
+     {id: 'ob4', name: 'د. سارة محمود (اسم تجريبي)', role: 'مراقب', dept: 'علم الحيوان', phone: ''},
+     {id: 'ob5', name: 'م. كريم عادل (اسم تجريبي)', role: 'ملاحظ', dept: 'الكيمياء', phone: ''},
+     {id: 'ob6', name: 'م. هبة طارق (اسم تجريبي)', role: 'ملاحظ', dept: 'الفيزياء', phone: ''},
+     {id: 'ob7', name: 'م. عمر الشريف (اسم تجريبي)', role: 'ملاحظ', dept: 'الجيولوجيا', phone: ''},
+     {id: 'ob8', name: 'م. نورهان سيد (اسم تجريبي)', role: 'ملاحظ', dept: 'علم النبات', phone: ''}
+   ];
+   e.alloc = {};
+   const _sa = (k, ix, room, staff) => { let t = e.tasks[k], c = t && t.courses[ix]; if(!c) return; e.alloc[k + '|' + c.code] = {slot: c.slot, list: [{room, n: +c.students || 0, staff}]}; };
+   _sa('1|شعبة العلوم البيولوجية', 0, db.rooms[0].id, ['ob1', 'ob3', 'ob5']);
+   _sa('1|شعبة العلوم البيولوجية', 1, db.rooms[1].id, ['ob2', 'ob4', 'ob6']);
+   _sa('2|الفيزياء', 0, db.rooms[0].id, ['ob1', 'ob4', 'ob7']);
+   _sa('2|الفيزياء', 1, db.rooms[1].id, ['ob2', 'ob3', 'ob8']);
 }
 function demoFill(e, k, all, status){
   let slots = levelSlots(e, +k[0]), n = 0, now = new Date().toLocaleString('ar-EG');

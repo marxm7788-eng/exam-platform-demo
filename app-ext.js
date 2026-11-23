@@ -1048,4 +1048,28 @@ function saveSigNames() {
 mig9();
 db.settings.sig = { sa: $('#sig-sa').value.trim(), vice: $('#sig-vice').value.trim(), dean: $('#sig-dean').value.trim() };
 save(); log('حفظ أسماء التوقيعات'); toast('تم حفظ أسماء التوقيعات');
-  }
+}
+/* ext10: campus photo layer - login slideshow + hero photo band.
+Images arrive as data URIs in campus1.js..campus4.js (CAMPUS1..CAMPUS4). */
+(function(){
+const SRCS=[typeof CAMPUS1!=='undefined'&&CAMPUS1,typeof CAMPUS2!=='undefined'&&CAMPUS2,typeof CAMPUS3!=='undefined'&&CAMPUS3,typeof CAMPUS4!=='undefined'&&CAMPUS4].filter(Boolean);
+if(!SRCS.length)return;
+function buildLogin(){
+let lg=document.getElementById('login');
+if(!lg||lg.querySelector('.bgslides'))return;
+let d=document.createElement('div');d.className='bgslides';d.setAttribute('aria-hidden','true');
+SRCS.forEach((s,i)=>{let im=document.createElement('img');im.src=s;im.alt='';im.style.setProperty('--d',(i*9)+'s');d.appendChild(im)});
+let sh=document.createElement('i');sh.className='bgshade';d.appendChild(sh);
+lg.prepend(d);
+}
+function buildHero(){
+let h=document.querySelector('.hero');
+if(!h||h.querySelector('.hero-bg'))return;
+let im=document.createElement('img');im.className='hero-bg';im.alt='';im.src=SRCS[SRCS.length-1];
+h.prepend(im);
+}
+buildLogin();
+const _r10=render;
+render=function(){_r10();if(typeof page!=='undefined'&&page==='dashboard')buildHero()};
+buildHero();
+})();

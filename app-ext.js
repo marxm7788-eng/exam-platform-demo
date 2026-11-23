@@ -1,4 +1,3 @@
-function demoFill(u,p){$("#lu").value=u;$("#lp").value=p;$("#lp").focus()}
 let enterFlag=false,asgSpec='',asgLevel=1,asgCat='g',asgSel=new Set(),pubTab='matrix',pubLevel=1,pubScope='ok';
 const ICONS={dashboard:'◈',setup:'⚙',assign:'⇄',tracking:'◔',review:'✓',published:'▦',users:'☺',rooms:'▣',logs:'≡',tasks:'✎'};
 const _render=render;
@@ -506,7 +505,7 @@ D.addEventListener('DOMContentLoaded',()=>{paint();hideLT()});paint();hideLT();
 })();
 (function(){const D=document;
 const ICONS={dashboard:'◼',setup:'⚙',assign:'⇄',tracking:'◎',review:'✔',published:'▦',users:'●',rooms:'▤',logs:'☰',tasks:'☐',observers:'◉',roadmap:'✦'};
-const MAXTABS=7;
+const MAXTABS=99; // 21:57 Mohamed: no hidden المزيد — all nav items visible, wrapping allowed
 function counts(){let e=active&&active(),c={review:0,tracking:0,tasks:0};
 if(!e||!me)return c;
 Object.keys(e.assign||{}).forEach(k=>{let t=e.tasks[k]||{status:'مسودة'};
@@ -538,7 +537,7 @@ let tb=nav.parentElement,el=tb.querySelector('.tab-hl');
 if(!el){el=D.createElement('div');el.className='tab-hl';tb.prepend(el)}
 let a=nav.querySelector('button.active')||[...nav.querySelectorAll('button')].find(b=>b.style.display!=='none');
 if(!a){el.style.width='0';return}
-el.style.width=a.offsetWidth+'px';el.style.transform=`translateX(${a.offsetLeft}px)`}
+el.style.width=a.offsetWidth+'px';el.style.height=a.offsetHeight+'px';el.style.top=a.offsetTop+'px';el.style.bottom='auto';el.style.transform=`translateX(${a.offsetLeft}px)`}
 function buildBrand(){let top=D.querySelector('.top');if(!top||D.getElementById('topBrand'))return;
 let first=top.firstElementChild;if(!first)return;
 let b=D.createElement('div');b.id='topBrand';b.innerHTML=`<img data-lg alt=""><div>إدارة جداول الامتحانات<small>كلية العلوم – جامعة سوهاج</small></div>`;
@@ -586,7 +585,7 @@ function buildClock(){let top=D.querySelector('.top');if(!top||D.getElementById(
 let c=D.createElement('div');c.id='clock';c.innerHTML='<b id="clkT"></b><small id="clkD"></small>';
 let av=D.getElementById('avWrap');top.insertBefore(c,av||null);
 let tick=()=>{let n=new Date(),t=D.getElementById('clkT'),d=D.getElementById('clkD');if(!t)return;
-t.textContent=n.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+t.textContent=n.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
 if(d)d.textContent=n.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})};
 tick();setInterval(tick,1000)}
 function nStore(){if(typeof db==='undefined'||!db)return[];if(!db.notifs)db.notifs=[];return db.notifs}
@@ -619,8 +618,7 @@ if(all)all.onclick=ev=>{ev.stopPropagation();myNotifs().forEach(n=>{if(!n.read.i
 const _render6=render;
 render=function(){_render6();
 try{buildBrand();buildTabs();buildAvatar();buildClock();buildNotif();
-let nxh=D.querySelector('.hero .ringwrap');
-if(page==='dashboard'){let hero=D.querySelector('.hero');if(hero&&!hero.querySelector('.nx')){let rw=hero.querySelector('.ringwrap');if(rw)rw.insertAdjacentHTML('beforebegin',heroNext())}}
+// 21:57 Mohamed: next-exam card removed from dashboard (parallel department exams make it wrong)
 }catch(e){console.warn('shell',e)}};
 D.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{buildBrand();buildTabs()},400)});
 window.addEventListener('resize',()=>{try{buildTabs();hl()}catch(e){}});
@@ -1531,9 +1529,127 @@ let wraps = document.querySelectorAll('#content .tablewrap');
 if (!wraps.length) return;
 let bar = document.createElement('div');
 bar.className = 'fltbar';
-bar.innerHTML = `<span class="fico">⌕</span><input placeholder="تصفية القائمة… اكتب أي جزء من الاسم أو البيانات" oninput="fltApply14(this)"><span class="fltCnt"></span>`;
+bar.innerHTML = `<span class="fico">⌕</span><input class="fltIn" placeholder="تصفية القائمة… اكتب أي جزء من الاسم أو البيانات" oninput="fltApply14(this)"><span class="fltCnt"></span>`;
 wraps[0].parentNode.insertBefore(bar, wraps[0]);
 } catch (e) {}
 }
 const _r14 = render;
 render = function () { _r14(); addFilters14(); };
+// ===== ext15: polish round 21:57 — topbar layout, notifications you can clear, dashboard status, setup saved-state =====
+// No structure change: same first-look shell, same pages, same navigation.
+// ---------- 1) topbar: one neat aligned cluster (clock, theme, bell, avatar) ----------
+function layoutTop15() {
+try {
+let top = document.querySelector('.top'); if (!top || !me) return;
+let acts = document.getElementById('topActs');
+if (!acts) { acts = document.createElement('div'); acts.id = 'topActs'; top.appendChild(acts); }
+// save chip (kept, subtle, first in the cluster)
+let chip = document.getElementById('savechip');
+if (chip && chip.parentElement !== acts) acts.appendChild(chip);
+// clock: rebuild once with clean formatting (no ticking seconds, explicit Arabic date)
+let clk = document.getElementById('clock');
+if (clk && clk.parentElement !== acts) acts.appendChild(clk);
+// theme toggle into the cluster, styled like the bell
+let tb = document.getElementById('themeBtn');
+if (tb && tb.parentElement !== acts) acts.appendChild(tb);
+let nt = document.getElementById('ntWrap');
+if (nt && nt.parentElement !== acts) acts.appendChild(nt);
+let av = document.getElementById('avWrap');
+if (av && av.parentElement !== acts) acts.appendChild(av);
+} catch (e) { console.warn('top15', e); }
+}
+// ---------- 2) notifications: everything can be marked as read / dismissed ----------
+function seenStore15() { if (!db.alertSeen) db.alertSeen = {}; if (!db.alertSeen[me.id]) db.alertSeen[me.id] = []; return db.alertSeen[me.id]; }
+function paintNotif15() {
+let m2 = document.getElementById('ntMenu'); if (!m2 || !me) return;
+let list = (window._nt ? _nt.list() : []).slice(0, 12);
+let seen = seenStore15();
+let alerts = (typeof notices === 'function' ? notices() : []).filter(([a, b]) => !seen.includes(a + '|' + b));
+let h = `<div class="ntHead"><span>الإشعارات والتنبيهات</span><button type="button" class="text-btn" id="ntAll15">تعيين الكل كمقروء ✓</button></div>`;
+if (alerts.length) h += `<div class="ntSec">تنبيهات تحتاج انتباهك</div>` + alerts.map(([a, b]) =>
+`<div class="ntItem alert"><i class="dot warn"></i><span class="ntTx"><b>${esc(a)}</b><small>${esc(b)}</small></span><button type="button" class="ntX" data-k="${esc(a)}|${esc(b)}" title="تمت الرؤية">✓</button></div>`).join('');
+h += `<div class="ntSec">آخر التحديثات</div>`;
+h += list.length ? list.map(n => {
+let un = !n.read.includes(me.id);
+return `<button type="button" class="ntItem ${un ? 'un' : ''}" data-id="${n.id}"><i class="dot ${n.type || 'info'}"></i><span class="ntTx"><b>${esc(n.t)}</b><small>${esc(n.b || '')}</small><em>${ago(n.at)}</em></span></button>`;
+}).join('') : '<div class="ntEmpty">لا توجد إشعارات بعد. ستظهر هنا طلبات المراجعة والاعتمادات.</div>';
+m2.innerHTML = h;
+m2.querySelectorAll('button.ntItem').forEach(x => x.onclick = () => {
+let n = _nt.store().find(y => y.id === x.dataset.id);
+if (n && !n.read.includes(me.id)) { n.read.push(me.id); save(); }
+m2.hidden = true; if (n && n.go && typeof go === 'function') go(n.go);
+});
+m2.querySelectorAll('.ntX').forEach(x => x.onclick = ev => {
+ev.stopPropagation();
+let s = seenStore15(); if (!s.includes(x.dataset.k)) s.push(x.dataset.k);
+save(); paintNotif15(); badge15();
+});
+let all = m2.querySelector('#ntAll15');
+if (all) all.onclick = ev => {
+ev.stopPropagation();
+_nt.list().forEach(n => { if (!n.read.includes(me.id)) n.read.push(me.id); });
+let s = seenStore15();
+(typeof notices === 'function' ? notices() : []).forEach(([a, b]) => { let k = a + '|' + b; if (!s.includes(k)) s.push(k); });
+save(); paintNotif15(); badge15();
+};
+}
+function badge15() {
+let bd = document.getElementById('ntBadge'); if (!bd || !me) return;
+let un = window._nt ? _nt.list().filter(n => !n.read.includes(me.id)).length : 0;
+let seen = seenStore15();
+let al = (typeof notices === 'function' ? notices() : []).filter(([a, b]) => !seen.includes(a + '|' + b)).length;
+let t = un + al;
+bd.hidden = !t; if (t) bd.textContent = t > 9 ? '9+' : t;
+}
+function wireNotif15() {
+let btn = document.getElementById('ntBtn'); if (!btn) return;
+btn.onclick = ev => {
+ev.stopPropagation();
+let m2 = document.getElementById('ntMenu'); if (!m2) return;
+m2.hidden = !m2.hidden; if (!m2.hidden) paintNotif15();
+};
+}
+// ---------- 3) dashboard: concise status strip instead of the next-exam card ----------
+const _dash15 = dashboard;
+dashboard = function () {
+let h = _dash15();
+if (page !== 'dashboard') return h;
+try {
+let e = active(); if (!e) return h;
+let all = programs().length;
+let tk = Object.values(e.tasks || {});
+let ok = tk.filter(t => ['معتمد', 'منشور'].includes(t.status)).length;
+let p = all ? Math.round(ok / all * 100) : 0;
+let rev = tk.filter(t => t.status === 'مرسل للمراجعة').length;
+let pending = programs().filter(x => { let t = (e.tasks || {})[x.key]; return !t || !['معتمد', 'منشور'].includes(t.status); });
+let miss = pending.length ? `متبقٍ ${pending.length}: ${pending.slice(0, 3).map(x => esc(x.name)).join('، ')}${pending.length > 3 ? ' وغيرها' : ''}` : 'اكتمل اعتماد كل البرامج';
+let strip = `<div class="dstatus no-print"><span class="ds-it"><b>${all}</b> جدولاً مطلوباً</span><span class="ds-it"><b>${tk.length}</b> أُنشئ</span><span class="ds-it ok"><b>${ok} (${p}%)</b> معتمد</span>${rev ? `<span class="ds-it warn"><b>${rev}</b> بانتظار المراجعة</span>` : ''}<span class="ds-it ${pending.length ? 'warn' : 'ok'}">${miss}</span></div>`;
+let i = h.indexOf('</div>', h.indexOf('class="hero"'));
+let j = h.indexOf('<div class="stats"');
+if (j > -1) h = h.slice(0, j) + strip + h.slice(j);
+} catch (e2) { console.warn('dstatus', e2); }
+return h;
+};
+// ---------- 4) release settings: clear saved state with an edit option ----------
+let _setupEdit15 = false;
+const _setup15 = setup;
+setup = function () {
+let e = typeof active === 'function' ? active() : null;
+if (!e || _setupEdit15) return _setup15();
+let planned = Object.values(e.levelPlans || {}).reduce((n, x) => n + ((x.days || []).length) * ((x.periods || []).length), 0);
+let row = (k, v) => `<div class="svrow"><span>${k}</span><b>${esc(String(v == null ? '—' : v))}</b></div>`;
+return head('إعداد الإصدار', 'إعدادات الإصدار الحالي محفوظة وتعمل. عدّلها فقط عند الحاجة.', `<button onclick="setupEdit15()">تعديل الإعدادات</button><button class="light" onclick="newEdition()">＋ إصدار جديد</button><button class="light" onclick="archive()">أرشفة الإصدار</button>`) +
+`<section class="panel savedstate"><div class="svhead"><span class="svok">✓ محفوظ</span><div><h2 style="margin:0">${esc(e.name)}</h2><p class="muted" style="margin:2px 0 0">${esc(e.year)} • ${esc(e.semester)} • ${esc(e.type || '')}</p></div></div>
+<div class="svgrid">${row('تاريخ البداية', e.start)}${row('أيام الامتحانات المختارة', (e.days || []).length + ' أيام')}${row('الفترات اليومية', (e.periods || []).length)}${row('الإجازات الرسمية', (e.holidays || []).length)}${row('مواعيد المستويات الأسبوعية', planned)}${row('المهام المسندة', Object.keys(e.assign || {}).length + ' من ' + programs().length)}</div>
+<div class="notice" style="margin-top:14px">أي تعديل هنا يسري على الإصدار الحالي فور حفظه، وتبقى الجداول المعتمدة كما هي ما لم تتغير الأيام أو الفترات المرتبطة بها.</div></section>`;
+};
+function setupEdit15() { _setupEdit15 = true; step = 1; render(); }
+window.setupEdit15 = setupEdit15;
+const _ns15 = nextStep;
+nextStep = function () { let was = step; _ns15(); if (was === 5) { _setupEdit15 = false; } };
+// ---------- hook ----------
+const _r15 = render;
+render = function () {
+_r15();
+try { layoutTop15(); wireNotif15(); badge15(); } catch (e) { console.warn('ext15', e); }
+};

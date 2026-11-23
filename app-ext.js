@@ -1397,113 +1397,9 @@ toast('تم تجهيز ملف التقرير');
 const _d12=dashboard;
 dashboard=function(){if(page==='reports')return reportsPage();return _d12()};
 })();
-// ===== ext13: structural redesign — grouped sidebar, global search, unified notifications, settings hub =====
-// All data and behavior preserved; this file only reorganizes the shell.
-// ---------- grouped navigation ----------
-const G13 = [
-{ t: 'الرئيسية', items: ['dashboard', 'tasks'] },
-{ t: 'التخطيط والإعداد', items: ['setup', 'assign'] },
-{ t: 'المتابعة والاعتماد', items: ['tracking', 'review', 'published'] },
-{ t: 'اللجان والملاحظون', items: ['observers', 'alloc'] },
-{ t: 'التقارير والبيانات', items: ['reports', 'rooms', 'logs'] },
-{ t: 'الإدارة', items: ['users', 'settings'] },
-];
-const I13 = { dashboard: '⌂', tasks: '☐', setup: '⚙', assign: '⇄', tracking: '◎', review: '✔', published: '▦', observers: '◉', alloc: '⊞', reports: '◫', rooms: '▤', logs: '☰', users: '●', settings: '✦' };
-function counts13() {
-let e = typeof active === 'function' ? active() : null, c = { review: 0, tracking: 0, tasks: 0 };
-if (!e || !me) return c;
-Object.keys(e.assign || {}).forEach(k => {
-let t = (e.tasks || {})[k] || { status: 'مسودة' };
-if (t.status === 'مرسل للمراجعة' && can('approve')) c.review++;
-if (typeof isLate === 'function' && isLate(t)) c.tracking++;
-if (e.assign[k] === me.id && ['مسودة', 'قيد الإعداد', 'يحتاج تعديل'].includes(t.status)) c.tasks++;
-});
-return c;
-}
-function buildSideNav13() {
-let nav = document.getElementById('nav'); if (!nav || typeof menu !== 'function') return;
-// move nav back to the sidebar if ext6 relocated it into the topbar
-if (nav._home && nav.parentElement !== nav._home) nav._home.appendChild(nav);
-let m = menu(), c = counts13(), keys = m.map(x => x[0]), names = {};
-m.forEach(([k, n]) => names[k] = n);
-let used = new Set(), html = '';
-G13.forEach(g => {
-let its = g.items.filter(k => keys.includes(k));
-if (!its.length) return;
-its.forEach(k => used.add(k));
-html += `<div class="navgrp"><b>${g.t}</b>` + its.map(k => {
-let n = c[k] || 0;
-return `<button type="button" class="${page === k ? 'active' : ''}" onclick="go('${k}')"><span class="ic">${I13[k] || '•'}</span><span class="lbl">${names[k]}</span>${n ? `<span class="tbadge">${n}</span>` : ''}</button>`;
-}).join('') + '</div>';
-});
-let rest = keys.filter(k => !used.has(k));
-if (rest.length) html += `<div class="navgrp"><b>أخرى</b>` + rest.map(k => `<button type="button" class="${page === k ? 'active' : ''}" onclick="go('${k}')"><span class="ic">${I13[k] || '•'}</span><span class="lbl">${names[k]}</span></button>`).join('') + '</div>';
-nav.innerHTML = html;
-}
-// ---------- global search ----------
-function gsEnsure() {
-if (document.getElementById('gsWrap')) return;
-let top = document.querySelector('.top'); if (!top) return;
-let w = document.createElement('div');
-w.id = 'gsWrap';
-w.innerHTML = `<input id="gsInput" type="search" placeholder="بحث شامل: صفحة، مقرر، ملاحظ، قاعة…" autocomplete="off" aria-label="بحث شامل"><div id="gsDrop" hidden></div>`;
-let nt = document.getElementById('ntWrap');
-top.insertBefore(w, nt || top.children[1] || null);
-let inp = w.querySelector('#gsInput');
-inp.addEventListener('input', () => gsPaint());
-inp.addEventListener('focus', () => { if (inp.value.trim()) gsPaint(); });
-inp.addEventListener('keydown', ev => {
-if (ev.key === 'Escape') { inp.value = ''; gsClose(); inp.blur(); }
-if (ev.key === 'Enter') { let f = w.querySelector('#gsDrop .gsIt'); if (f) { ev.preventDefault(); f.click(); } }
-});
-document.addEventListener('click', ev => { if (!w.contains(ev.target)) gsClose(); });
-}
-function gsClose() { let d = document.getElementById('gsDrop'); if (d) d.hidden = true; }
-function gsResults(q) {
-q = q.trim(); if (!q) return null;
-let out = { pages: [], courses: [], observers: [], users: [], rooms: [] }, L = s => (s || '').toString();
-let e = typeof active === 'function' ? active() : null;
-menu().forEach(([k, n]) => { if (L(n).includes(q)) out.pages.push({ k, n }); });
-if (e && typeof planItems === 'function' && typeof programs === 'function') {
-try {
-programs().forEach(p => {
-(planItems(e, p.key) || []).forEach(it => (it.courses || []).forEach(c => {
-if (L(c.name).includes(q) || L(c.code).includes(q)) out.courses.push({ code: c.code, n: c.name, p: p.name, lv: LV[+p.key[0] - 1] || '' });
-}));
-});
-} catch (x) { }
-out.courses = out.courses.slice(0, 6);
-}
-if (typeof invigOn === 'function' && invigOn() && db.observers)
-db.observers.forEach(o => { if (L(o.name).includes(q)) out.observers.push(o); });
-out.observers = out.observers.slice(0, 5);
-if (typeof can === 'function' && can('users'))
-db.users.forEach(u => { if (L(u.name).includes(q) || L(u.username).includes(q)) out.users.push(u); });
-out.users = out.users.slice(0, 5);
-(db.rooms || []).forEach(r => { if (L(r.name).includes(q)) out.rooms.push(r); });
-out.rooms = out.rooms.slice(0, 5);
-return out;
-}
-function gsPaint() {
-let inp = document.getElementById('gsInput'), d = document.getElementById('gsDrop'); if (!inp || !d) return;
-let r = gsResults(inp.value);
-if (!r) { gsClose(); return; }
-let h = '', any = false;
-const grp = (t, rows) => { if (!rows.length) return ''; any = true; return `<div class="gsGrp"><b>${t}</b>${rows}</div>`; };
-h += grp('الصفحات', r.pages.map(x => `<button type="button" class="gsIt" data-k="${x.k}"><span class="ic">${I13[x.k] || '•'}</span><span><b>${esc(x.n)}</b><small>صفحة</small></span></button>`).join(''));
-h += grp('المقررات', r.courses.map(x => `<button type="button" class="gsIt" data-k="tracking" data-t="المقرر «${esc(x.n)}» ضمن جداول ${esc(x.p)} — يظهر في صفحة متابعة الجداول"><span class="ic">✎</span><span><b>${esc(x.n)}</b><small>${esc(x.code)} • ${esc(x.p)} • المستوى ${esc(x.lv)}</small></span></button>`).join(''));
-h += grp('الملاحظون', r.observers.map(x => `<button type="button" class="gsIt" data-k="observers"><span class="ic">◉</span><span><b>${esc(x.name)}</b><small>${esc(x.role || 'ملاحظ')}</small></span></button>`).join(''));
-h += grp('المستخدمون', r.users.map(x => `<button type="button" class="gsIt" data-k="users"><span class="ic">●</span><span><b>${esc(x.name)}</b><small>${esc(x.username)} • ${esc(roleName(x.role))}</small></span></button>`).join(''));
-h += grp('القاعات', r.rooms.map(x => `<button type="button" class="gsIt" data-k="rooms"><span class="ic">▤</span><span><b>${esc(x.name)}</b><small>سعة ${x.cap}</small></span></button>`).join(''));
-if (!any) h = '<div class="gsEmpty">لا توجد نتائج مطابقة. جرّب اسم مقرر أو كوده أو اسم صفحة.</div>';
-d.innerHTML = h; d.hidden = false;
-d.querySelectorAll('.gsIt').forEach(b => b.onclick = () => {
-let k = b.dataset.k, t = b.dataset.t;
-inp.value = ''; gsClose();
-if (k && typeof go === 'function') go(k);
-if (t) setTimeout(() => toast(t), 250);
-});
-}
+// ===== ext13: functional gains on the restored shell — unified notifications + settings hub =====
+// No layout/navigation changes in this file: the original top-nav shell stays as it was.
+// No global search (removed per Mohamed, 21:38).
 // ---------- unified notifications ----------
 function paintNotif13() {
 let m2 = document.getElementById('ntMenu'); if (!m2 || !me) return;
@@ -1575,11 +1471,9 @@ setRow('النسخة التلقائية', 'استعادة آخر نسخة تلق
 `<h2 style="margin-top:6px">التوقيعات على الجداول المطبوعة</h2>` +
 `<section class="panel"><p class="muted">تُطبع تحت كل جدول: اسم الدور وتحته الاسم. اسم المختص يُملأ تلقائيًا من حساب منشئ الجدول، وأي اسم يُدخل في «بيانات الطباعة الرسمية» لإصدار معيّن يقدَّم على المدخل هنا.</p><div class="formgrid"><div class="field"><label>مدير شئون الطلاب</label><input id="sig-sa" value="${esc((db.settings.sig || {}).sa || '')}"></div><div class="field"><label>وكيل الكلية</label><input id="sig-vice" value="${esc((db.settings.sig || {}).vice || '')}"></div><div class="field"><label>عميد الكلية</label><input id="sig-dean" value="${esc((db.settings.sig || {}).dean || '')}"></div></div><div class="actions"><button onclick="saveSigNames()">حفظ أسماء التوقيعات</button></div></section>`;
 };
-// ---------- shell fixup after every render ----------
+// ---------- shell fixup after every render (no nav changes) ----------
 function fixShell13() {
 try {
-buildSideNav13();
-gsEnsure();
 wireNotif13();
 badge13();
 // retire the old scattered alerts pill (ext2) — hide it (removing makes ext2 re-add its wrap)
@@ -1591,4 +1485,55 @@ chips.forEach((c, i) => { if (i > 0) { let p = c.parentElement; if (p && p.paren
 }
 const _r13 = render;
 render = function () { _r13(); fixShell13(); };
-window.addEventListener('resize', () => { try { buildSideNav13() } catch (e) { } });
+// ===== ext14: per-page filter bars (Zad-style) above data tables =====
+// Visual-only row filtering on the main list pages; no data, export, print or backup changes.
+// One bar per page, above the first table; it filters every table on the page (multi-level report sheets).
+// Pages that already ship their own search (e.g. observers) keep it - we never duplicate a search box.
+const FLT_PAGES = ['tracking', 'review', 'published', 'tasks', 'observers', 'alloc', 'users', 'rooms', 'reports'];
+function fltApply14(inp) {
+let q = (inp.value || '').trim();
+let bar = inp.closest('.fltbar');
+let cnt = bar ? bar.querySelector('.fltCnt') : null;
+let shown = 0, total = 0;
+document.querySelectorAll('#content .tablewrap table').forEach(table => {
+let rows = [...table.querySelectorAll('tr')].filter(tr => !tr.querySelector('th'));
+let empty = null;
+rows.forEach(tr => {
+if (tr.classList.contains('fltEmpty14')) { empty = tr; return; }
+total++;
+let show = !q || tr.textContent.includes(q);
+tr.style.display = show ? '' : 'none';
+if (show) shown++;
+});
+// empty state row per table
+if (!empty && table.querySelector('tr')) {
+empty = document.createElement('tr');
+empty.className = 'fltEmpty14';
+empty.style.display = 'none';
+empty.innerHTML = `<td colspan="12" class="empty">لا نتائج مطابقة للتصفية</td>`;
+table.appendChild(empty);
+}
+if (empty) {
+let vis = rows.some(tr => tr !== empty && tr.style.display !== 'none');
+empty.style.display = (q && !vis) ? '' : 'none';
+}
+});
+if (cnt) cnt.textContent = q ? `${shown} نتيجة` : '';
+}
+window.fltApply14 = fltApply14;
+function addFilters14() {
+try {
+if (!document.getElementById('content')) return;
+if (!FLT_PAGES.includes(page)) return;
+if (document.querySelector('#content input[placeholder^="بحث"]')) return;
+if (document.querySelector('#content .fltbar')) return;
+let wraps = document.querySelectorAll('#content .tablewrap');
+if (!wraps.length) return;
+let bar = document.createElement('div');
+bar.className = 'fltbar';
+bar.innerHTML = `<span class="fico">⌕</span><input placeholder="تصفية القائمة… اكتب أي جزء من الاسم أو البيانات" oninput="fltApply14(this)"><span class="fltCnt"></span>`;
+wraps[0].parentNode.insertBefore(bar, wraps[0]);
+} catch (e) {}
+}
+const _r14 = render;
+render = function () { _r14(); addFilters14(); };

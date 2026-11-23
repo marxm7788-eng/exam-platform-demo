@@ -610,6 +610,126 @@ html[data-theme=dark] .hero .hero-bg{filter:none}
  .top>div:first-child{flex:1 1 auto;min-width:0}
  #pagetitle{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
+
+/* ============ theme4: premium glass redesign ============ */
+/* layered ambient background */
+body{
+ background:
+  radial-gradient(1100px 500px at 85% -10%, #2e7d5b14, transparent 60%),
+  radial-gradient(900px 480px at -10% 15%, #2563eb12, transparent 60%),
+  radial-gradient(700px 600px at 50% 110%, #123a5c10, transparent 65%),
+  linear-gradient(160deg,#f2f6fb 0%,#e9eff7 55%,#e6edf6 100%);
+}
+/* ---------- glass primitives ---------- */
+.panel,.stat,.pair-card,.stepcard{
+ background:rgba(255,255,255,.66);
+ backdrop-filter:blur(16px) saturate(1.3);
+ -webkit-backdrop-filter:blur(16px) saturate(1.3);
+ border:1px solid rgba(255,255,255,.85);
+ box-shadow:0 1px 2px #0b254008,0 18px 44px -18px #0b25402b;
+ border-radius:20px;
+}
+.panel{transition:transform .25s cubic-bezier(.22,.9,.28,1),box-shadow .25s}
+.panel:hover{transform:translateY(-2px);box-shadow:0 2px 4px #0b25400a,0 26px 54px -18px #0b254036}
+.stat{position:relative;overflow:hidden}
+.stat:before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;border-radius:4px;background:linear-gradient(180deg,#2563eb,#0e8582)}
+.stat strong{background:linear-gradient(120deg,#123a5c,#0e8582);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+/* ---------- top bar: floating glass ---------- */
+.top{
+ background:rgba(255,255,255,.72);
+ backdrop-filter:blur(18px) saturate(1.4);
+ -webkit-backdrop-filter:blur(18px) saturate(1.4);
+ border-bottom:1px solid rgba(255,255,255,.9);
+ box-shadow:0 6px 24px -12px #0b254022;
+}
+/* ---------- sidebar: deep gradient + glow ---------- */
+.side{
+ background:linear-gradient(172deg,#0a2036 0%,#103457 58%,#0e4a5e 100%);
+ box-shadow:6px 0 32px -12px #0b254055;
+}
+.side .brand b{letter-spacing:.2px}
+.side .profile{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px)}
+.nav button{border-radius:12px;padding:9px 13px;transition:background .18s,transform .18s;position:relative}
+.nav button:hover{background:rgba(255,255,255,.1);transform:translateX(-3px)}
+.nav button.active{
+ background:linear-gradient(120deg,#2563eb,#0e8582);
+ color:#fff;font-weight:700;
+ box-shadow:0 8px 20px -6px #2563eb66;
+}
+.sidebottom button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:12px;transition:background .18s}
+.sidebottom button:hover{background:rgba(255,255,255,.16)}
+/* ---------- buttons ---------- */
+button{border-radius:12px;transition:transform .18s cubic-bezier(.22,.9,.28,1),box-shadow .18s,filter .18s}
+button:not(.light):not(.danger):not(.teal){background:linear-gradient(135deg,#123a5c,#0e6e6a);box-shadow:0 8px 18px -8px #123a5c66}
+button:not(.light):hover{transform:translateY(-1px);box-shadow:0 12px 24px -8px #123a5c77;filter:brightness(1.06)}
+button.teal{background:linear-gradient(135deg,#0e8582,#2563eb);box-shadow:0 8px 18px -8px #0e858266}
+button.light{background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border:1px solid rgba(214,226,238,.9);box-shadow:0 2px 8px -4px #0b254022}
+button.light:hover{transform:translateY(-1px);box-shadow:0 8px 18px -8px #0b254033}
+/* ---------- inputs ---------- */
+input,select,textarea{border-radius:12px!important;border:1px solid #d6e2ee!important;transition:border-color .18s,box-shadow .18s;background:rgba(255,255,255,.85)!important}
+input:focus,select:focus,textarea:focus{border-color:#0e8582!important;box-shadow:0 0 0 4px #0e85821c!important}
+/* ---------- tables ---------- */
+.tablewrap{border-radius:16px;border:1px solid rgba(214,226,238,.9);background:rgba(255,255,255,.6);backdrop-filter:blur(10px)}
+table{background:transparent}
+th{background:rgba(233,240,248,.85);backdrop-filter:blur(6px);font-weight:700}
+tbody tr{transition:background .15s}
+tbody tr:hover td{background:#2563eb0d}
+/* ---------- badges & notices ---------- */
+.badge{border-radius:999px;font-weight:700;letter-spacing:.1px}
+.notice{border-radius:14px;border:1px solid #b8d4ec66}
+/* ---------- steps (wizard) ---------- */
+.step{border-radius:14px;transition:transform .18s,box-shadow .18s;background:rgba(255,255,255,.6)}
+.step.active{background:linear-gradient(135deg,#0e8582,#2563eb);border-color:transparent;box-shadow:0 10px 22px -8px #0e858266}
+.step.active b,.step.active{color:#fff}
+.step.done{background:#e9f7f0cc;border-color:#bfe6d2}
+/* ---------- page entrance motion ---------- */
+.content>*{animation:p4in .42s cubic-bezier(.22,.9,.28,1) both}
+.content>*:nth-child(2){animation-delay:.05s}
+.content>*:nth-child(3){animation-delay:.1s}
+.content>*:nth-child(4){animation-delay:.15s}
+@keyframes p4in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* ---------- modal & toast ---------- */
+.modalbg{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.modal{border-radius:22px;box-shadow:0 30px 80px -20px #0b254066;animation:p4pop .3s cubic-bezier(.22,.9,.28,1) both}
+@keyframes p4pop{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:none}}
+.toast{border-radius:14px;box-shadow:0 14px 30px -10px #0b254055}
+/* ---------- login: glass over campus ---------- */
+#login{background:#0a2036}
+.loginbox{
+ background:rgba(10,28,48,.55)!important;
+ backdrop-filter:blur(22px) saturate(1.4)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(1.4)!important;
+ border:1px solid rgba(255,255,255,.22);
+ border-radius:26px!important;
+ box-shadow:0 40px 90px -20px #000a, inset 0 1px 0 rgba(255,255,255,.25)!important;
+}
+.loginbox h1{color:#fff!important}
+.loginbox p{color:#bcd2e4!important}
+.loginbox .field label{color:#a8c4dc!important}
+.loginbox input{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.25)!important;color:#fff!important}
+.loginbox input::placeholder{color:#8fb0ca}
+.loginbox .foot{color:#7fa3c0!important}
+.loginbox button{width:100%;background:linear-gradient(135deg,#2563eb,#0e8582)!important;box-shadow:0 12px 28px -8px #2563eb88;font-size:15px;padding:13px!important}
+.loginbox .logo{background:linear-gradient(135deg,#2563eb,#0e8582)!important;color:#fff!important;box-shadow:0 10px 24px -6px #2563eb88}
+.brandrow h1{color:#fff!important}
+/* ---------- dashboard hero polish ---------- */
+.hero{border-radius:24px;overflow:hidden;box-shadow:0 24px 50px -18px #0b25404d;border:1px solid rgba(255,255,255,.25)}
+/* ---------- progress bars ---------- */
+.progress{border-radius:99px;background:#e3ebf4}
+.progress i{background:linear-gradient(90deg,#2563eb,#0e8582);border-radius:99px}
+/* ---------- checks/chips ---------- */
+.check{border-radius:12px;background:rgba(246,249,253,.8);transition:border-color .15s,background .15s}
+.check:has(input:checked){background:#e7f4f2;border-color:#0e8582}
+/* ---------- print: strip glass & motion ---------- */
+@media print{
+ *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;animation:none!important;transition:none!important}
+ body{background:#fff!important}
+ .panel,.stat{background:#fff!important;transform:none!important}
+}
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation:none!important;transition:none!important}
+}
 </style><link rel="stylesheet" href="cairo.css"></head><body>
 <div id="login"><div class="login-art"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><div class="art-copy"><span class="eyebrow">كلية العلوم • جامعة سوهاج</span><h2>جداول الامتحانات،<br><em>منظّمة من البداية للنهاية</em></h2><p>من توزيع المسؤوليات على المختصين، إلى المراجعة والاعتماد، حتى الجدول النهائي المجمّع للطباعة والتصدير.</p><div class="art-stats"><div><b>15</b><small>برنامجاً</small></div><div><b>4</b><small>مستويات</small></div><div><b>6</b><small>برامج خاصة</small></div></div></div></div><div class="login-panel"><div class="loginbox"><div class="brandrow"><img data-lg alt=""><div><h1>منصة إدارة جداول الامتحانات</h1><p>كلية العلوم – جامعة سوهاج</p></div></div><div class="field"><label>اسم المستخدم</label><input id="lu" value="admin"></div><div class="field"><label>كلمة المرور</label><input id="lp" type="password" placeholder="أدخل كلمة المرور" onkeydown="if(event.key==='Enter')login()"></div><div id="loginerr" class="notice warning hidden"></div><button style="width:100%" onclick="login()">تسجيل الدخول</button><div class="foot">سجّل الدخول ببيانات حسابك المعتمد من إدارة الكلية.</div></div></div></div>
 <div id="app" class="app hidden"><aside id="side" class="side"><div class="brand"><img data-lg alt=""><div><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div></div><div class="profile"><span class="av" id="av">م</span><div><b id="who">مدير النظام</b><small id="role">مدير النظام</small></div></div><div><div class="navtitle" style="margin-bottom:6px">القائمة الرئيسية</div><div id="nav" class="nav"></div></div><div class="sidebottom"><button onclick="backup()">تصدير نسخة احتياطية</button><button onclick="logout()">تسجيل الخروج</button></div></aside><section class="main"><header class="top"><div style="display:flex;align-items:center;gap:9px"><button class="mobile light" onclick="toggleSide()">☰</button><div><b id="pagetitle">لوحة التحكم</b><small id="editionlabel">لا يوجد إصدار نشط</small></div></div><button class="light" onclick="changePassword()">تغيير كلمة المرور</button></header><main id="content" class="content"></main></section></div><div id="modalroot"></div><div id="toastroot"></div>

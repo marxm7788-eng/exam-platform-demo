@@ -1073,3 +1073,190 @@ const _r10=render;
 render=function(){_r10();if(typeof page!=='undefined'&&page==='dashboard')buildHero()};
 buildHero();
 })();
+// ext11: level-pair distribution (زوجان من المستويات: أيام مشتركة لكل زوج، فترة واحدة لكل مستوى)
+// Faculty rule (Mohamed, 2026-11-23): 6 exam days; levels pair up (default 1+3, 2+4);
+// each pair owns 3 days; within a pair one level takes the morning period, the other the evening.
+// Data stays in e.levelPlans (backwards compatible); pair membership stored in e.pairCfg.
+function pqDefault(){return {a:[1,3],b:[2,4]}}
+function pqDerive(e){
+if(e.pairCfg&&e.pairCfg.a&&e.pairCfg.b)return e.pairCfg;
+let groups={};
+for(let l=1;l<=4;l++){let k=((e.levelPlans[l]||{}).days||[]).slice().sort((x,y)=>x-y).join(',');(groups[k]=groups[k]||[]).push(l)}
+let gs=Object.values(groups).filter(g=>g.length===2);
+if(gs.length===2&&gs.flat().sort().join('')==='1234')return {a:gs[0].slice(),b:gs[1].slice()};
+return pqDefault();
+}
+function pqState(e){
+let cfg=pqDerive(e),st={cfg,days:{a:[],b:[]},per:{}};
+['a','b'].forEach(k=>{let ds=new Set();cfg[k].forEach(l=>((e.levelPlans[l]||{}).days||[]).forEach(d=>ds.add(d)));st.days[k]=[...ds].sort((x,y)=>x-y)});
+for(let l=1;l<=4;l++){let ps=(e.levelPlans[l]||{}).periods||[];st.per[l]=ps[0]||''}
+return st;
+}
+function pqSuggestState(e){
+let cfg=pqDefault(),half=3;
+let da=e.days.slice(0,half),db2=e.days.slice(half);
+let p0=e.periods[0]?e.periods[0].id:'',p1=(e.periods[1]||e.periods[0]||{}).id||'';
+return {cfg,days:{a:da,b:db2},per:{1:p0,2:p0,3:p1,4:p1}};
+}
+function pqEmpty(e){return [1,2,3,4].every(l=>!((e.levelPlans[l]||{}).days||[]).length&&!((e.levelPlans[l]||{}).periods||[]).length)}
+distribution=function(e){
+if(!e.periods.length)return '<div class="notice warning">أضف الفترات أولًا.</div>';
+if(!e.days.length)return '<div class="notice warning">حدد أيام الأسبوع المسموح بها أولًا.</div>';
+ensureEditionShape(e);
+let st=pqEmpty(e)?pqSuggestState(e):pqState(e);
+let lvOpts=sel=>[1,2,3,4].map(l=>`<option value="${l}" ${sel===l?'selected':''}>المستوى ${LV[l-1]}</option>`).join('');
+let perOpts=sel=>`<option value="">— اختر الفترة —</option>`+e.periods.map(p=>`<option value="${p.id}" ${sel===p.id?'selected':''}>${esc(p.name)} (${p.from}–${p.to})</option>`).join('');
+let card=(k,title,desc)=>{
+let [l1,l2]=st.cfg[k];
+let dayBoxes=e.days.map(d=>`<label class="check"><input type="checkbox" class="lday pday" data-pair="${k}" value="${d}" ${st.days[k].includes(d)?'checked':''} onchange="liveCheckDistribution()">${DAYS[d]}</label>`).join('');
+return `<div class="panel level-card pair-card" data-pair-box="${k}">
+<div class="lc-head"><h3>${title}</h3><span class="badge blue" id="pair-badge-${k}"></span></div>
+<p class="muted" style="margin:0 0 10px">${desc}</p>
+<div class="pq-row"><b class="lc-label" style="margin:0">مستويا الزوج</b>
+<select class="pairlv" data-pair="${k}" data-slot="0" onchange="liveCheckDistribution()">${lvOpts(l1)}</select>
+<select class="pairlv" data-pair="${k}" data-slot="1" onchange="liveCheckDistribution()">${lvOpts(l2)}</select>
+</div>
+<b class="lc-label">أيام هذا الزوج (من أيام الامتحانات المحددة في الخطوة السابقة)</b>
+<div class="checks lc-days">${dayBoxes}</div>
+<b class="lc-label">فترة كل مستوى (فترة واحدة فقط لكل مستوى)</b>
+<div class="pq-row pq-pers" data-pair-pers="${k}"></div>
+</div>`;
+};
+let html=`
+<h2>توزيع المستويات على الأيام والفترات</h2>
+<p class="muted">نظام الكلية: ستة أيام امتحانات مقسومة على زوجين من المستويات، كل زوج يمتحن في أيامه الخاصة، وكل مستوى له فترة واحدة ثابتة (صباحية أو مسائية) حتى لا يتقابل مستويان في نفس الفترة أبدًا.</p>
+<div id="live-conflict-alert" class="conflict-alert hidden" role="alert"></div>
+<div class="level-grid">${card('a','الزوج الأول','مستويان يمتحنان في نفس الأيام، أحدهما صباحًا والآخر مساءً.')}${card('b','الزوج الثاني','يمتحن في الأيام المتبقية، وبنفس القاعدة: فترة لكل مستوى.')}</div>
+<div class="actions">
+<button onclick="saveDistribution(true)" id="save-dist-btn" class="teal">حفظ توزيع المستويات مؤقتًا</button>
+<button class="light" onclick="pqSuggest()">الاقتراح الافتراضي (١+٣ / ٢+٤)</button>
+<button class="light" onclick="clearDist()">مسح الكل</button>
+</div>
+<div class="notice">يتم حساب تواريخ الامتحانات الفعلية تلقائيًا من أيام الزوج وفترة المستوى مع استبعاد الإجازات. لن يُنشئ المولّد أي موعد لمستوى خارج أيام زوجه أو خارج فترته.</div>`;
+window._pqInit=st.per;
+return html;
+};
+// render per-level period selects after the view mounts (needs current pair membership)
+function pqRenderPers(){
+let e=active()||draftEdition;if(!e)return;
+['a','b'].forEach(k=>{
+let box=document.querySelector(`[data-pair-pers="${k}"]`);if(!box)return;
+let lv=$$(`.pairlv[data-pair="${k}"]`).map(s=>+s.value);
+let cur={};box.querySelectorAll('select.lperiod-s').forEach(s=>cur[+s.dataset.level]=s.value);
+box.innerHTML=lv.map(l=>{
+let opts=`<option value="">— اختر الفترة —</option>`+e.periods.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.from}–${p.to})</option>`).join('');
+return `<span class="pq-per"><span>المستوى ${LV[l-1]}</span><select class="lperiod-s" id="pper-l-${l}" data-level="${l}" onchange="liveCheckDistribution()">${opts}</select></span>`;
+}).join('');
+box.querySelectorAll('select.lperiod-s').forEach(s=>{let l=+s.dataset.level;let v=cur[l]||(window._pqInit||{})[l]||((e.levelPlans[l]||{}).periods||[])[0]||'';if(v)s.value=v});
+});
+}
+// read the pair UI into canonical levelPlans; also persist pairCfg on the edition
+readLevelPlans=function(){
+let plans=emptyPlans(),cfg={a:[],b:[]};
+['a','b'].forEach(k=>{
+cfg[k]=$$(`.pairlv[data-pair="${k}"]`).map(s=>+s.value);
+let days=$$(`.pday[data-pair="${k}"]:checked`).map(x=>+x.value);
+cfg[k].forEach(l=>{plans[l]={days:days.slice(),periods:[]}});
+});
+$$('select.lperiod-s').forEach(s=>{let l=+s.dataset.level;if(plans[l]&&s.value)plans[l].periods=[s.value]});
+let e=active()||draftEdition;if(e)e.pairCfg=cfg;
+return plans;
+};
+pqSuggest=function(){
+let e=active()||draftEdition;if(!e)return;
+let st=pqSuggestState(e);
+['a','b'].forEach(k=>{
+$$(`.pairlv[data-pair="${k}"]`).forEach((s,i)=>s.value=st.cfg[k][i]);
+$$(`.pday[data-pair="${k}"]`).forEach(c=>c.checked=st.days[k].includes(+c.value));
+});
+pqRenderPers();
+for(let l=1;l<=4;l++){let s=document.getElementById('pper-l-'+l);if(s)s.value=st.per[l]||''}
+liveCheckDistribution();
+toast('تمت تعبئة الاقتراح الافتراضي — راجعه ثم احفظ');
+};
+function pqProblems(e,plans,cfg){
+let probs=[];
+let all=cfg.a.concat(cfg.b);
+if(new Set(all).size!==4||!all.every(l=>l>=1&&l<=4))probs.push('يجب أن يضم الزوجان المستويات الأربعة كلًّا مرة واحدة.');
+if(cfg.a.length===2&&cfg.b.length===2){
+let da=new Set();cfg.a.forEach(l=>(plans[l].days||[]).forEach(d=>da.add(d)));
+cfg.b.forEach(l=>(plans[l].days||[]).forEach(d=>{if(da.has(d))probs.push(`يوم ${DAYS[d]} محجوز للزوج الأول ولا يمكن اختياره للزوج الثاني.`)}));
+['a','b'].forEach(k=>{
+let [x,y]=cfg[k],px=(plans[x]||{}).periods||[],py=(plans[y]||{}).periods||[];
+if(px.length&&py.length&&px[0]===py[0]){
+let per=e.periods.find(p=>p.id===px[0]);
+probs.push(`المستوى ${LV[x-1]} والمستوى ${LV[y-1]} في نفس الزوج ويجب أن تختلف فترتاهما (صباحية/مسائية) — كلاهما الآن «${per?esc(per.name):''}».`);
+}
+});
+}
+for(let l=1;l<=4;l++){let ps=(plans[l]||{}).periods||[];if(ps.length>1)probs.push(`المستوى ${LV[l-1]}: يجب اختيار فترة واحدة فقط.`)}
+return [...new Set(probs)];
+}
+liveCheckDistribution=function(){
+let e=active()||draftEdition;
+let alertBox=$('#live-conflict-alert');
+if(!e||!alertBox)return;
+pqRenderPers();
+let plans=readLevelPlans();
+let cfg=e.pairCfg||pqDefault();
+// disable days claimed by the other pair
+let taken={a:new Set($$('.pday[data-pair="b"]:checked').map(c=>+c.value)),b:new Set($$('.pday[data-pair="a"]:checked').map(c=>+c.value))};
+['a','b'].forEach(k=>{$$(`.pday[data-pair="${k}"]`).forEach(c=>{c.disabled=taken[k].has(+c.value);c.closest('label').classList.toggle('pq-taken',taken[k].has(+c.value))})});
+// badges + card states
+['a','b'].forEach(k=>{
+let b=document.getElementById('pair-badge-'+k);
+if(b){let n=$$(`.pday[data-pair="${k}"]:checked`).length;b.textContent=n+(n===1?' يوم':' أيام')}
+});
+$$('.level-card .check').forEach(label=>{let input=label.querySelector('input');label.classList.toggle('on',!!(input&&input.checked))});
+let problems=pqProblems(e,plans,cfg);
+// per-level completeness shown softly (does not block until save/next)
+let conflicts=levelConflicts({levelPlans:plans});
+conflicts.forEach(c=>{let per=e.periods.find(x=>x.id===c.p);problems.push(`تعارض: المستوى ${LV[c.a-1]} والمستوى ${LV[c.b-1]} يتشاركان ${DAYS[c.d]} – ${per?esc(per.name):''}`)});
+problems=[...new Set(problems)];
+let saveBtn=$('#save-dist-btn'),nextBtn=$('#wizard-next-btn');
+if(problems.length){
+alertBox.innerHTML=`<div>راجع التالي قبل الحفظ:</div><ul>${problems.slice(0,6).map(p=>`<li>⚠️ ${p}</li>`).join('')}${problems.length>6?`<li>و ${problems.length-6} ملاحظات أخرى…</li>`:''}</ul>`;
+alertBox.classList.remove('hidden');
+}else{alertBox.innerHTML='';alertBox.classList.add('hidden')}
+if(saveBtn)saveBtn.disabled=problems.length>0;
+if(nextBtn&&step===4)nextBtn.disabled=problems.length>0;
+};
+saveDistribution=function(showToast=true){
+let e=active()||draftEdition;
+if(!e)return false;
+if(!$$('.pday').length)return true; // step not rendered (no periods/days yet)
+pqRenderPers();
+let plans=readLevelPlans();
+let cfg=e.pairCfg||pqDefault();
+let problems=pqProblems(e,plans,cfg);
+if(problems.length){liveCheckDistribution();toast(problems[0].replace(/<[^>]+>/g,''),true);return false}
+let incomplete=[1,2,3,4].filter(l=>!plans[l].days.length||!plans[l].periods.length);
+if(incomplete.length){toast('أكمل أيام وفترة كل مستوى قبل الحفظ',true);return false}
+for(let l=1;l<=4;l++)e.levelPlans[l]=plans[l];
+save();
+if(showToast)toast('تم حفظ وتحديث توزيع المستويات بنجاح');
+return true;
+};
+clearDist=function(){
+if(!confirm('مسح جميع اختيارات توزيع المستويات؟'))return;
+let e=active()||draftEdition;
+for(let l=1;l<=4;l++)e.levelPlans[l]={days:[],periods:[]};
+e.pairCfg=pqDefault();
+save();render();
+};
+// edition summary: show the pair structure explicitly
+const _pqSummary=editionSummary;
+editionSummary=function(e){
+let h=_pqSummary(e);
+try{
+let cfg=pqDerive(e);
+let nm=l=>'المستوى '+LV[l-1];
+let per=l=>{let idp=(e.levelPlans[l]||{}).periods[0];let p=e.periods.find(x=>x.id===idp);return p?esc(p.name)+' ('+p.from+'–'+p.to+')':'—'};
+let block=`<div class="panel"><h3>أزواج المستويات</h3><p>الزوج الأول: ${nm(cfg.a[0])} (${per(cfg.a[0])}) + ${nm(cfg.a[1])} (${per(cfg.a[1])})<br>الزوج الثاني: ${nm(cfg.b[0])} (${per(cfg.b[0])}) + ${nm(cfg.b[1])} (${per(cfg.b[1])})</p></div>`;
+h=h.replace('<div class="panel"><h3>توزيع المستويات</h3>',block+'<div class="panel"><h3>توزيع المستويات</h3>');
+}catch(x){}
+return h;
+};
+// after the distribution view renders, mount period selects + run the live check
+const _pqRender=render;
+render=function(){_pqRender();if(typeof page!=='undefined'&&page==='setup'&&step===4){pqRenderPers();liveCheckDistribution()}};

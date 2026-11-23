@@ -596,6 +596,20 @@ html[data-theme=dark] .hero .hero-bg{filter:none}
  #ntBtn:has(#ntBadge){animation:none!important}
 }
 @media print{#login .bgslides,.hero .hero-bg{display:none!important}}
+
+/* ---------- level pairs (ext11) ---------- */
+.pair-card .pq-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pair-card select{border-radius:12px;padding:8px 10px;width:auto;min-width:150px}
+.pq-per{display:inline-flex;align-items:center;gap:8px;background:#F6F9FD;border:1px solid var(--line);border-radius:12px;padding:6px 10px}
+.pq-per>span{font-size:12px;font-weight:700;color:var(--muted)}
+.check.pq-taken{opacity:.45}
+
+/* ---------- mobile topbar crowding fix ---------- */
+@media(max-width:900px){
+ #clock{display:none!important}
+ .top>div:first-child{flex:1 1 auto;min-width:0}
+ #pagetitle{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
 </style><link rel="stylesheet" href="cairo.css"></head><body>
 <div id="login"><div class="login-art"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><div class="art-copy"><span class="eyebrow">الخطط الدراسية المعتمدة • جداول وحسابات تجريبية</span><h2>جداول الامتحانات،<br><em>منظّمة من البداية للنهاية</em></h2><p>من توزيع المسؤوليات على المختصين، إلى المراجعة والاعتماد، حتى الجدول النهائي المجمّع للطباعة والتصدير.</p><div class="art-stats"><div><b>15</b><small>برنامجاً</small></div><div><b>4</b><small>مستويات</small></div><div><b>6</b><small>برامج خاصة</small></div></div></div></div><div class="login-panel"><div class="loginbox"><div class="brandrow"><img data-lg alt=""><div><h1>منصة إدارة جداول الامتحانات</h1><p>كلية العلوم – جامعة سوهاج</p></div></div><div class="field"><label>اسم المستخدم</label><input id="lu" value="admin"></div><div class="field"><label>كلمة المرور</label><input id="lp" type="password" placeholder="أدخل كلمة المرور" onkeydown="if(event.key==='Enter')login()"></div><div id="loginerr" class="notice warning hidden"></div><button style="width:100%" onclick="login()">تسجيل الدخول</button><div class="chips"><button class="chip" onclick="demoFill('admin','admin')">مدير</button><button class="chip" onclick="demoFill('sp1','1234')">مختص 1</button><button class="chip" onclick="demoFill('sp2','1234')">مختص 2</button><button class="chip" onclick="demoFill('rev','1234')">مراجع</button><button class="chip" onclick="demoFill('view','1234')">مشاهد</button></div><div class="foot">حسابات تجريبية: اضغط على أي دور لتعبئة بياناته. لا تُدخل بيانات حقيقية.</div></div></div></div>
 <div id="app" class="app hidden"><aside id="side" class="side"><div class="brand"><img data-lg alt=""><div><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div></div><div class="profile"><span class="av" id="av">م</span><div><b id="who">مدير النظام</b><small id="role">مدير النظام</small></div></div><div><div class="navtitle" style="margin-bottom:6px">القائمة الرئيسية</div><div id="nav" class="nav"></div></div><div class="sidebottom"><button onclick="backup()">تصدير نسخة احتياطية</button><button onclick="logout()">تسجيل الخروج</button></div></aside><section class="main"><header class="top"><div style="display:flex;align-items:center;gap:9px"><button class="mobile light" onclick="toggleSide()">☰</button><div><b id="pagetitle">لوحة التحكم</b><span class="badge amber" style="margin-inline:8px">جداول وحسابات تجريبية</span><small id="editionlabel">لا يوجد إصدار نشط</small></div></div><button class="light" onclick="changePassword()">تغيير كلمة المرور</button></header><main id="content" class="content"></main></section></div><div id="modalroot"></div><div id="toastroot"></div>

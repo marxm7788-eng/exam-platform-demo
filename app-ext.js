@@ -545,7 +545,9 @@ first.prepend(b);
 let img=b.querySelector('img');if(typeof LOGO_U!=='undefined')img.src=LOGO_U;
 let ed=D.getElementById('editionlabel');if(ed)first.appendChild(ed);
 let bd=top.querySelector('.badge.amber');if(bd&&bd.parentElement===first)bd.remove()}
-function buildAvatar(){let top=D.querySelector('.top');if(!top||D.getElementById('avWrap')||!me)return;
+function buildAvatar(){let top=D.querySelector('.top');if(!top||!me)return;
+let ex=D.getElementById('avWrap');
+if(ex){let b=ex.querySelector('.avx');if(b)b.textContent=(me.name||'م').trim()[0]||'م';let n=ex.querySelector('.avn');if(n)n.textContent=me.name||'';let r=ex.querySelector('.avr');if(r)r.textContent=roleName(me.role);return}
 let w=D.createElement('div');w.id='avWrap';
 w.innerHTML=`<button type="button" id="avBtn"><span class="avx">${esc((me.name||'م').trim()[0]||'م')}</span><span><span class="avn">${esc(me.name||'')}</span><br><span class="avr">${esc(roleName(me.role))}</span></span></button>
 <div id="avMenu" hidden><button type="button" onclick="changePassword()">تغيير كلمة المرور</button><button type="button" onclick="backup()">تصدير نسخة احتياطية</button><button type="button" onclick="logout()">تسجيل الخروج</button></div>`;

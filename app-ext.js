@@ -1655,8 +1655,7 @@ _r15();
 try { layoutTop15(); wireNotif15(); badge15(); } catch (e) { console.warn('ext15', e); }
 };
 // ext16: FOS-portal style login screens + PBKDF2 verification with transparent migration.
-function lpShowAuth(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(h)h.classList.add('hidden');if(a)a.classList.remove('hidden');setTimeout(function(){var u=document.getElementById('lu');if(u)u.focus()},80)}
-function lpShowHome(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(a)a.classList.add('hidden');if(h)h.classList.remove('hidden')}
+// lpShowAuth/lpShowHome live in the base page so they exist even when this file is cached-stale.
 // login: per-browser lockout (unchanged) + PBKDF2 verify + legacy hash migration.
 // a failed username costs one PBKDF2 derive too, so timing does not reveal which usernames exist.
 login = function () {

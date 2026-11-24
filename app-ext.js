@@ -975,6 +975,7 @@ setRow('العدد الافتراضي للملاحظين في اللجنة ال�
 setRow('تسجيل الخروج التلقائي عند عدم النشاط', 'عدد الدقائق بلا نشاط قبل تسجيل الخروج تلقائيًا. صفر يعني إيقاف الميزة. (حماية على مستوى هذا المتصفح)',
 `<input type="number" min="0" max="240" value="${db.settings.autoLock}" style="max-width:90px" onchange="setAutoLock(this.value)">`) +
 setRow('قفل محاولات الدخول', 'بعد 5 محاولات دخول فاشلة يُقفل تسجيل الدخول 5 دقائق على هذا المتصفح. حماية محلية رادعة — الحماية الحقيقية من التخمين تحتاج خادمًا.', `<span class="badge green">مفعّل دائمًا</span>`) +
+setRow('تشفير كلمات المرور المخزنة', 'تُحفظ كلمات المرور مبعثرة بخوارزمية PBKDF2-SHA256 بعدد 150 ألف تكرار وملح عشوائي مستقل لكل حساب، وتُرقّى الحسابات القديمة تلقائيًا عند أول دخول ناجح. لا تُحفظ كلمة المرور نصًا في أي مكان.', `<span class="badge green">مفعّل</span>`) +
 `<h2 style="margin-top:18px">إعدادات أخرى</h2>` +
 setRow('المظهر الداكن', 'متاح من زر الهلال في الشريط العلوي لكل مستخدم، ويُحفظ لكل متصفح.', `<span class="badge blue">موجود بالفعل</span>`) +
 setRow('النسخ الاحتياطي والاستعادة', 'من قائمة الحساب (الصورة الرمزية أعلى الصفحة): تصدير نسخة احتياطية كاملة تشمل الإعدادات والقاعات والملاحظين والإصدارات.', `<span class="badge blue">موجود بالفعل</span>`) +
@@ -1652,4 +1653,45 @@ const _r15 = render;
 render = function () {
 _r15();
 try { layoutTop15(); wireNotif15(); badge15(); } catch (e) { console.warn('ext15', e); }
+};
+// ext16: FOS-portal style login screens + PBKDF2 verification with transparent migration.
+function lpShowAuth(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(h)h.classList.add('hidden');if(a)a.classList.remove('hidden');setTimeout(function(){var u=document.getElementById('lu');if(u)u.focus()},80)}
+function lpShowHome(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(a)a.classList.add('hidden');if(h)h.classList.remove('hidden')}
+// login: per-browser lockout (unchanged) + PBKDF2 verify + legacy hash migration.
+// a failed username costs one PBKDF2 derive too, so timing does not reveal which usernames exist.
+login = function () {
+(async () => {
+if (!db) return;
+mig9();
+var auth = document.getElementById('lp-auth');
+if (auth && auth.classList.contains('hidden')) { lpShowAuth(); return; }
+let now = Date.now();
+if (db.sec.until > now) {
+let m = Math.ceil((db.sec.until - now) / 60000);
+$('#loginerr').textContent = 'محاولات كثيرة فاشلة. حاول بعد ' + m + ' دقيقة.';
+$('#loginerr').classList.remove('hidden');
+return;
+}
+let u = $('#lu').value.trim(), plain = $('#lp').value;
+let x = db.users.find(a => a.username === u && a.active);
+let ok = false;
+if (x) { try { ok = await verifyPass(x.password, plain); } catch (e) { ok = false; } }
+else { try { await pbkdf2Bits(plain, crypto.getRandomValues(new Uint8Array(16)), 150000); } catch (e) {} }
+if (!x || !ok) {
+db.sec.fails++;
+if (db.sec.fails >= 5) { db.sec.until = Date.now() + 5 * 60000; db.sec.fails = 0; log('قفل تسجيل الدخول مؤقتًا بعد محاولات فاشلة'); }
+save();
+$('#loginerr').textContent = db.sec.until > Date.now() ? 'تم قفل تسجيل الدخول 5 دقائق بعد 5 محاولات فاشلة.' : 'بيانات الدخول غير صحيحة أو الحساب غير نشط';
+$('#loginerr').classList.remove('hidden');
+return;
+}
+if (typeof x.password === 'string' && x.password.indexOf('pbkdf2$') !== 0) { try { x.password = await hash(plain); log('ترقية تخزين كلمة المرور إلى PBKDF2'); } catch (e) {} }
+db.sec.fails = 0; db.sec.until = 0;
+me = x; x.last = new Date().toLocaleString('ar-EG');
+log('تسجيل الدخول');
+$('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+$('#who').textContent = me.name; $('#role').textContent = roleName(me.role);
+page = menu()[0] ? menu()[0][0] : 'published';
+save(); render();
+})();
 };

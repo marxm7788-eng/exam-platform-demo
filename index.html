@@ -1034,6 +1034,88 @@ html[data-theme=dark] .loginbox p{color:#A8C4DC!important}
 #loginTheme{position:fixed;top:12px;inset-inline-start:14px;left:auto;z-index:60;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:12px;width:40px;height:40px;padding:0;display:grid;place-items:center;font-size:17px;backdrop-filter:blur(8px)}
 html[data-theme=dark] #login img{filter:none!important}
 @media(max-width:860px){#login{display:block}#lp-home,#lp-auth{padding-top:88px}}
+
+
+/* ===== theme7: whole-app FOS-portal theme (dean-demo round) =====
+   Portal tokens: navy #0c1e36 / teal #0f766e-#14b8a6 / slate grays / radius 10-14 /
+   soft shadows rgba(12,30,54,.x) / glass blur / gentle animations. Top-nav pills kept as-is. */
+:root{
+ --navy:#0c1e36;--navy2:#163456;--ink:#0c1e36;
+ --teal:#0f766e;--emerald:#0f766e;--brass:#0f766e;--brass2:#14b8a6;
+ --bg:#f8fafc;--paper:#f8fafc;--line:#e2e8f0;--muted:#64748b;
+ --grad:linear-gradient(135deg,#0c1e36,#0f766e);
+ --shadow:0 1px 3px rgba(12,30,54,.06),0 4px 16px rgba(12,30,54,.04);
+}
+body{background:#f8fafc;background-image:radial-gradient(1100px 520px at 88% -10%,rgba(20,184,166,.08),transparent 60%),radial-gradient(900px 480px at -6% 108%,rgba(12,30,54,.05),transparent 55%)!important;background-attachment:fixed}
+
+/* ---------- panels/cards: portal white cards with soft shadow + entrance motion ---------- */
+.panel,.stat,.mxwrap{border-radius:16px!important;border:1px solid #e2e8f0;background:#fff;box-shadow:0 1px 3px rgba(12,30,54,.06),0 4px 16px rgba(12,30,54,.04)}
+.stat{transition:transform .2s ease,box-shadow .25s ease}
+.stat:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(12,30,54,.1)}
+@keyframes fosRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.content>.panel,.content>.stats,.content>.head,.content>.hero,.content>.dstatus,.content>.steps,.content>.cols,.content>.mxwrap,.content>.tablewrap{animation:fosRise .4s cubic-bezier(.22,.9,.28,1) both}
+.content>.stats{animation-delay:.04s}
+.stat:before{background:linear-gradient(180deg,#0c1e36,#14b8a6)}
+.stat strong{background:linear-gradient(120deg,#0c1e36,#0f766e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.head h1{color:#0c1e36}
+.head h1:before{background:linear-gradient(180deg,#14b8a6,#0c1e36)}
+.panel h2,.panel h3{color:#0c1e36}
+
+/* ---------- buttons: portal rounded gradient, lift on hover ---------- */
+button{border-radius:10px}
+.panel button:not(.light):not(.danger):not(.teal):not(.gsIt):not(.ntItem):not(.text-btn):not(.ghost),
+.modal button:not(.light):not(.danger):not(.teal):not(.text-btn),
+.head .actions button:not(.light):not(.danger):not(.teal){background:linear-gradient(135deg,#0c1e36,#163456)!important;box-shadow:0 6px 18px rgba(12,30,54,.22)}
+.panel button.teal,.modal button.teal,.head .actions button.teal{background:linear-gradient(135deg,#0f766e,#14b8a6)!important;box-shadow:0 6px 18px rgba(15,118,110,.28)}
+.panel button:hover,.modal button:hover,.head .actions button:hover{transform:translateY(-1px)}
+.panel button.danger,.modal button.danger,.head .actions button.danger{background:linear-gradient(135deg,#dc2626,#991b1b)!important;border-radius:10px}
+.panel button.teal,.modal button.teal,.head .actions button.teal,.panel button.danger,.modal button.danger{border-radius:10px!important}
+button.light{background:rgba(255,255,255,.7);border:1px solid #e2e8f0;color:#0c1e36;backdrop-filter:blur(6px)}
+
+/* ---------- nav pills + progress + steps: retone to portal gradient (layout untouched) ---------- */
+.nav button.active{background:linear-gradient(120deg,#0c1e36,#0f766e)}
+#topbarTabs .tab-hl{background:linear-gradient(120deg,#0c1e36,#14b8a6)}
+#topbarTabs button.active{color:#0c1e36}
+#topbarTabs .tbadge{background:#0f766e}
+.progress i{background:linear-gradient(90deg,#0c1e36,#14b8a6)}
+.step.active{background:linear-gradient(135deg,#0c1e36,#0f766e)}
+.ring{background:conic-gradient(#14b8a6 calc(var(--p)*1%),#ffffff1c 0)}
+.check:has(input:checked){background:#f0fdfa;border-color:#14b8a6}
+.gsIt .ic{background:rgba(20,184,166,.1);color:#0f766e}
+
+/* ---------- glass topbar (layout untouched) ---------- */
+.top{background:rgba(255,255,255,.78);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border-bottom:1px solid rgba(226,232,240,.8)}
+#clock b{color:#0c1e36}
+
+/* ---------- hero band: portal overlay tint ---------- */
+.hero:after{background:linear-gradient(115deg,rgba(7,26,51,.92) 0%,rgba(7,26,51,.78) 42%,rgba(12,30,54,.55) 70%,rgba(13,148,136,.32) 100%)}
+.hero h2{text-shadow:0 4px 28px rgba(0,0,0,.35)}
+
+/* ---------- inputs: portal field style ---------- */
+.field input,.field select,.field textarea,input,select,textarea{border:1.5px solid #e2e8f0;border-radius:10px;min-height:44px}
+.field input:focus,.field select:focus,.field textarea:focus,input:focus,select:focus,textarea:focus{border-color:#14b8a6;box-shadow:0 0 0 3px rgba(20,184,166,.18)}
+
+/* ---------- tables: slate header ---------- */
+th{background:#f8fafc;color:#64748b}
+.tablewrap{border-color:#e2e8f0;border-radius:12px}
+
+/* ---------- modal + menus: portal card ---------- */
+.modal{border-radius:16px;border:1px solid #e2e8f0;box-shadow:0 28px 64px rgba(0,0,0,.28)}
+#avMenu,#ntPanel,#tabMoreMenu{border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 4px 20px rgba(12,30,54,.12);backdrop-filter:blur(14px);background:rgba(255,255,255,.94)}
+.toast{background:#0c1e36;border-radius:12px}
+
+/* ---------- badges ---------- */
+.badge.blue{background:#eff6ff;color:#1e4470}
+.badge.green{background:#f0fdfa;color:#0f766e}
+
+/* ---------- dark mode: portal-night navy ---------- */
+html[data-theme=dark] body{background:#0a1626!important;background-image:radial-gradient(1000px 480px at 85% -8%,rgba(20,184,166,.07),transparent 60%)!important}
+html[data-theme=dark] .panel,html[data-theme=dark] .stat,html[data-theme=dark] .mxwrap{background:rgba(16,32,52,.72);border-color:#1e3a55;backdrop-filter:blur(10px)}
+html[data-theme=dark] .top{background:rgba(10,22,38,.78)}
+html[data-theme=dark] .modal,html[data-theme=dark] #avMenu,html[data-theme=dark] #ntPanel{background:rgba(16,32,52,.94);border-color:#1e3a55}
+html[data-theme=dark] .head h1,html[data-theme=dark] .panel h2,html[data-theme=dark] .panel h3{color:#e6f0f8}
+html[data-theme=dark] button.light{background:rgba(255,255,255,.06);border-color:#1e3a55;color:#d9e4ef}
+html[data-theme=dark] th{background:#101f33;color:#8fa6bb}
 </style><link rel="stylesheet" href="cairo.css"></head><body>
 <div id="login"><div class="lp-head"><div class="lp-lockup"><img data-lf alt="شعار كلية العلوم"><div class="lp-lt"><b>كلية العلوم</b><small>Faculty of Science</small></div><i class="lp-sep"></i><img data-lg alt="شعار جامعة سوهاج"><div class="lp-lt"><b>جامعة سوهاج</b><small>Sohag University</small></div></div></div><div id="lp-home"><div class="lp-hero"><div class="lp-kicker">جامعة سوهاج</div><h2 class="lp-title">منظومة إدارة<br><span>جداول الامتحانات</span></h2><p class="lp-desc">من توزيع المسؤوليات على المختصين، إلى المراجعة والاعتماد، حتى الجدول النهائي المعتمد للطباعة والتصدير، في مكان واحد.</p><div class="lp-actions"><button type="button" class="lp-cta" onclick="var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(h)h.classList.add('hidden');if(a)a.classList.remove('hidden');var u=document.getElementById('lu');if(u)u.focus()">تسجيل الدخول</button></div><div class="lp-feats"><span class="lp-feat">توزيع المسؤوليات</span><span class="lp-feat">مراجعة واعتماد</span><span class="lp-feat">لجان ومراقبة</span><span class="lp-feat">جداول جاهزة للطباعة</span></div></div></div><div id="lp-auth" class="hidden"><button type="button" class="lp-back" onclick="var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(a)a.classList.add('hidden');if(h)h.classList.remove('hidden')">العودة للرئيسية ←</button><div class="fos-card"><div class="fos-head"><img data-lg alt=""><div class="fos-titles"><h1>منصة إدارة جداول الامتحانات</h1><div class="fos-sub">كلية العلوم · جامعة سوهاج</div><div class="fos-desc">بوابة موحدة لإعداد جداول الامتحانات ومراجعتها واعتمادها</div></div><img data-lf alt=""></div><div class="fos-tabs"><button type="button" class="active">تسجيل الدخول</button></div><div class="field fos-field"><label>اسم المستخدم</label><div class="fos-inp"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><input id="lu" placeholder="اسم المستخدم" autocomplete="username"></div></div><div class="field fos-field"><label>كلمة المرور</label><div class="fos-inp"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="lp" type="password" placeholder="أدخل كلمة المرور" autocomplete="current-password"></div></div><div id="loginerr" class="notice warning hidden"></div><button type="button" class="fos-btn" onclick="login()">دخول</button><div class="foot">سجّل الدخول ببيانات حسابك المعتمد من إدارة الكلية.</div></div></div></div>
 <div id="app" class="app hidden"><aside id="side" class="side"><div class="brand"><img data-lg alt=""><div><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div></div><div class="profile"><span class="av" id="av">م</span><div><b id="who">مدير النظام</b><small id="role">مدير النظام</small></div></div><div><div class="navtitle" style="margin-bottom:6px">القائمة الرئيسية</div><div id="nav" class="nav"></div></div><div class="sidebottom"><button onclick="backup()">تصدير نسخة احتياطية</button><button onclick="logout()">تسجيل الخروج</button></div></aside><section class="main"><header class="top"><div style="display:flex;align-items:center;gap:9px"><button class="mobile light" onclick="toggleSide()">☰</button><div><b id="pagetitle">لوحة التحكم</b><small id="editionlabel">لا يوجد إصدار نشط</small></div></div><button class="light" onclick="changePassword()">تغيير كلمة المرور</button></header><main id="content" class="content"></main></section></div><div id="modalroot"></div><div id="toastroot"></div>

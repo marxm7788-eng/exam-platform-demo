@@ -123,7 +123,7 @@ input:focus,select:focus,textarea:focus,.field input:focus,.field select:focus,.
 .art-stats{display:flex;gap:14px}
 .art-stats div{padding:14px 20px;border:1px solid #ffffff22;border-radius:16px;background:#ffffff0d;backdrop-filter:blur(6px);min-width:96px}
 .art-stats b{display:block;font-size:26px;color:var(--brass2)}.art-stats small{color:#b9cfdd}
-.login-panel{display:grid;place-items:center;padding:30px;background:radial-gradient(600px 400px at 100% 0,#c79f5214,transparent 60%),#fbf9f3}
+
 .loginbox{box-shadow:0 30px 70px -30px #0b254044,0 2px 0 #fff inset;border:1px solid var(--line);width:min(420px,100%);animation:rise .8s var(--ease) both .05s}
 .loginbox .brandrow{display:flex;align-items:center;gap:13px;margin-bottom:20px}
 .loginbox .brandrow img{width:54px;height:54px;object-fit:contain;filter:drop-shadow(0 4px 8px #0b254030)}
@@ -134,7 +134,7 @@ input:focus,select:focus,textarea:focus,.field input:focus,.field select:focus,.
 .chip{padding:5px 11px;font-size:12px;border-radius:99px;background:#f2ede1;color:#5b4a22;border:1px solid #e6dcc5;box-shadow:none;font-weight:600}
 .chip:hover{background:#ece3cd;transform:translateY(-1px);box-shadow:none}
 .loginbox .foot{line-height:1.8}
-@media(max-width:860px){#login{grid-template-columns:1fr}.login-art{display:none}.login-panel{min-height:100vh}}
+@media(max-width:860px){#login{grid-template-columns:1fr}.login-art{display:none}}
 /* ---------- App shell ---------- */
 #app:not(.hidden){animation:fadein .6s ease both}
 .side{background:linear-gradient(190deg,#071a2e,#0b2f4d 60%,#0b3d4c);overflow:hidden;box-shadow:-12px 0 40px -20px #0b2540}
@@ -366,7 +366,7 @@ table.matrix th.d{background:var(--ink);color:var(--brass2)}
 .art-copy p{color:#B9C4D4}
 .art-stats div{border-color:#ffffff1c;background:#ffffff0a}
 .art-stats b{color:var(--brass2)}.art-stats small{color:#9AA7BC}
-.login-panel{background:var(--bg)}
+
 .loginbox h1{color:var(--ink)}
 .loginbox>button{background:var(--ink)!important;color:#F4F7FC!important}
 .chip{background:#E7EEFB;color:#1D4ED8;border-color:#CBD9F5}
@@ -546,7 +546,7 @@ button:active{transform:scale(.965)}
 #login .login-art,#login .login-panel{position:relative;z-index:1}
 .login-art{background:transparent!important}
 .login-art:before{opacity:.55}
-.login-panel{background:transparent!important}
+
 .loginbox{background:#ffffffe8;backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);border-color:#ffffffaa;box-shadow:0 34px 80px -28px #00000066,0 2px 0 #ffffff88 inset}
 .loginbox>button{background:linear-gradient(135deg,#1D4ED8,#3B82F6)!important;box-shadow:0 12px 26px -10px #2563EBaa;transition:transform .18s var(--ease),box-shadow .25s var(--ease),filter .2s}
 .loginbox>button:hover{transform:translateY(-2px);box-shadow:0 18px 34px -12px #2563EBbb;filter:brightness(1.05)}

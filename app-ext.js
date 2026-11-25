@@ -1845,3 +1845,13 @@ if (typeof window.buildBrand === 'undefined') { window.buildBrand = function () 
 fosBuildSidebar();
 setInterval(fosSyncProfile, 700);
 try { buildTabs(); } catch (e) {}
+
+// ===== v7d: keep #nav in the sidebar - neutralize the old topbar layout mover =====
+try { layoutTop15 = function () {}; } catch (e) {}
+const _fosRenderFinal = render;
+render = function () {
+  const r = _fosRenderFinal.apply(this, arguments);
+  try { buildTabs(); } catch (e) {}
+  try { fosSyncProfile(); } catch (e) {}
+  return r;
+};

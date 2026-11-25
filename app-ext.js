@@ -1827,15 +1827,21 @@ function fosBuildSidebar() {
   if (sc) sc.onclick = () => setOpen(false);
 }
 function fosSyncProfile() {
-  const w = document.getElementById('who'), r = document.getElementById('role');
   const sw = document.getElementById('sideWho'), sr = document.getElementById('sideRole');
   const av = document.querySelector('.side .profile .av');
-  if (w && sw && sw.textContent !== w.textContent) {
-    sw.textContent = w.textContent;
-    if (av && w.textContent.trim()) av.textContent = w.textContent.trim().charAt(0);
+  const w = document.getElementById('who'), r = document.getElementById('role');
+  let nm = w ? w.textContent.trim() : '', rl = r ? r.textContent.trim() : '';
+  if ((!nm || nm === '—') && typeof me !== 'undefined' && me) {
+    nm = me.name || me.id || '';
+    try { rl = (typeof roleName === 'function') ? roleName(me.role) : (me.role || ''); } catch (e) { rl = me.role || ''; }
   }
-  if (r && sr && sr.textContent !== r.textContent) sr.textContent = r.textContent;
+  if (sw && nm && sw.textContent !== nm) {
+    sw.textContent = nm;
+    if (av) av.textContent = nm.charAt(0);
+  }
+  if (sr && rl && sr.textContent !== rl) sr.textContent = rl;
 }
+if (typeof window.buildBrand === 'undefined') { window.buildBrand = function () {}; }
 fosBuildSidebar();
 setInterval(fosSyncProfile, 700);
 try { buildTabs(); } catch (e) {}

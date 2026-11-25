@@ -1696,7 +1696,7 @@ page = menu()[0] ? menu()[0][0] : 'published';
 save(); render();
 })();
 };
-// ===== FOS advising-platform parity: welcome & farewell glass screens (Nov 25) =====
+// ===== FOS advising-platform parity: welcome & farewell glass screens (Nov 25 v2) =====
 function showGreeting(kind, name, done) {
   const old = document.getElementById('greet-overlay');
   if (old) old.remove();
@@ -1718,24 +1718,25 @@ function showGreeting(kind, name, done) {
     if (typeof done === 'function') done();
   }, kind === 'bye' ? 1500 : 1800);
 }
+function fosCurrentName() { const w = document.getElementById('who'); return w ? (w.textContent || '').trim() : ''; }
 login = (function (_l) {
   return function () {
-    const had = !!window.me;
     const r = _l.apply(this, arguments);
-    if (!had) {
-      let n = 0;
-      const t = setInterval(() => {
-        n++;
-        if (window.me) { clearInterval(t); showGreeting('hi', me.name); }
-        else if (n > 50) clearInterval(t);
-      }, 120);
-    }
+    let n = 0;
+    const t = setInterval(() => {
+      n++;
+      const le = document.getElementById('login'), ap = document.getElementById('app');
+      if (le && ap && le.classList.contains('hidden') && !ap.classList.contains('hidden')) {
+        clearInterval(t);
+        showGreeting('hi', fosCurrentName());
+      } else if (n > 60) clearInterval(t);
+    }, 100);
     return r;
   };
 })(login);
 logout = (function (_g) {
   return function () {
-    showGreeting('bye', window.me ? me.name : '');
+    showGreeting('bye', fosCurrentName());
     return _g.apply(this, arguments);
   };
 })(logout);

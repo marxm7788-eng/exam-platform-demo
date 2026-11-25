@@ -1813,3 +1813,141 @@ render = function () {
   return r;
 };
 try { buildTabs(); } catch (e) {}
+
+// ===== v9b: advising-identical topbar + sidebar (non-destructive rebuild) =====
+// Fixes v9 bugs: never wipes .top; neutralizes buildBrand (topBrand), the
+// desktop tabs-in-topbar mover, and the #topActs cluster by relocating, not deleting.
+try { buildAvatar = function () {}; } catch (e) {}
+try { buildBrand = function () {}; } catch (e) {}
+(function () {
+  const AR_DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const toArD = s => String(s).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]);
+  function tick() {
+    const t = document.getElementById('v9-clock-time'), d = document.getElementById('v9-clock-date');
+    if (!t || !d) return;
+    const n = new Date();
+    d.textContent = AR_DAYS[n.getDay()] + '، ' + toArD(n.getDate()) + ' ' + AR_MONTHS[n.getMonth()] + ' ' + toArD(n.getFullYear());
+    d.title = d.textContent;
+    let h = n.getHours(); const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+    const p2 = x => String(x).padStart(2, '0');
+    t.textContent = p2(h) + ':' + p2(n.getMinutes()) + ':' + p2(n.getSeconds()) + ' ' + ap;
+    t.setAttribute('datetime', n.toISOString());
+  }
+  setInterval(tick, 1000);
+  function paintTheme() {
+    const d = document.documentElement.dataset.theme === 'dark';
+    const b = document.getElementById('themeBtn');
+    if (b) { b.innerHTML = '<i class="fas ' + (d ? 'fa-sun' : 'fa-moon') + '"></i>'; b.title = d ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الداكن'; b.setAttribute('aria-pressed', String(d)); }
+  }
+  new MutationObserver(paintTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  function fix() {
+    const top = document.querySelector('.top'), side = document.querySelector('.side');
+    if (!top || !side) return;
+    const whoEl0 = document.getElementById('who');
+    if (!whoEl0 || !whoEl0.textContent.trim()) return;
+    // 1. advising topbar has no brand block
+    const tb = document.getElementById('topBrand'); if (tb) tb.remove();
+    const avw = document.getElementById('avWrap'); if (avw) avw.remove();
+    // 2. nav lives in the sidebar
+    const nav = document.getElementById('nav');
+    const footer = side.querySelector('.sidebar-footer');
+    if (nav) {
+      let home = side.querySelector('.v9-nav-home');
+      if (!home) { home = document.createElement('div'); home.className = 'v9-nav-home'; side.insertBefore(home, footer || null); }
+      if (nav.parentElement !== home) home.appendChild(nav);
+    }
+    const tt = document.getElementById('topbarTabs'); if (tt) tt.remove();
+    // 3. topbar: [start: menu-btn + title] + [tools: clock + savechip + theme + bell]
+    let start = top.querySelector('.v9-top-start');
+    if (!start) {
+      start = document.createElement('div'); start.className = 'v9-top-start';
+      const menuBtn = document.createElement('button');
+      menuBtn.type = 'button'; menuBtn.id = 'menu-btn'; menuBtn.className = 'v9-icon-btn';
+      menuBtn.title = 'طي قائمة التنقل'; menuBtn.setAttribute('aria-label', 'طي قائمة التنقل');
+      menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+      menuBtn.onclick = () => {
+        if (innerWidth <= 900) { side.classList.toggle('open'); const bd = document.getElementById('sideBackdrop'); if (bd) bd.style.display = side.classList.contains('open') ? 'block' : 'none'; }
+        else document.body.classList.toggle('v9-side-collapsed');
+      };
+      start.appendChild(menuBtn);
+      const tw0 = document.createElement('div'); tw0.className = 'v9-title-wrap';
+      start.appendChild(tw0);
+    }
+    const tw = start.querySelector('.v9-title-wrap');
+    const pt = document.getElementById('pagetitle');
+    if (pt && pt.parentElement !== tw) { pt.classList.add('topbar-title'); pt.style.display = ''; tw.appendChild(pt); }
+    const ed = document.getElementById('editionlabel');
+    if (ed && ed.parentElement !== tw) { ed.classList.add('v9-topsub'); tw.appendChild(ed); }
+    let tools = top.querySelector('.topbar-tools');
+    if (!tools) {
+      tools = document.createElement('div'); tools.className = 'topbar-tools';
+      const clock = document.createElement('div'); clock.className = 'portal-clock';
+      clock.setAttribute('role', 'group'); clock.setAttribute('aria-label', 'التاريخ والوقت بالتقويم الميلادي');
+      clock.innerHTML = '<span class="portal-clock-date-wrap"><i class="fas fa-calendar-days" aria-hidden="true"></i><span class="portal-clock-date" id="v9-clock-date"></span><span class="portal-clock-calendar">ميلادي</span></span><span class="portal-clock-divider" aria-hidden="true"></span><span class="portal-clock-time-wrap"><i class="fas fa-clock" aria-hidden="true"></i><time class="portal-clock-time" id="v9-clock-time" dir="ltr"></time></span>';
+      tools.appendChild(clock);
+    }
+    const chip = document.getElementById('savechip'); if (chip && chip.parentElement !== tools) tools.appendChild(chip);
+    let tbtn = document.getElementById('themeBtn');
+    if (!tbtn) { tbtn = document.createElement('button'); tbtn.type = 'button'; tbtn.id = 'themeBtn'; tbtn.onclick = () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); }
+    tbtn.className = 'theme-toggle-btn';
+    if (tbtn.parentElement !== tools) tools.appendChild(tbtn);
+    const nt = document.getElementById('ntWrap');
+    if (nt && nt.parentElement !== tools) tools.appendChild(nt);
+    const ntb = document.getElementById('ntBtn'); if (ntb) ntb.classList.add('notif-bell-btn');
+    // 4. leftover .top children (old buttons etc.): keep dropdown panels, hide the rest
+    [...top.children].forEach(c => {
+      if (c === start || c === tools) return;
+      if (c.id === 'topActs') { c.remove(); return; }
+      if (/panel|menu|dropdown/i.test(c.id || '') || /panel|menu|dropdown/i.test(String(c.className))) { if (c.parentElement !== tools) tools.appendChild(c); return; }
+      if (c.tagName === 'BUTTON' || c.tagName === 'DIV' || c.tagName === 'SPAN') c.style.display = 'none';
+    });
+    if (start.parentElement !== top) top.insertBefore(start, top.firstChild);
+    if (tools.parentElement !== top) top.appendChild(tools);
+    // 5. sidebar footer: account card + actions
+    const prof = side.querySelector('.profile');
+    if (prof && !side.querySelector('.sidebar-footer')) {
+      const f = document.createElement('div'); f.className = 'sidebar-footer';
+      const acc = document.createElement('div'); acc.className = 'sidebar-account';
+      const av = prof.querySelector('#av');
+      const meta = document.createElement('div'); meta.className = 'sidebar-account-meta';
+      const wEl = prof.querySelector('#who'), rEl = prof.querySelector('#role');
+      if (av) { av.classList.add('sidebar-avatar'); acc.appendChild(av); }
+      if (wEl) meta.appendChild(wEl);
+      if (rEl) meta.appendChild(rEl);
+      acc.appendChild(meta); f.appendChild(acc);
+      const mk = (cls, icon, label, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.innerHTML = '<i class="fas ' + icon + '"></i> ' + label; b.onclick = fn; return b; };
+      f.appendChild(mk('sidebar-profile-action', 'fa-box-archive', 'تصدير نسخة احتياطية', () => backup()));
+      f.appendChild(mk('sidebar-profile-action', 'fa-key', 'تغيير كلمة المرور', () => changePassword()));
+      f.appendChild(mk('sidebar-logout', 'fa-sign-out-alt', 'تسجيل الخروج', () => logout()));
+      side.appendChild(f);
+      prof.remove();
+      const bottom = side.querySelector('.sidebottom'); if (bottom) bottom.remove();
+    }
+    // 6. sidebar nav groups (advising style, collapsible)
+    if (nav) {
+      nav.querySelectorAll('.nav-group').forEach(g => { const it = g.querySelector('.nav-group-items'); if (it) [...it.children].forEach(b => nav.appendChild(b)); g.remove(); });
+      const titles = [...nav.querySelectorAll('.side-grp-title')];
+      for (const t of titles) {
+        const g = document.createElement('div'); g.className = 'nav-group';
+        const items = document.createElement('div'); items.className = 'nav-group-items';
+        const moved = []; let n = t.nextElementSibling;
+        while (n && !n.classList.contains('side-grp-title')) { moved.push(n); n = n.nextElementSibling; }
+        moved.forEach(b => items.appendChild(b));
+        const tgl = document.createElement('button'); tgl.type = 'button'; tgl.className = 'nav-group-toggle'; tgl.setAttribute('aria-expanded', 'false');
+        tgl.innerHTML = '<span class="nav-group-title"></span><span class="nav-group-count">' + moved.length + '</span><i class="fas fa-chevron-down nav-group-chevron"></i>';
+        tgl.querySelector('.nav-group-title').textContent = t.textContent;
+        tgl.onclick = () => { const ex = g.classList.toggle('expanded'); tgl.setAttribute('aria-expanded', String(ex)); };
+        t.replaceWith(g); g.appendChild(tgl); g.appendChild(items);
+        if (items.querySelector('button.active')) { g.classList.add('expanded'); tgl.setAttribute('aria-expanded', 'true'); }
+      }
+      if (!nav.querySelector('.nav-group.expanded')) { const g = nav.querySelector('.nav-group'); if (g) { g.classList.add('expanded'); g.querySelector('.nav-group-toggle').setAttribute('aria-expanded', 'true'); } }
+      nav.querySelectorAll('button:not(.nav-group-toggle)').forEach(b => b.classList.add('nav-item'));
+    }
+    tick(); paintTheme();
+  }
+  const _r9b = render;
+  render = function () { const r = _r9b.apply(this, arguments); try { fix(); } catch (e) { console.warn('v9b', e); } return r; };
+  try { fix(); } catch (e) {}
+})();

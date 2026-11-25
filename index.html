@@ -1117,7 +1117,7 @@ html[data-theme=dark] .head h1,html[data-theme=dark] .panel h2,html[data-theme=d
 html[data-theme=dark] button.light{background:rgba(255,255,255,.06);border-color:#1e3a55;color:#d9e4ef}
 html[data-theme=dark] th{background:#101f33;color:#8fa6bb}
 
-/* ===== FOS advising-platform theme: unified palette, Cairo font, glass login, true-navy dark (Nov 25 v5) ===== */
+/* ===== FOS advising-platform theme: unified palette, Cairo font, glass login, true-navy dark (Nov 25 v7) ===== */
 :root{
   --navy:#0c1e36; --navy2:#163456; --teal:#0f766e; --teal2:#14b8a6;
   --bg:#f8fafc; --white:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
@@ -1271,7 +1271,9 @@ html[data-theme=dark] td.d{background:#0d1826;color:#edf3fa;border-left-color:#2
 html[data-theme=dark] .d small{color:#cbb26a}
 
 /* Hero — advising light-card style, no gold */
-.hero{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);color:var(--ink)}
+.hero{background:#fff!important;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);color:var(--ink)}
+.hero-bg{display:none}
+.hero:after{display:none}
 .hero:before{display:none}
 .hero .orb{display:none}
 .hero small{color:var(--teal)}
@@ -1281,7 +1283,7 @@ html[data-theme=dark] .d small{color:#cbb26a}
 .ring:before{background:#fff}
 .ring b{color:var(--navy)}
 .ring small,.ring span{color:var(--muted)}
-html[data-theme=dark] .hero{background:#121d2c;border-color:#2b3b50}
+html[data-theme=dark] .hero{background:#121d2c!important;border-color:#2b3b50}
 html[data-theme=dark] .hero h2{color:#edf3fa}
 html[data-theme=dark] .hero p{color:#a5b3c5}
 html[data-theme=dark] .hero small{color:#2dd4bf}
@@ -1292,6 +1294,41 @@ html[data-theme=dark] .empty{color:#a5b3c5}
 html[data-theme=dark] .empty b{color:#edf3fa}
 html[data-theme=dark] .progress{background:#1c2c40}
 html[data-theme=dark] .muted{color:#a5b3c5}
+
+
+/* ===== Advising-style sidebar layout (Nov 25 v7) ===== */
+.app{display:grid;grid-template-columns:260px 1fr}
+.side{display:flex!important;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;width:auto;background:linear-gradient(165deg,#102541 0%,#0c1e36 55%,#0a1a30 100%);scrollbar-width:thin;z-index:20}
+.side::-webkit-scrollbar{width:6px}
+.side::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:99px}
+.main{min-width:0}
+#topbarTabs,#tabMoreWrap{display:none!important}
+#sideBackdrop{position:fixed;inset:0;background:rgba(2,8,20,.5);z-index:19;display:none}
+.side .brand{display:flex;align-items:center;gap:.7rem;padding:1.1rem 1rem .9rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.side .brand img{width:44px;height:44px;border-radius:12px;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.side .brand b{display:block;color:#fff;font-size:.92rem;line-height:1.35}
+.side .brand small{display:block;color:#8ea6bf;font-size:.7rem;margin-top:2px}
+.side .profile{display:flex;align-items:center;gap:.7rem;margin:.9rem .8rem .4rem;padding:.7rem .75rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px}
+.side .profile .av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:700;background:linear-gradient(145deg,#5eead4,#0f766e)!important;color:#06251f!important}
+.side .profile b{display:block;color:#fff;font-size:.85rem}
+.side .profile small{display:block;color:#8ea6bf;font-size:.68rem;margin-top:1px}
+.side-grp-title{font-size:.65rem;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,.38);padding:.85rem 1.05rem .25rem}
+.side .nav{display:flex;flex-direction:column;gap:2px;padding:0 .6rem;width:100%}
+.side .nav button{display:flex;align-items:center;gap:.6rem;width:100%;padding:.58rem .8rem;border:0;background:transparent;color:#c6d4e2;font-size:.86rem;border-radius:10px;cursor:pointer;position:relative;text-align:right;font-family:inherit}
+.side .nav button .ic{background:rgba(255,255,255,.07)!important;color:#9fb3c8!important;transform:none!important}
+.side .nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+.side .nav button:hover .ic{background:rgba(255,255,255,.12)!important;color:#fff!important}
+.side .nav button.active{background:rgba(20,184,166,.16)!important;color:#5eead4!important;box-shadow:none!important}
+.side .nav button.active .ic{background:rgba(20,184,166,.25)!important;color:#5eead4!important;transform:none!important}
+.side .nav button.active:after{background:linear-gradient(#2dd4bf,#0f766e)!important}
+.side .nav button .tbadge{margin-inline-start:auto;background:rgba(20,184,166,.25);color:#5eead4;border-radius:999px;min-width:20px;height:20px;display:inline-grid;place-items:center;font-size:.68rem;padding:0 6px;position:static}
+.side .sidebottom{margin-top:auto;padding:.9rem .8rem;border-top:1px solid rgba(255,255,255,.08)}
+.side .sidebottom button{width:100%;padding:.6rem .8rem;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#f1f5f9;border-radius:10px;font-size:.85rem;cursor:pointer;font-family:inherit}
+.side .sidebottom button:hover{background:rgba(220,60,60,.18);border-color:rgba(220,60,60,.35);color:#fff}
+.side .side-close{display:none}
+html[data-theme=dark] .side{background:linear-gradient(165deg,#0e1c30 0%,#0b1320 60%,#091120 100%)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{position:fixed;right:-285px;width:265px;transition:right .25s ease;box-shadow:-20px 0 60px rgba(0,0,0,.35)}.side.open{right:0}.side .side-close{display:inline-grid;place-items:center;position:absolute;top:.7rem;left:.7rem;width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;cursor:pointer}.top .mobile{display:inline-flex!important}}
+@media print{.side{display:none!important}.app{display:block}}
 
 </style><link rel="stylesheet" href="cairo.css"></head><body>
 <div id="login"><div class="lp-head"><div class="lp-lockup"><img data-lf alt="شعار كلية العلوم"><div class="lp-lt"><b>كلية العلوم</b><small>Faculty of Science</small></div><i class="lp-sep"></i><img data-lg alt="شعار جامعة سوهاج"><div class="lp-lt"><b>جامعة سوهاج</b><small>Sohag University</small></div></div></div><div id="lp-home"><div class="lp-hero"><div class="lp-kicker">جامعة سوهاج</div><h2 class="lp-title">منظومة إدارة<br><span>جداول الامتحانات</span></h2><p class="lp-desc">من توزيع المسؤوليات على المختصين، إلى المراجعة والاعتماد، حتى الجدول النهائي المعتمد للطباعة والتصدير، في مكان واحد.</p><div class="lp-actions"><button type="button" class="lp-cta" onclick="var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(h)h.classList.add('hidden');if(a)a.classList.remove('hidden');var u=document.getElementById('lu');if(u)u.focus()">تسجيل الدخول</button></div><div class="lp-feats"><span class="lp-feat">توزيع المسؤوليات</span><span class="lp-feat">مراجعة واعتماد</span><span class="lp-feat">لجان ومراقبة</span><span class="lp-feat">جداول جاهزة للطباعة</span></div></div></div><div id="lp-auth" class="hidden"><button type="button" class="lp-back" onclick="var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(a)a.classList.add('hidden');if(h)h.classList.remove('hidden')">العودة للرئيسية ←</button><div class="fos-card"><div class="fos-head"><img data-lg alt=""><div class="fos-titles"><h1>منصة إدارة جداول الامتحانات</h1><div class="fos-sub">كلية العلوم · جامعة سوهاج</div><div class="fos-desc">بوابة موحدة لإعداد جداول الامتحانات ومراجعتها واعتمادها</div></div><img data-lf alt=""></div><div class="fos-tabs"><button type="button" class="active">تسجيل الدخول</button></div><div class="field fos-field"><label>اسم المستخدم</label><div class="fos-inp"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><input id="lu" placeholder="اسم المستخدم" autocomplete="username"></div></div><div class="field fos-field"><label>كلمة المرور</label><div class="fos-inp"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="lp" type="password" placeholder="أدخل كلمة المرور" autocomplete="current-password"></div></div><div id="loginerr" class="notice warning hidden"></div><button type="button" class="fos-btn" onclick="login()">دخول</button><div class="foot">سجّل الدخول ببيانات حسابك المعتمد من إدارة الكلية.</div></div></div></div>
@@ -2044,4 +2081,4 @@ function users(){return head('إدارة المستخدمين','إنشاء حس�
 function logTable(rows){return rows.length?`<div class="tablewrap"><table><tr><th>التاريخ والوقت</th><th>المستخدم</th><th>العملية</th></tr>${rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.user)}</td><td>${esc(x.action)}</td></tr>`).join('')}</table></div>`:'<div class="empty">لا توجد عمليات مسجلة.</div>'}
 function modal(title,body,buttons){$('#modalroot').innerHTML=`<div class="modalbg" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>${esc(title)}</h3>${body}<div class="actions">${buttons}<button class="light" onclick="closeModal()">إغلاق</button></div></div></div>`}function closeModal(){$('#modalroot').innerHTML=''}function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='exam-platform-backup.json';a.click();URL.revokeObjectURL(a.href);log('تصدير نسخة احتياطية')}
 window.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('#login').classList.contains('hidden'))login();if(e.key==='Escape')closeModal()});init().catch(err=>console.error('init failed',err));
-</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261125b"></script></body></html>
+</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261125c"></script></body></html>

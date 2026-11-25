@@ -3103,4 +3103,185 @@ html[data-theme="dark"] .v9-icon-btn:hover,html[data-theme="dark"] #themeBtn.the
 @media(max-width:1100px){.portal-clock{gap:.55rem;min-height:42px;padding:.3rem .55rem}.portal-clock-date{font-size:.68rem}.portal-clock-time{font-size:.86rem}}
 @media(max-width:900px){.portal-clock{gap:.36rem;min-height:34px;padding:.2rem .34rem;border-radius:10px}.portal-clock-calendar,.portal-clock-date-wrap>i,.portal-clock-time-wrap>i{display:none}.portal-clock-divider{height:18px}.top{padding:.6rem .7rem!important;min-height:66px}#pagetitle.topbar-title{font-size:.93rem}#pagetitle.topbar-title::before{width:33px;height:33px;border-radius:10px}}
 </style>
+<style id="v10-parity">
+/* ===== v10: full design-system parity with advising platform (line-by-line) ===== */
+/* 1) Tokens: advising effective values */
+:root{
+  --navy:#0c1e36;--navy2:#163456;--ink:#0f172a;--teal:#0f766e;--teal2:#14b8a6;--brass:#0f766e;--brass2:#14b8a6;
+  --bg:#f8fafc;--paper:#f8fafc;--line:#e2e8f0;--muted:#64748b;
+  --green:#059669;--red:#dc2626;--amber:#d97706;
+  --r:16px;--radius:12px;--radius-lg:16px;--ease:cubic-bezier(.4,0,.2,1);--dur:220ms;
+  --shadow:0 1px 3px rgba(12,30,54,.06),0 4px 16px rgba(12,30,54,.04);
+}
+::selection{background:rgba(20,184,166,.28)}
+/* 2) Base typography + layout width (advising .content) */
+body{line-height:1.6;-webkit-font-smoothing:antialiased}
+.content{width:100%;max-width:1740px;margin-inline:auto;padding:clamp(1rem,2vw,1.75rem)}
+/* 3) Page-entry animation = advising adminViewIn */
+@keyframes adminViewIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.content>*{animation:adminViewIn .28s ease both!important;animation-delay:0s!important}
+.content.entering>*{animation:adminViewIn .28s ease both!important;animation-delay:0s!important}
+/* 4) Buttons = advising .btn (flat navy, 12px radius, hover navy-600) */
+.content button:not(.light):not(.danger):not(.teal):not(.ghost):not(.chip):not(.text-btn):not(.gsIt):not(.ntItem):not(.tabs *):not(.seg *),
+.modal button:not(.light):not(.danger):not(.teal):not(.ghost):not(.chip):not(.text-btn){
+  background:#0c1e36!important;background-image:none!important;color:#fff!important;box-shadow:none!important;
+  border-radius:12px!important;padding:.65rem 1.15rem;font-weight:700;font-size:.9rem;
+  transition:transform 150ms cubic-bezier(.4,0,.2,1),box-shadow 150ms cubic-bezier(.4,0,.2,1),background 150ms!important}
+.content button:not(.light):not(.danger):not(.teal):not(.ghost):not(.chip):not(.text-btn):not(.gsIt):not(.ntItem):not(.tabs *):not(.seg *):hover,
+.modal button:not(.light):not(.danger):not(.teal):not(.ghost):not(.chip):not(.text-btn):hover{
+  background:#163456!important;transform:translateY(-1px);box-shadow:none!important;filter:none}
+.content button:active,.modal button:active{transform:scale(.97)}
+.content button.sm,.modal button.sm{padding:.4rem .8rem!important;font-size:.8rem!important;border-radius:8px!important}
+/* outline (.light) = advising .btn-outline */
+.content button.light,.modal button.light,button.light{
+  background:#fff!important;color:#0c1e36!important;border:1.5px solid #e2e8f0!important;
+  box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-radius:12px!important}
+.content button.light:hover,.modal button.light:hover,button.light:hover{
+  border-color:#0c1e36!important;background:#f8fafc!important;box-shadow:none!important;transform:translateY(-1px);filter:none}
+/* teal + danger flat like advising */
+.content button.teal,.modal button.teal,button.teal{background:#0f766e!important;background-image:none!important;box-shadow:none!important;border-radius:12px!important}
+.content button.teal:hover,.modal button.teal:hover,button.teal:hover{background:#0d9488!important;transform:translateY(-1px);box-shadow:none!important;filter:none}
+.content button.danger,.modal button.danger,button.danger{background:#dc2626!important;background-image:none!important;box-shadow:none!important;border-radius:12px!important}
+.content button.danger:hover,.modal button.danger:hover,button.danger:hover{background:#b91c1c!important;filter:none;transform:translateY(-1px)}
+button:disabled{opacity:.45;transform:none!important}
+/* tabs + segmented controls on advising palette (beat the old pill !important rule) */
+.content .tabs button:not(.light):not(.danger):not(.teal):not(.gsIt):not(.ntItem):not(.x),.tabs button{
+  background:#f1f5f9!important;color:#334155!important;border-radius:9px!important;font-weight:700;box-shadow:none!important;padding:.55rem 1rem}
+.content .tabs button.active,.tabs button.active{background:#0c1e36!important;color:#fff!important}
+.seg{background:#f1f5f9;border-radius:12px;padding:5px}
+.content .seg button:not(.light):not(.danger):not(.teal):not(.gsIt):not(.ntItem):not(.x),.seg button{
+  background:transparent!important;color:#334155!important;border-radius:8px!important;box-shadow:none!important}
+.content .seg button.on,.seg button.on{background:#fff!important;color:#0c1e36!important;box-shadow:0 1px 3px rgba(12,30,54,.1)!important}
+/* 5) Cards/panels = advising .card (flat, 16px, border #e4eaf0, soft shadow) */
+.panel,.stat,.pair-card,.stepcard,.mxwrap,.loginbox{
+  border-radius:16px!important;background:#fff!important;border:1px solid #e4eaf0!important;
+  box-shadow:0 3px 14px rgba(16,36,60,.045)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.panel:hover{box-shadow:0 4px 16px rgba(15,23,42,.08)!important;transform:none!important}
+.stat{transition:transform 220ms cubic-bezier(.4,0,.2,1),box-shadow 220ms cubic-bezier(.4,0,.2,1)!important}
+.stat:hover{transform:translateY(-2px)!important;box-shadow:0 4px 16px rgba(15,23,42,.08)!important}
+.panel h2:before{background:linear-gradient(180deg,#0f766e,#14b8a6)!important}
+.head h1:before{background:linear-gradient(180deg,#0f766e,#14b8a6)!important}
+.head h1{color:#0c1e36}
+/* stat icon tile = advising .stat-card .ico (flat teal tint, no gold variant) */
+.stat:after{display:none!important}
+.stat .si{background:#ecfeff!important;color:#0f766e!important;width:40px;height:40px;border-radius:10px;font-size:1rem}
+.stat:nth-child(even) .si{background:#ecfeff!important;color:#0f766e!important}
+.stat strong{font-size:1.5rem;font-weight:800;color:#0c1e36;background:none!important;-webkit-text-fill-color:#0c1e36}
+.stat span{font-size:.75rem;color:#64748b}
+/* 6) Tables = advising table.data */
+.tablewrap{border-radius:10px!important;border:1px solid #e2e8f0!important;background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+table{font-size:.875rem}
+th{background:#f8fafc!important;color:#334155!important;font-weight:700;border-bottom:2px solid #e2e8f0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+td{border-bottom:1px solid #f1f5f9!important;color:#0f172a}
+tbody tr:hover td,table tr:hover td{background:#f8fafc!important}
+/* 7) Form fields = advising .form-control */
+input,select,textarea,.field input,.field select,.field textarea{
+  border:1.5px solid #e2e8f0!important;border-radius:12px!important;background:#fff!important;
+  min-height:42px;padding:.7rem .9rem;font-size:.95rem;color:#0f172a;transition:border .15s,box-shadow .15s!important}
+input[type=checkbox],input[type=radio]{min-height:0!important;width:auto!important;padding:0!important}
+input:focus,select:focus,textarea:focus,.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:#0f766e!important;box-shadow:0 0 0 3px rgba(15,118,110,.12)!important;background:#fff!important;outline:none}
+.fltIn{border:0!important;box-shadow:none!important;background:transparent!important;min-height:0!important}
+/* filter bar: flat advising card look */
+.fltbar{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:1px solid #e2e8f0!important;border-radius:12px!important;box-shadow:0 3px 14px rgba(16,36,60,.045)!important;color:#64748b}
+/* 8) Modal = advising .modal (no glass, 16px, soft shadow, scaleIn) */
+@keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+.modalbg{background:rgba(12,30,54,.45)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;animation:fadeIn .22s ease both!important}
+.modal{border-radius:16px!important;border:1px solid #e2e8f0!important;box-shadow:0 20px 50px rgba(0,0,0,.2)!important;animation:scaleIn .28s cubic-bezier(.4,0,.2,1) both!important}
+/* 9) Toast = advising .toast (top-center, green/red) */
+#toastroot{position:fixed;top:1rem;bottom:auto!important;left:50%!important;right:auto!important;transform:translateX(-50%);z-index:9999}
+#toastroot .toast{position:static!important;left:auto!important;bottom:auto!important;padding:.7rem 1.3rem;border-radius:10px!important;
+  font-size:.875rem;font-weight:700;box-shadow:0 4px 20px rgba(12,30,54,.08)!important;border:0!important;background:#059669!important;background-image:none!important;animation:fadeUp .32s cubic-bezier(.4,0,.2,1) both!important}
+#toastroot .toast.err{background:#dc2626!important}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* 10) Empty state = advising .empty (no dashed cream box) */
+.empty{border:0!important;background:transparent!important;border-radius:0!important;padding:2.5rem 1rem;color:#64748b}
+.empty b{color:#0c1e36}
+/* 11) Notices/alerts = advising .alert palette */
+.notice{border-radius:10px;padding:.85rem 1rem;font-size:.875rem}
+.notice.info,.notice{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.notice.warning{background:#fffbeb;color:#92400e;border:1px solid #fcd34d}
+.notice.success{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+/* 12) Badges = advising .badge palette */
+.badge{display:inline-flex;align-items:center;gap:.25rem;padding:.25rem .6rem;font-size:.7rem;font-weight:700;border-radius:999px;background:#f1f5f9;color:#334155}
+.badge.blue{background:#dbeafe;color:#1d4ed8}
+.badge.green{background:#d1fae5;color:#047857}
+.badge.red,.badge.redtag{background:#fee2e2;color:#b91c1c}
+.badge.amber{background:#fef3c7;color:#b45309}
+/* chips on advising teal */
+.chip{background:#ccfbf1!important;color:#0f766e!important;border-color:#99f6e4!important}
+.chip:hover{background:#a5e9e0!important}
+/* 13) Notification badge + dropdowns = advising flat style */
+#ntBadge{background:#dc2626!important;background-image:none!important;border:2px solid #fff!important}
+.ntItem .dot.ok{background:#059669!important}
+.ntItem .dot.warn{background:#d97706!important}
+#ntMenu,#gsDrop,#avMenu,#tabMoreMenu{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#fff!important;border:1px solid #e2e8f0!important;box-shadow:0 20px 50px rgba(0,0,0,.2)!important}
+/* 14) Sidebar = advising .sidebar (flat navy, teal active, new brand) */
+.side{background:#0c1e36!important;background-image:none!important;box-shadow:-8px 0 28px rgba(5,19,35,.1)}
+.side:before{display:none!important}
+.side .brand img{width:48px!important;height:48px!important;border-radius:14px!important;background:#fff!important;padding:4px!important;
+  box-shadow:0 6px 18px rgba(2,10,24,.35),0 0 0 1px rgba(255,255,255,.14)!important}
+.side .brand b{font-size:1rem;background:linear-gradient(90deg,#ffffff,#8fe6d6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.side .brand small{color:#9db4cf!important;font-size:.68rem}
+.side .nav button{border-radius:8px;padding:.65rem .85rem;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.75);min-height:43px;transition:all .15s}
+.side .nav button:hover{background:rgba(255,255,255,.08)!important;color:#fff}
+.side .nav button.active{background:rgba(20,184,166,.2)!important;color:#14b8a6!important;box-shadow:inset -3px 0 0 #14b8a6!important}
+.side .profile .av{background:linear-gradient(145deg,#5eead4,#0f766e)!important;color:#06251f!important}
+/* 15) Topbar = advising .topbar (solid white, 74px, soft shadow) */
+.top{min-height:74px;background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:1px solid #e2e8f0!important;box-shadow:0 3px 16px rgba(12,30,54,.035)!important}
+/* 16) Gold/blue remnants -> teal */
+.stepcard .num{background:linear-gradient(135deg,#14b8a6,#0f766e)!important;color:#fff!important;box-shadow:0 6px 12px rgba(15,118,110,.3)!important}
+.orb.o1{background:radial-gradient(circle at 30% 30%,#14b8a6aa,#14b8a600 70%)!important}
+.orb.o3{border-color:#14b8a666!important;box-shadow:0 0 0 22px #14b8a60f,0 0 0 46px #14b8a60a!important}
+.gsIt .ic{background:rgba(20,184,166,.1)!important;color:#0f766e!important}
+/* 17) Dark theme = advising exact dark palette */
+html[data-theme=dark],html[data-theme=dark] body{background:#0b1320!important;background-image:none!important;color:#e7eef7}
+html[data-theme=dark] .main,html[data-theme=dark] .content{background:#0b1320!important}
+html[data-theme=dark] .panel,html[data-theme=dark] .stat,html[data-theme=dark] .pair-card,html[data-theme=dark] .stepcard,html[data-theme=dark] .mxwrap{
+  background:#121d2c!important;border-color:#2b3b50!important;box-shadow:0 2px 8px rgba(0,0,0,.2)!important}
+html[data-theme=dark] .panel:hover{box-shadow:0 10px 28px rgba(0,0,0,.16)!important}
+html[data-theme=dark] .head h1,html[data-theme=dark] .panel h2,html[data-theme=dark] .panel h3{color:#edf3fa!important}
+html[data-theme=dark] .stat strong{color:#edf3fa!important;-webkit-text-fill-color:#edf3fa!important;background:none!important}
+html[data-theme=dark] .stat span{color:#a8b6c8!important}
+html[data-theme=dark] .stat .si,html[data-theme=dark] .stat:nth-child(even) .si{background:#123d3b!important;color:#5eead4!important}
+html[data-theme=dark] .tablewrap{background:#121d2c!important;border-color:#2b3b50!important}
+html[data-theme=dark] table{background:transparent}
+html[data-theme=dark] th{background:#1a293d!important;color:#edf3fa!important;border-bottom-color:#2b3b50!important}
+html[data-theme=dark] td{color:#e7eef7!important;background:transparent;border-bottom-color:#28384c!important}
+html[data-theme=dark] tbody tr:hover td,html[data-theme=dark] table tr:hover td{background:#17263a!important}
+html[data-theme=dark] input:not([type=checkbox]):not([type=radio]),html[data-theme=dark] select,html[data-theme=dark] textarea,
+html[data-theme=dark] .field input,html[data-theme=dark] .field select,html[data-theme=dark] .field textarea{
+  background:#0e1827!important;border-color:#35465b!important;color:#e7eef7!important}
+html[data-theme=dark] input::placeholder,html[data-theme=dark] textarea::placeholder{color:#8798ad!important}
+html[data-theme=dark] input:focus,html[data-theme=dark] select:focus,html[data-theme=dark] textarea:focus,
+html[data-theme=dark] .field input:focus,html[data-theme=dark] .field select:focus,html[data-theme=dark] .field textarea:focus{
+  border-color:#2dd4bf!important;box-shadow:0 0 0 3px rgba(45,212,191,.22)!important}
+html[data-theme=dark] .fltbar{background:#121d2c!important;border-color:#2b3b50!important;color:#a8b6c8}
+html[data-theme=dark] .fltIn{color:#e7eef7!important}
+html[data-theme=dark] .modal{background:#121d2c!important;border-color:#2b3b50!important;color:#e7eef7}
+html[data-theme=dark] .modal h3{color:#edf3fa!important}
+html[data-theme=dark] .empty{color:#a8b6c8}
+html[data-theme=dark] .empty b{color:#edf3fa}
+html[data-theme=dark] .notice.info,html[data-theme=dark] .notice{color:#bfdbfe;background:#14243a;border-color:#31547e}
+html[data-theme=dark] .notice.warning{color:#fef3c7;background:#302819;border-color:#685538}
+html[data-theme=dark] .notice.success{color:#bbf7d0;background:#142d27;border-color:#356b58}
+html[data-theme=dark] .badge{background:#29384b;color:#d2dce8}
+html[data-theme=dark] .badge.blue{background:#17345c;color:#bfdbfe}
+html[data-theme=dark] .badge.green{background:#143d31;color:#bbf7d0}
+html[data-theme=dark] .badge.red,html[data-theme=dark] .badge.redtag{background:#482326;color:#fecaca}
+html[data-theme=dark] .badge.amber{background:#45351d;color:#fde68a}
+html[data-theme=dark] .chip{background:#123d3b!important;color:#99f6e4!important;border-color:#1d5450!important}
+html[data-theme=dark] .seg{background:#172437}
+html[data-theme=dark] .seg button{color:#d2dce8!important}
+html[data-theme=dark] .seg button.on{background:#121d2c!important;color:#edf3fa!important}
+html[data-theme=dark] .tabs button{background:#172437!important;color:#d2dce8!important}
+html[data-theme=dark] .tabs button.active{background:#0f766e!important;color:#fff!important}
+html[data-theme=dark] button.light{background:#172437!important;color:#e7eef7!important;border-color:#2b3b50!important}
+html[data-theme=dark] button.light:hover{background:#22334a!important;border-color:#35465b!important}
+html[data-theme=dark] #ntMenu,html[data-theme=dark] #gsDrop,html[data-theme=dark] #avMenu,html[data-theme=dark] #tabMoreMenu{
+  background:#121d2c!important;border-color:#2b3b50!important}
+html[data-theme=dark] .ntItem:hover,html[data-theme=dark] button.ntItem:hover{background:#17263a!important}
+html[data-theme=dark] .top{background:#0d1522!important;border-bottom-color:#2b3b50!important}
+
+</style>
 </body></html>

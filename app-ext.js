@@ -1845,6 +1845,14 @@ try { buildBrand = function () {}; } catch (e) {}
   function fix() {
     const top = document.querySelector('.top'), side = document.querySelector('.side');
     if (!top || !side) return;
+    // v11: advising sidebar-brand, enforced
+    const brand = side.querySelector('.brand, .sidebar-brand');
+    if (brand && !brand.classList.contains('sidebar-brand')) {
+      brand.classList.add('sidebar-brand');
+      brand.innerHTML = '<img data-lf alt="" /><div><div class="title">كلية العلوم</div><div class="sub">المنصة الرقمية</div></div>';
+      const im = brand.querySelector('img[data-lf]'); if (im && typeof LOGO_F !== 'undefined') im.src = LOGO_F;
+    }
+    const ntEl = side.querySelector('.navtitle'); if (ntEl) { const np = ntEl.parentElement; ntEl.remove(); if (np && np !== side && !np.children.length) np.remove(); }
     const whoEl0 = document.getElementById('who');
     if (!whoEl0 || !whoEl0.textContent.trim()) return;
     // 1. advising topbar has no brand block
@@ -1879,7 +1887,7 @@ try { buildBrand = function () {}; } catch (e) {}
     const pt = document.getElementById('pagetitle');
     if (pt && pt.parentElement !== tw) { pt.classList.add('topbar-title'); pt.style.display = ''; tw.appendChild(pt); }
     const ed = document.getElementById('editionlabel');
-    if (ed && ed.parentElement !== tw) { ed.classList.add('v9-topsub'); tw.appendChild(ed); }
+    if (ed) { ed.style.display = 'none'; }
     let tools = top.querySelector('.topbar-tools');
     if (!tools) {
       tools = document.createElement('div'); tools.className = 'topbar-tools';
@@ -1888,7 +1896,7 @@ try { buildBrand = function () {}; } catch (e) {}
       clock.innerHTML = '<span class="portal-clock-date-wrap"><i class="fas fa-calendar-days" aria-hidden="true"></i><span class="portal-clock-date" id="v9-clock-date"></span><span class="portal-clock-calendar">ميلادي</span></span><span class="portal-clock-divider" aria-hidden="true"></span><span class="portal-clock-time-wrap"><i class="fas fa-clock" aria-hidden="true"></i><time class="portal-clock-time" id="v9-clock-time" dir="ltr"></time></span>';
       tools.appendChild(clock);
     }
-    const chip = document.getElementById('savechip'); if (chip && chip.parentElement !== tools) tools.appendChild(chip);
+    const chip = document.getElementById('savechip'); if (chip && chip.parentElement !== document.body) document.body.appendChild(chip);
     let tbtn = document.getElementById('themeBtn');
     if (!tbtn) { tbtn = document.createElement('button'); tbtn.type = 'button'; tbtn.id = 'themeBtn'; tbtn.onclick = () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); }
     tbtn.className = 'theme-toggle-btn';
@@ -1944,6 +1952,13 @@ try { buildBrand = function () {}; } catch (e) {}
       }
       if (!nav.querySelector('.nav-group.expanded')) { const g = nav.querySelector('.nav-group'); if (g) { g.classList.add('expanded'); g.querySelector('.nav-group-toggle').setAttribute('aria-expanded', 'true'); } }
       nav.querySelectorAll('button:not(.nav-group-toggle)').forEach(b => b.classList.add('nav-item'));
+      // v11: FontAwesome icons instead of text glyphs (advising style)
+      const V11ICONS = [['لوحة التحكم','fa-th-large'],['إعداد الإصدار','fa-cog'],['توزيع المسؤوليات','fa-random'],['توزيع اللجان','fa-users'],['الملاحظون والمراقبون','fa-user-shield'],['القاعات والنسخ الاحتياطي','fa-door-open'],['متابعة الجداول','fa-tasks'],['المراجعة والاعتماد','fa-check-double'],['الجدول المجمّع','fa-table'],['مركز التقارير','fa-chart-bar'],['إدارة المستخدمين','fa-users-cog'],['الإعدادات','fa-sliders'],['سجل النشاط','fa-list']];
+      nav.querySelectorAll('.nav-item').forEach(b => {
+        let txt = b.textContent.replace(/[^\u0621-\u064A0-9a-zA-Z]+/, ' ').trim();
+        const hit = V11ICONS.find(x => txt.includes(x[0]));
+        b.innerHTML = '<i class="fas ' + (hit ? hit[1] : 'fa-circle') + '"></i><span>' + txt + '</span>';
+      });
     }
     tick(); paintTheme();
   }

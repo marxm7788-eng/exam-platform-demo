@@ -1116,6 +1116,143 @@ html[data-theme=dark] .modal,html[data-theme=dark] #avMenu,html[data-theme=dark]
 html[data-theme=dark] .head h1,html[data-theme=dark] .panel h2,html[data-theme=dark] .panel h3{color:#e6f0f8}
 html[data-theme=dark] button.light{background:rgba(255,255,255,.06);border-color:#1e3a55;color:#d9e4ef}
 html[data-theme=dark] th{background:#101f33;color:#8fa6bb}
+
+/* ===== FOS advising-platform theme: unified palette, Cairo font, glass login, true-navy dark (Nov 25) ===== */
+:root{
+  --navy:#0c1e36; --navy2:#163456; --teal:#0f766e; --teal2:#14b8a6;
+  --bg:#f8fafc; --white:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+  --green:#059669; --red:#dc2626; --amber:#d97706;
+  --shadow:0 1px 3px rgba(12,30,54,.06),0 4px 16px rgba(12,30,54,.04);
+  --font-fos:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;
+}
+body{font-family:var(--font-fos);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:var(--font-fos)}
+button{border-radius:10px;background:var(--navy);font-weight:700;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease}
+button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+button:disabled{transform:none}
+.light{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.teal{background:var(--teal)}
+.danger{background:var(--red)}
+
+/* Sidebar — advising shell */
+.side{background:var(--navy);width:260px;padding:0 0 12px;gap:14px}
+.brand{display:flex;align-items:center;gap:.65rem;padding:1.1rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand img{height:40px;width:40px;object-fit:contain;background:#fff;border-radius:10px;padding:3px;box-shadow:0 5px 16px rgba(0,0,0,.18)}
+.brand b{font-size:.9rem;font-weight:800;line-height:1.25}
+.brand small{color:rgba(255,255,255,.66);font-size:.68rem}
+.profile{display:flex;align-items:center;gap:.7rem;margin:0 12px;padding:.7rem;border:1px solid rgba(255,255,255,.11);border-radius:13px;background:rgba(255,255,255,.055)}
+.profile .av{display:grid;place-items:center;width:39px;height:39px;border-radius:13px;color:#10243c;background:linear-gradient(145deg,#e9d29e,#c6a65f);font-weight:900;font-size:1rem;box-shadow:0 5px 16px rgba(0,0,0,.16)}
+.profile b{color:#fff;font-size:.84rem}
+.profile small{color:#c6d6e6;font-size:.66rem;display:inline-block;margin-top:.15rem;padding:.1rem .45rem;border:1px solid rgba(255,255,255,.12);border-radius:999px}
+.navtitle{font-size:.65rem;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.4);padding:.4rem 1.2rem .35rem}
+.nav{padding:0 .6rem;gap:2px}
+.nav button{display:flex;align-items:center;gap:.65rem;width:100%;padding:.6rem .85rem;border-radius:9px;font-size:.86rem;font-weight:600;color:rgba(255,255,255,.75);background:none;text-align:right;transition:background .15s,color .15s}
+.nav button:hover{background:rgba(255,255,255,.08);color:#fff;transform:none}
+.nav button.active{background:rgba(20,184,166,.2);color:var(--teal2)}
+.sidebottom{padding:0 12px;display:grid;gap:.45rem}
+.sidebottom button{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:38px;padding:.48rem .7rem;border-radius:10px;font-size:.8rem;font-weight:800;border:1px solid transparent;transition:background .18s,border-color .18s}
+.sidebottom button:first-child{color:#e6eef7;background:rgba(255,255,255,.07)}
+.sidebottom button:first-child:hover{background:rgba(255,255,255,.13)}
+.sidebottom button:last-child{color:#ffd0ca;border-color:rgba(255,125,110,.19);background:rgba(190,54,47,.13)}
+.sidebottom button:last-child:hover{color:#fff;border-color:rgba(255,150,140,.42);background:rgba(190,54,47,.3)}
+
+/* Topbar */
+.top{height:auto;min-height:64px;background:#fff;border-bottom:1px solid var(--line);padding:.7rem 1.4rem;position:sticky;top:0;z-index:50;box-shadow:0 1px 3px rgba(12,30,54,.05)}
+.top b{color:var(--navy);font-weight:800;font-size:1rem}
+.top small{color:var(--muted)}
+
+/* Panels & stats */
+.panel,.stat{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.stat{border-right:3px solid var(--teal)}
+.stat strong{color:var(--navy);font-weight:800}
+.panel h2,.panel h3{color:var(--navy);font-weight:800}
+.head h1{color:var(--navy);font-weight:800}
+
+/* Tables */
+th{background:#f8fafc;color:#475569;font-weight:700}
+td{color:#1e293b}
+tr:hover td{background:#f8fafc}
+
+/* Badges & steps & tabs */
+.badge{font-weight:700}
+.step{border-radius:10px}
+.step.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.step.active b{background:rgba(255,255,255,.15);color:#fff}
+.tabs button{border-radius:9px;font-weight:700}
+.tabs button.active{background:var(--navy);color:#fff}
+.progress i{background:linear-gradient(90deg,var(--teal),var(--teal2))}
+
+/* Inputs */
+.field input,.field select,.field textarea,input,select,textarea{border-radius:10px;border:1.5px solid var(--line)}
+.field input:focus,.field select:focus,.field textarea:focus,input:focus,select:focus,textarea:focus{border-color:var(--teal2);box-shadow:0 0 0 3px rgba(20,184,166,.16)}
+
+/* Modal & toast */
+.modal{border-radius:16px;box-shadow:0 24px 64px rgba(4,16,30,.4)}
+.modalbg{background:rgba(10,27,44,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal h3{color:var(--navy);font-weight:800}
+.toast{border-radius:12px;font-family:var(--font-fos)}
+
+/* Login — exact advising landing look */
+#login{background:#071a33}
+#login .bgslides .bgshade{background:linear-gradient(115deg,rgba(7,26,51,.92) 0%,rgba(7,26,51,.78) 42%,rgba(12,30,54,.55) 70%,rgba(13,148,136,.32) 100%),radial-gradient(ellipse at 75% 20%,rgba(6,182,212,.18),transparent 55%)}
+.lp-head{z-index:50}
+.lp-kicker{color:#5eead4;font-weight:800}
+.lp-title{font-weight:900}
+.lp-cta{border-radius:14px;padding:.85rem 2.2rem;background:linear-gradient(135deg,#0d9488,#06b6d4)!important;box-shadow:0 8px 22px rgba(13,148,136,.35);font-family:var(--font-fos)}
+.lp-feat{border-radius:999px;padding:.45rem .95rem;font-family:var(--font-fos)}
+.fos-card{font-family:var(--font-fos)}
+.fos-head img{width:56px;height:56px}
+.fos-btn{font-family:var(--font-fos)}
+.lp-back{font-family:var(--font-fos);border-radius:12px}
+#loginTheme{border-radius:10px;font-family:var(--font-fos)}
+
+/* Welcome / farewell glass screens (same as advising platform) */
+.greet-overlay{position:fixed;inset:0;z-index:10070;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.greet-overlay::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,30,54,.86) 0%,rgba(18,50,80,.68) 55%,rgba(15,118,110,.55) 130%);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.greet-overlay.show{opacity:1;pointer-events:auto}
+.greet-box{position:relative;text-align:center;color:#fff;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.24);border-radius:26px;padding:2.1rem 2.8rem;box-shadow:0 26px 64px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transform:translateY(14px) scale(.94);opacity:0;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s ease;font-family:var(--font-fos)}
+.greet-overlay.show .greet-box{transform:none;opacity:1}
+.greet-brand{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.6rem}
+.greet-logo{width:68px;height:68px;border-radius:20px;background:#fff;padding:7px;box-shadow:0 18px 44px rgba(0,0,0,.35);flex:0 0 auto;animation:greetPop .6s cubic-bezier(.2,.9,.3,1.3) both .1s;object-fit:contain}
+.greet-brand-titles{text-align:center}
+.greet-brand-title{font-size:1.15rem;font-weight:800;color:#fff}
+.greet-brand-sub{font-size:.9rem;font-weight:700;color:#99f0e4;margin-top:.15rem}
+@keyframes greetPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.greet-word{font-size:2.1rem;font-weight:800;margin-bottom:.3rem}
+.greet-name{font-size:1.05rem;color:#99f0e4;font-weight:700}
+@media (prefers-reduced-motion: reduce){.greet-logo{animation:none}.greet-box,.greet-overlay{transition-duration:.01ms}}
+
+/* True-navy dark mode (advising dark tokens) */
+html[data-theme=dark]{background:#0b1320}
+html[data-theme=dark] body{background:#0b1320;color:#e7eef7}
+html[data-theme=dark] .main,html[data-theme=dark] .content{background:#0b1320}
+html[data-theme=dark] .top{background:rgba(17,28,43,.96);border-bottom:1px solid #2a3a4e;box-shadow:0 4px 18px rgba(0,0,0,.2)}
+html[data-theme=dark] .top b,html[data-theme=dark] #pagetitle{color:#edf3fa}
+html[data-theme=dark] .top small,html[data-theme=dark] #editionlabel{color:#a5b3c5}
+html[data-theme=dark] .panel,html[data-theme=dark] .stat,html[data-theme=dark] .pair-card,html[data-theme=dark] .stepcard,html[data-theme=dark] .mxwrap{background:#121d2c;border-color:#2b3b50;box-shadow:0 2px 8px rgba(0,0,0,.2),0 10px 28px rgba(0,0,0,.16)}
+html[data-theme=dark] .stat{border-right-color:#2dd4bf}
+html[data-theme=dark] .head h1,html[data-theme=dark] .panel h2,html[data-theme=dark] .panel h3,html[data-theme=dark] .stat strong,html[data-theme=dark] td{color:#edf3fa}
+html[data-theme=dark] .modal,html[data-theme=dark] #avMenu,html[data-theme=dark] #ntPanel{background:#121d2c;border-color:#2b3b50}
+html[data-theme=dark] .modal h3{color:#edf3fa}
+html[data-theme=dark] button.light{background:#172437;border-color:#2b3b50;color:#d2dce8}
+html[data-theme=dark] th{background:#0d1826;color:#a5b3c5}
+html[data-theme=dark] td{border-bottom-color:#22303f}
+html[data-theme=dark] tr:hover td{background:#172437}
+html[data-theme=dark] .tablewrap{border-color:#2b3b50;background:#121d2c}
+html[data-theme=dark] table{background:#121d2c}
+html[data-theme=dark] .step{background:#172437;border-color:#2b3b50;color:#a5b3c5}
+html[data-theme=dark] .step.active{background:var(--navy);border-color:#2dd4bf;color:#5eead4}
+html[data-theme=dark] .tabs button{background:#172437;color:#a5b3c5}
+html[data-theme=dark] .tabs button.active{background:var(--navy);color:#5eead4}
+html[data-theme=dark] .field input,html[data-theme=dark] .field select,html[data-theme=dark] .field textarea,html[data-theme=dark] input,html[data-theme=dark] select,html[data-theme=dark] textarea{background:#0d1826;border-color:#2b3b50;color:#e7eef7}
+html[data-theme=dark] .check{background:#172437;border-color:#2b3b50;color:#d2dce8}
+html[data-theme=dark] .badge{background:#1c2c40;color:#a5b3c5}
+html[data-theme=dark] .notice{background:#14243a;color:#93c5fd;border-color:#22365a}
+html[data-theme=dark] .empty{color:#a5b3c5}
+html[data-theme=dark] .empty b{color:#edf3fa}
+html[data-theme=dark] .progress{background:#1c2c40}
+html[data-theme=dark] .muted{color:#a5b3c5}
+
 </style><link rel="stylesheet" href="cairo.css"></head><body>
 <div id="login"><div class="lp-head"><div class="lp-lockup"><img data-lf alt="شعار كلية العلوم"><div class="lp-lt"><b>كلية العلوم</b><small>Faculty of Science</small></div><i class="lp-sep"></i><img data-lg alt="شعار جامعة سوهاج"><div class="lp-lt"><b>جامعة سوهاج</b><small>Sohag University</small></div></div></div><div id="lp-home"><div class="lp-hero"><div class="lp-kicker">جامعة سوهاج</div><h2 class="lp-title">منظومة إدارة<br><span>جداول الامتحانات</span></h2><p class="lp-desc">من توزيع المسؤوليات على المختصين، إلى المراجعة والاعتماد، حتى الجدول النهائي المعتمد للطباعة والتصدير، في مكان واحد.</p><div class="lp-actions"><button type="button" class="lp-cta" onclick="var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(h)h.classList.add('hidden');if(a)a.classList.remove('hidden');var u=document.getElementById('lu');if(u)u.focus()">تسجيل الدخول</button></div><div class="lp-feats"><span class="lp-feat">توزيع المسؤوليات</span><span class="lp-feat">مراجعة واعتماد</span><span class="lp-feat">لجان ومراقبة</span><span class="lp-feat">جداول جاهزة للطباعة</span></div></div></div><div id="lp-auth" class="hidden"><button type="button" class="lp-back" onclick="var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(a)a.classList.add('hidden');if(h)h.classList.remove('hidden')">العودة للرئيسية ←</button><div class="fos-card"><div class="fos-head"><img data-lg alt=""><div class="fos-titles"><h1>منصة إدارة جداول الامتحانات</h1><div class="fos-sub">كلية العلوم · جامعة سوهاج</div><div class="fos-desc">بوابة موحدة لإعداد جداول الامتحانات ومراجعتها واعتمادها</div></div><img data-lf alt=""></div><div class="fos-tabs"><button type="button" class="active">تسجيل الدخول</button></div><div class="field fos-field"><label>اسم المستخدم</label><div class="fos-inp"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg><input id="lu" placeholder="اسم المستخدم" autocomplete="username"></div></div><div class="field fos-field"><label>كلمة المرور</label><div class="fos-inp"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="lp" type="password" placeholder="أدخل كلمة المرور" autocomplete="current-password"></div></div><div id="loginerr" class="notice warning hidden"></div><button type="button" class="fos-btn" onclick="login()">دخول</button><div class="foot">سجّل الدخول ببيانات حسابك المعتمد من إدارة الكلية.</div></div></div></div>
 <div id="app" class="app hidden"><aside id="side" class="side"><div class="brand"><img data-lg alt=""><div><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div></div><div class="profile"><span class="av" id="av">م</span><div><b id="who">مدير النظام</b><small id="role">مدير النظام</small></div></div><div><div class="navtitle" style="margin-bottom:6px">القائمة الرئيسية</div><div id="nav" class="nav"></div></div><div class="sidebottom"><button onclick="backup()">تصدير نسخة احتياطية</button><button onclick="logout()">تسجيل الخروج</button></div></aside><section class="main"><header class="top"><div style="display:flex;align-items:center;gap:9px"><button class="mobile light" onclick="toggleSide()">☰</button><div><b id="pagetitle">لوحة التحكم</b><small id="editionlabel">لا يوجد إصدار نشط</small></div></div><button class="light" onclick="changePassword()">تغيير كلمة المرور</button></header><main id="content" class="content"></main></section></div><div id="modalroot"></div><div id="toastroot"></div>
@@ -1867,4 +2004,4 @@ function users(){return head('إدارة المستخدمين','إنشاء حس�
 function logTable(rows){return rows.length?`<div class="tablewrap"><table><tr><th>التاريخ والوقت</th><th>المستخدم</th><th>العملية</th></tr>${rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.user)}</td><td>${esc(x.action)}</td></tr>`).join('')}</table></div>`:'<div class="empty">لا توجد عمليات مسجلة.</div>'}
 function modal(title,body,buttons){$('#modalroot').innerHTML=`<div class="modalbg" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>${esc(title)}</h3>${body}<div class="actions">${buttons}<button class="light" onclick="closeModal()">إغلاق</button></div></div></div>`}function closeModal(){$('#modalroot').innerHTML=''}function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='exam-platform-backup.json';a.click();URL.revokeObjectURL(a.href);log('تصدير نسخة احتياطية')}
 window.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('#login').classList.contains('hidden'))login();if(e.key==='Escape')closeModal()});init().catch(err=>console.error('init failed',err));
-</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261124c"></script></body></html>
+</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261125a"></script></body></html>

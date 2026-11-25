@@ -1696,3 +1696,46 @@ page = menu()[0] ? menu()[0][0] : 'published';
 save(); render();
 })();
 };
+// ===== FOS advising-platform parity: welcome & farewell glass screens (Nov 25) =====
+function showGreeting(kind, name, done) {
+  const old = document.getElementById('greet-overlay');
+  if (old) old.remove();
+  const ov = document.createElement('div');
+  ov.id = 'greet-overlay';
+  ov.className = 'greet-overlay';
+  ov.setAttribute('role', 'status');
+  const bg = (typeof CAMPUS1 !== 'undefined' && CAMPUS1) ? CAMPUS1 : '';
+  if (bg) ov.style.background = "url('" + bg + "') center / cover no-repeat, linear-gradient(135deg,#0c1e36 0%,#123250 60%,#0f766e 130%)";
+  else ov.style.background = 'linear-gradient(135deg,#0c1e36 0%,#123250 60%,#0f766e 130%)';
+  const lu = (typeof LOGO_U !== 'undefined') ? LOGO_U : '';
+  const lf = (typeof LOGO_F !== 'undefined') ? LOGO_F : '';
+  ov.innerHTML = '<div class="greet-box"><div class="greet-brand"><img class="greet-logo" src="' + lu + '" alt="" /><div class="greet-brand-titles"><div class="greet-brand-title">منصة إدارة جداول الامتحانات</div><div class="greet-brand-sub">كلية العلوم · جامعة سوهاج</div></div><img class="greet-logo" src="' + lf + '" alt="" /></div><div class="greet-word">' + (kind === 'bye' ? 'وداعاً' : 'أهلاً') + '</div>' + (name ? '<div class="greet-name">' + esc(name) + '</div>' : '') + '</div>';
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add('show'));
+  window.setTimeout(() => {
+    ov.classList.remove('show');
+    window.setTimeout(() => ov.remove(), 400);
+    if (typeof done === 'function') done();
+  }, kind === 'bye' ? 1500 : 1800);
+}
+login = (function (_l) {
+  return function () {
+    const had = !!window.me;
+    const r = _l.apply(this, arguments);
+    if (!had) {
+      let n = 0;
+      const t = setInterval(() => {
+        n++;
+        if (window.me) { clearInterval(t); showGreeting('hi', me.name); }
+        else if (n > 50) clearInterval(t);
+      }, 120);
+    }
+    return r;
+  };
+})(login);
+logout = (function (_g) {
+  return function () {
+    showGreeting('bye', window.me ? me.name : '');
+    return _g.apply(this, arguments);
+  };
+})(logout);

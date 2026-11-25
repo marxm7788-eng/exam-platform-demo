@@ -3024,7 +3024,7 @@ function users(){return head('إدارة المستخدمين','إنشاء حس�
 function logTable(rows){return rows.length?`<div class="tablewrap"><table><tr><th>التاريخ والوقت</th><th>المستخدم</th><th>العملية</th></tr>${rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.user)}</td><td>${esc(x.action)}</td></tr>`).join('')}</table></div>`:'<div class="empty">لا توجد عمليات مسجلة.</div>'}
 function modal(title,body,buttons){$('#modalroot').innerHTML=`<div class="modalbg" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>${esc(title)}</h3>${body}<div class="actions">${buttons}<button class="light" onclick="closeModal()">إغلاق</button></div></div></div>`}function closeModal(){$('#modalroot').innerHTML=''}function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='exam-platform-backup.json';a.click();URL.revokeObjectURL(a.href);log('تصدير نسخة احتياطية')}
 window.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('#login').classList.contains('hidden'))login();if(e.key==='Escape')closeModal()});init().catch(err=>console.error('init failed',err));
-</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261125g"></script><script>
+</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261125h"></script><script>
 /* v8-login-port: advising-identical login page behaviors */
 window.fosShowAuth=function(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(h)h.classList.add('hidden');if(a)a.classList.remove('hidden');var u=document.getElementById('lu');if(u)setTimeout(function(){u.focus()},80)};
 window.fosShowHome=function(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(a)a.classList.add('hidden');if(h)h.classList.remove('hidden')};
@@ -3037,4 +3037,70 @@ var bg=document.getElementById('hero-bg');
 if(bg){var ci=1;setInterval(function(){ci=ci>=4?1:ci+1;bg.style.opacity='0';setTimeout(function(){bg.setAttribute('data-campus',String(ci));bg.style.opacity='1'},500)},9000)}
 })();
 </script>
+<style>
+/* ===== v9: advising-identical topbar + sidebar chrome ===== */
+.top{padding:.85rem clamp(1rem,2.3vw,2rem)!important;min-height:76px;background:rgba(255,255,255,.94)!important;border-bottom:1px solid #e4eaf1!important;box-shadow:0 4px 18px #152b4809;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex!important;align-items:center!important;justify-content:space-between!important;gap:1rem}
+.v9-top-start{display:flex;align-items:center;gap:.6rem;min-width:0}
+.v9-title-wrap{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+#pagetitle.topbar-title{display:flex;align-items:center;gap:.7rem;font-weight:800;font-size:1.08rem;color:#142b49;margin:0}
+#pagetitle.topbar-title::before{content:"\f013";font-family:"Font Awesome 6 Free";font-weight:900;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:#0f766e;background:#d7f0ec;font-size:.95rem;flex:0 0 auto}
+#editionlabel.v9-topsub{font-size:.68rem;color:#64748b;margin-inline-start:calc(38px + .7rem)}
+.topbar-tools{display:flex;align-items:center;gap:.55rem}
+.v9-icon-btn{display:inline-grid;place-items:center;flex:0 0 auto;width:40px;height:40px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;color:#142b49;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;padding:0}
+.v9-icon-btn:hover{transform:translateY(-2px);border-color:#0d9488;box-shadow:0 5px 16px #0f766e29;color:#0d9488}
+.portal-clock{display:flex;align-items:center;gap:.72rem;min-height:46px;padding:.35rem .7rem;border:1px solid #e2e8f0;border-radius:14px;background:#fff;box-shadow:0 3px 12px #0f172a0e;white-space:nowrap;font-variant-numeric:tabular-nums}
+.portal-clock-date-wrap,.portal-clock-time-wrap{display:inline-flex;align-items:center;gap:.4rem}
+.portal-clock-date-wrap>i,.portal-clock-time-wrap>i{color:#0d9488;font-size:.78rem}
+.portal-clock-date{color:#334155;font-size:.76rem;font-weight:800;direction:rtl}
+.portal-clock-time{color:#0c1e36;font-size:.94rem;font-weight:900;direction:ltr;unicode-bidi:isolate;letter-spacing:.015em}
+.portal-clock-calendar{padding:.12rem .4rem;border-radius:999px;color:#0d9488;background:#0f766e17;font-size:.57rem;font-weight:900}
+.portal-clock-divider{width:1px;height:23px;background:#e2e8f0}
+#themeBtn.theme-toggle-btn{display:inline-grid;place-items:center;flex:0 0 auto;width:40px;height:40px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;color:#0c1e36;cursor:pointer;padding:0;transition:transform .2s,border-color .2s,box-shadow .2s}
+#themeBtn.theme-toggle-btn:hover{transform:translateY(-2px) rotate(-4deg);border-color:#0d9488;box-shadow:0 5px 16px #0f766e29}
+#themeBtn.theme-toggle-btn i{font-size:1rem}
+#ntBtn.notif-bell-btn{position:relative;width:42px;height:42px;border:1px solid #e4eaf1;border-radius:13px;background:#fff;color:#40536c;display:grid;place-items:center;cursor:pointer;padding:0;transition:.2s}
+#ntBtn.notif-bell-btn:hover{border-color:#0d9488;color:#0d9488;transform:translateY(-1px)}
+#ntWrap{position:relative}
+#ntBadge{position:absolute;top:-6px;left:-6px}
+.topbar-tools #savechip{margin:0}
+/* sidebar: advising group structure */
+.side .nav-group{margin-bottom:.3rem}
+.side .nav-group-toggle{display:flex;align-items:center;gap:.5rem;width:100%;border:0;background:none;cursor:pointer;font-family:inherit;padding:.55rem .95rem;border-radius:8px;text-align:right;color:#8ea3bc;font-size:.7rem;font-weight:800;letter-spacing:.03em;transition:color .15s,background .15s}
+.side .nav-group-toggle:hover{color:#dbe6f3;background:#ffffff0f}
+.side .nav-group.expanded .nav-group-toggle{color:#eef4fb}
+.side .nav-group-title{flex:1}
+.side .nav-group-count{font-size:.62rem;font-weight:700;color:#a9bcd2;background:#ffffff14;border-radius:20px;padding:.12rem .5rem}
+.side .nav-group-chevron{font-size:.6rem;transition:transform .25s}
+.side .nav-group.expanded .nav-group-chevron{transform:rotate(180deg)}
+.side .nav-group-items{overflow:hidden;max-height:0;transition:max-height .3s}
+.side .nav-group.expanded .nav-group-items{max-height:820px}
+/* sidebar footer: advising account + actions */
+.side .sidebar-footer{padding:1rem;background:#0000001f;border-top:1px solid #ffffff1a;margin-top:auto}
+.side .sidebar-account{display:flex;align-items:center;gap:.7rem;min-width:0;padding:.7rem;margin-bottom:.65rem;border:1px solid #ffffff1c;border-radius:13px;background:#ffffff0e}
+.side .sidebar-account .av{display:grid;place-items:center;flex:0 0 auto;width:39px;height:39px;border-radius:13px;color:#06251f;background:linear-gradient(145deg,#5eead4,#0f766e);font-size:1rem;font-weight:900;box-shadow:0 5px 16px #00000029;margin:0}
+.side .sidebar-account-meta{min-width:0;flex:1}
+.side .sidebar-account-meta b{display:block;overflow:hidden;color:#fff;font-size:.82rem;text-overflow:ellipsis;white-space:nowrap}
+.side .sidebar-account-meta small{display:inline-flex;max-width:100%;margin-top:.2rem;padding:.1rem .45rem;border:1px solid #ffffff1f;border-radius:999px;color:#c6d6e6;font-size:.64rem}
+.side .sidebar-profile-action,.side .sidebar-logout{display:flex;align-items:center;justify-content:center;gap:.55rem;width:100%;min-height:38px;margin-top:.4rem;padding:.48rem .7rem;border:1px solid transparent;border-radius:10px;font-family:inherit;font-size:.78rem;font-weight:800;cursor:pointer;transition:background .18s,border-color .18s,transform .18s,color .18s}
+.side .sidebar-profile-action{color:#e6eef7;background:#ffffff12}
+.side .sidebar-profile-action:hover{color:#fff;background:#ffffff21;transform:translateX(-2px)}
+.side .sidebar-logout{color:#ffd0ca;border-color:#ff7d6e30;background:#be362f21}
+.side .sidebar-logout:hover{color:#fff;border-color:#ff968c6b;background:#be362f4d;transform:translateX(-2px)}
+/* dark topbar details */
+html[data-theme="dark"] .top{background:rgba(17,28,43,.94)!important;border-bottom-color:#2a3a4e!important}
+html[data-theme="dark"] #pagetitle.topbar-title{color:#e7eef7}
+html[data-theme="dark"] #pagetitle.topbar-title::before{color:#5eead4;background:#123f3a}
+html[data-theme="dark"] #editionlabel.v9-topsub{color:#8ea3bc}
+html[data-theme="dark"] .portal-clock{color:#e8eff7;background:#121d2c;border-color:#2b3b50;box-shadow:0 3px 14px #0003}
+html[data-theme="dark"] .portal-clock-date{color:#c6d3e2}
+html[data-theme="dark"] .portal-clock-time{color:#f2f6fb}
+html[data-theme="dark"] .portal-clock-divider{background:#35465b}
+html[data-theme="dark"] .portal-clock-calendar{color:#a9e1d1;background:#18372e}
+html[data-theme="dark"] .v9-icon-btn,html[data-theme="dark"] #themeBtn.theme-toggle-btn,html[data-theme="dark"] #ntBtn.notif-bell-btn{background:#121d2c;border-color:#2b3b50;color:#c6d3e2}
+html[data-theme="dark"] .v9-icon-btn:hover,html[data-theme="dark"] #themeBtn.theme-toggle-btn:hover,html[data-theme="dark"] #ntBtn.notif-bell-btn:hover{border-color:#2dd4bf;color:#5eead4}
+/* desktop sidebar collapse via menu button */
+@media(min-width:901px){body.v9-side-collapsed .side{display:none!important}body.v9-side-collapsed .app{grid-template-columns:1fr!important}}
+@media(max-width:1100px){.portal-clock{gap:.55rem;min-height:42px;padding:.3rem .55rem}.portal-clock-date{font-size:.68rem}.portal-clock-time{font-size:.86rem}}
+@media(max-width:900px){.portal-clock{gap:.36rem;min-height:34px;padding:.2rem .34rem;border-radius:10px}.portal-clock-calendar,.portal-clock-date-wrap>i,.portal-clock-time-wrap>i{display:none}.portal-clock-divider{height:18px}.top{padding:.6rem .7rem!important;min-height:66px}#pagetitle.topbar-title{font-size:.93rem}#pagetitle.topbar-title::before{width:33px;height:33px;border-radius:10px}}
+</style>
 </body></html>

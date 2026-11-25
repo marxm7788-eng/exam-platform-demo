@@ -1011,7 +1011,7 @@ return;
 db.sec.fails = 0; db.sec.until = 0;
 me = x; x.last = new Date().toLocaleString('ar-EG');
 log('تسجيل الدخول');
-$('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+$('#loginpage').classList.add('hidden'); $('#app').classList.remove('hidden');
 $('#who').textContent = me.name; $('#role').textContent = roleName(me.role);
 page = menu()[0] ? menu()[0][0] : 'published';
 save(); render();
@@ -1690,7 +1690,7 @@ if (typeof x.password === 'string' && x.password.indexOf('pbkdf2$') !== 0) { try
 db.sec.fails = 0; db.sec.until = 0;
 me = x; x.last = new Date().toLocaleString('ar-EG');
 log('تسجيل الدخول');
-$('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+$('#loginpage').classList.add('hidden'); $('#app').classList.remove('hidden');
 $('#who').textContent = me.name; $('#role').textContent = roleName(me.role);
 page = menu()[0] ? menu()[0][0] : 'published';
 save(); render();

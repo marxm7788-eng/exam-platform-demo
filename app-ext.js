@@ -1741,7 +1741,7 @@ logout = (function (_g) {
   };
 })(logout);
 
-// ===== Advising-style grouped sidebar (Nov 25 v7) =====
+// ===== Advising-style grouped sidebar (Nov 25 v7e) =====
 const FOS_GROUPS = [
   ['الرئيسية', ['dashboard']],
   ['الإصدار والتوزيع', ['setup', 'assign', 'alloc', 'observers', 'rooms']],
@@ -1752,19 +1752,12 @@ function fosKeyOf(b) { const oc = b.getAttribute('onclick') || ''; const m = /go
 buildTabs = function () {
   const nav = document.getElementById('nav');
   if (!nav) return;
-  let host = document.getElementById('sideNavHost');
-  if (!host) {
-    const side2 = document.querySelector('.side');
-    if (!side2) return;
-    host = document.createElement('div');
-    host.id = 'sideNavHost';
-    const prof = side2.querySelector('.profile');
-    if (prof && prof.nextSibling) side2.insertBefore(host, prof.nextSibling);
-    else side2.appendChild(host);
-  }
-  if (nav.parentElement !== host) host.appendChild(nav);
   const side = document.querySelector('.side');
   if (side && getComputedStyle(side).display === 'none') side.style.display = 'flex';
+  const nt = side ? side.querySelector('.navtitle') : null;
+  const host = nt ? nt.parentElement : null;
+  if (host && nav.parentElement !== host) host.appendChild(nav);
+  if (nt) nt.style.display = 'none';
   const mw = document.getElementById('tabMoreWrap');
   if (mw) mw.style.display = 'none';
   const btns = [...nav.querySelectorAll('button')];
@@ -1798,60 +1791,25 @@ buildTabs = function () {
     rest.forEach(b => nav.appendChild(b));
   }
 };
-function fosBuildSidebar() {
+function fosWireSidebar() {
   const side = document.querySelector('.side');
-  if (!side || side._fosBuilt) return;
-  side._fosBuilt = true;
-  const brand = side.querySelector('.brand');
-  if (brand) {
-    const lf = (typeof LOGO_F !== 'undefined') ? LOGO_F : '';
-    brand.innerHTML = '<img src="' + lf + '" alt=""><div><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div>';
-  }
-  const prof = side.querySelector('.profile');
-  if (prof) prof.innerHTML = '<div class="av">م</div><div><b id="sideWho">—</b><small id="sideRole">—</small></div>';
-  const bottom = side.querySelector('.sidebottom');
-  if (bottom) {
-    bottom.innerHTML = '<button type="button" id="sideLogout">تسجيل الخروج</button>';
-    const lo = document.getElementById('sideLogout');
-    if (lo) lo.onclick = () => logout();
-  }
+  if (!side || side._fosWired) return;
+  side._fosWired = true;
   const bd = document.getElementById('sideBackdrop');
-  const setOpen = (open) => {
-    side.classList.toggle('open', open);
-    if (bd) bd.style.display = open ? 'block' : 'none';
-  };
+  const setOpen = (open) => { side.classList.toggle('open', open); if (bd) bd.style.display = open ? 'block' : 'none'; };
   const burger = [...document.querySelectorAll('.top button')].find(b => b.textContent.indexOf('☰') >= 0);
   if (burger) burger.onclick = () => setOpen(!side.classList.contains('open'));
   if (bd) bd.onclick = () => setOpen(false);
   const sc = side.querySelector('.side-close');
   if (sc) sc.onclick = () => setOpen(false);
 }
-function fosSyncProfile() {
-  const sw = document.getElementById('sideWho'), sr = document.getElementById('sideRole');
-  const av = document.querySelector('.side .profile .av');
-  const w = document.getElementById('who'), r = document.getElementById('role');
-  let nm = w ? w.textContent.trim() : '', rl = r ? r.textContent.trim() : '';
-  if ((!nm || nm === '—') && typeof me !== 'undefined' && me) {
-    nm = me.name || me.id || '';
-    try { rl = (typeof roleName === 'function') ? roleName(me.role) : (me.role || ''); } catch (e) { rl = me.role || ''; }
-  }
-  if (sw && nm && sw.textContent !== nm) {
-    sw.textContent = nm;
-    if (av) av.textContent = nm.charAt(0);
-  }
-  if (sr && rl && sr.textContent !== rl) sr.textContent = rl;
-}
 if (typeof window.buildBrand === 'undefined') { window.buildBrand = function () {}; }
-fosBuildSidebar();
-setInterval(fosSyncProfile, 700);
-try { buildTabs(); } catch (e) {}
-
-// ===== v7d: keep #nav in the sidebar - neutralize the old topbar layout mover =====
 try { layoutTop15 = function () {}; } catch (e) {}
+fosWireSidebar();
 const _fosRenderFinal = render;
 render = function () {
   const r = _fosRenderFinal.apply(this, arguments);
   try { buildTabs(); } catch (e) {}
-  try { fosSyncProfile(); } catch (e) {}
   return r;
 };
+try { buildTabs(); } catch (e) {}

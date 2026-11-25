@@ -1740,3 +1740,93 @@ logout = (function (_g) {
     return _g.apply(this, arguments);
   };
 })(logout);
+
+// ===== Advising-style grouped sidebar (Nov 25 v7) =====
+const FOS_GROUPS = [
+  ['الرئيسية', ['dashboard']],
+  ['الإصدار والتوزيع', ['setup', 'assign', 'alloc', 'observers', 'rooms']],
+  ['الجداول والاعتماد', ['tracking', 'review', 'published', 'reports']],
+  ['النظام', ['users', 'settings', 'logs', 'roadmap']]
+];
+function fosKeyOf(b) { const oc = b.getAttribute('onclick') || ''; const m = /go\('([^']+)'\)/.exec(oc); return m ? m[1] : ''; }
+buildTabs = function () {
+  const nav = document.getElementById('nav');
+  if (!nav) return;
+  if (!nav._home) nav._home = nav.parentElement;
+  if (nav._home && nav.parentElement !== nav._home) nav._home.appendChild(nav);
+  const side = document.querySelector('.side');
+  if (side && getComputedStyle(side).display === 'none') side.style.display = 'flex';
+  const mw = document.getElementById('tabMoreWrap');
+  if (mw) mw.style.display = 'none';
+  const btns = [...nav.querySelectorAll('button')];
+  if (!btns.length) return;
+  const c = (typeof counts === 'function') ? counts() : {};
+  btns.forEach(b => {
+    b.style.display = '';
+    const old = b.querySelector('.tbadge'); if (old) old.remove();
+    const bd = (typeof badgeFor === 'function') ? badgeFor(fosKeyOf(b), c) : '';
+    if (bd) b.insertAdjacentHTML('beforeend', bd);
+  });
+  nav.querySelectorAll('.side-grp-title').forEach(t => t.remove());
+  const byKey = {};
+  btns.forEach(b => { const k = fosKeyOf(b); if (k && !byKey[k]) byKey[k] = b; });
+  const placed = new Set();
+  for (const [title, keys] of FOS_GROUPS) {
+    const present = keys.map(k => byKey[k]).filter(Boolean);
+    if (!present.length) continue;
+    const h = document.createElement('div');
+    h.className = 'side-grp-title';
+    h.textContent = title;
+    nav.appendChild(h);
+    present.forEach(b => { nav.appendChild(b); placed.add(fosKeyOf(b)); });
+  }
+  const rest = btns.filter(b => { const k = fosKeyOf(b); return k && !placed.has(k); });
+  if (rest.length) {
+    const h = document.createElement('div');
+    h.className = 'side-grp-title';
+    h.textContent = 'أخرى';
+    nav.appendChild(h);
+    rest.forEach(b => nav.appendChild(b));
+  }
+};
+function fosBuildSidebar() {
+  const side = document.querySelector('.side');
+  if (!side || side._fosBuilt) return;
+  side._fosBuilt = true;
+  const brand = side.querySelector('.brand');
+  if (brand) {
+    const lf = (typeof LOGO_F !== 'undefined') ? LOGO_F : '';
+    brand.innerHTML = '<img src="' + lf + '" alt=""><div><b>إدارة جداول الامتحانات</b><small>كلية العلوم – جامعة سوهاج</small></div>';
+  }
+  const prof = side.querySelector('.profile');
+  if (prof) prof.innerHTML = '<div class="av">م</div><div><b id="sideWho">—</b><small id="sideRole">—</small></div>';
+  const bottom = side.querySelector('.sidebottom');
+  if (bottom) {
+    bottom.innerHTML = '<button type="button" id="sideLogout">تسجيل الخروج</button>';
+    const lo = document.getElementById('sideLogout');
+    if (lo) lo.onclick = () => logout();
+  }
+  const bd = document.getElementById('sideBackdrop');
+  const setOpen = (open) => {
+    side.classList.toggle('open', open);
+    if (bd) bd.style.display = open ? 'block' : 'none';
+  };
+  const burger = [...document.querySelectorAll('.top button')].find(b => b.textContent.indexOf('☰') >= 0);
+  if (burger) burger.onclick = () => setOpen(!side.classList.contains('open'));
+  if (bd) bd.onclick = () => setOpen(false);
+  const sc = side.querySelector('.side-close');
+  if (sc) sc.onclick = () => setOpen(false);
+}
+function fosSyncProfile() {
+  const w = document.getElementById('who'), r = document.getElementById('role');
+  const sw = document.getElementById('sideWho'), sr = document.getElementById('sideRole');
+  const av = document.querySelector('.side .profile .av');
+  if (w && sw && sw.textContent !== w.textContent) {
+    sw.textContent = w.textContent;
+    if (av && w.textContent.trim()) av.textContent = w.textContent.trim().charAt(0);
+  }
+  if (r && sr && sr.textContent !== r.textContent) sr.textContent = r.textContent;
+}
+fosBuildSidebar();
+setInterval(fosSyncProfile, 700);
+try { buildTabs(); } catch (e) {}

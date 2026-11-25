@@ -1752,8 +1752,17 @@ function fosKeyOf(b) { const oc = b.getAttribute('onclick') || ''; const m = /go
 buildTabs = function () {
   const nav = document.getElementById('nav');
   if (!nav) return;
-  if (!nav._home) nav._home = nav.parentElement;
-  if (nav._home && nav.parentElement !== nav._home) nav._home.appendChild(nav);
+  let host = document.getElementById('sideNavHost');
+  if (!host) {
+    const side2 = document.querySelector('.side');
+    if (!side2) return;
+    host = document.createElement('div');
+    host.id = 'sideNavHost';
+    const prof = side2.querySelector('.profile');
+    if (prof && prof.nextSibling) side2.insertBefore(host, prof.nextSibling);
+    else side2.appendChild(host);
+  }
+  if (nav.parentElement !== host) host.appendChild(nav);
   const side = document.querySelector('.side');
   if (side && getComputedStyle(side).display === 'none') side.style.display = 'flex';
   const mw = document.getElementById('tabMoreWrap');

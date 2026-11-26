@@ -10,11 +10,11 @@ if(enterFlag){enterFlag=false;[...c.children].forEach((el,i)=>el.style.setProper
 function countUp(root){root.querySelectorAll('[data-count]').forEach(el=>{let n=+el.dataset.count,t0=performance.now();let f=t=>{let p=Math.min(1,(t-t0)/800);el.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
 go=function(p){if(p===page&&!taskKey){return}let c=$('#content');c.classList.add('leaving');setTimeout(()=>{page=p;taskKey=null;enterFlag=true;render()},170)};
 const _login=login;login=function(){enterFlag=true;_login()};
-const SICON=['◧','☺','⇄','➤','✓','○'];let _si=0;
-stat=function(t,n){let i=_si++%6;return `<div class="stat"><div class="si">${SICON[i]}</div><span>${t}</span><strong data-count="${n}">${n}</strong></div>`};
+const SIMAP={'المعتمدة':'fa-check-circle','مرسلة للمراجعة':'fa-paper-plane','المهام المسندة':'fa-tasks','المختصون النشطون':'fa-user-tie','الإصدارات':'fa-layer-group','غير المسندة':'fa-inbox','مكلّفة':'fa-clipboard-list','أُرسلت':'fa-paper-plane','لم تُرسل':'fa-clock','متأخرة':'fa-exclamation-triangle','مقررات بموعد':'fa-calendar-check','لها لجان':'fa-users','بها تحذيرات':'fa-exclamation-triangle','إجمالي القاعات':'fa-door-open','المباني':'fa-building','قاعة':'fa-door-closed','مدرج':'fa-chalkboard-teacher','معمل':'fa-flask','الإجمالي':'fa-users','ملاحظ':'fa-user','مراقب':'fa-user-check','رئيس لجنة':'fa-user-tie','سيُضاف':'fa-plus-circle','مكرر (يُتجاهل)':'fa-copy','غير صالح':'fa-times-circle'};
+stat=function(t,n){return `<div class="stat"><div class="si"><i class="fas ${SIMAP[t]||'fa-chart-simple'}"></i></div><span>${t}</span><strong data-count="${n}">${n}</strong></div>`};
 const _dash=dashboard;
 dashboard=function(){_si=0;let e=active(),tk=e?Object.values(e.tasks):[],all=programs().length,ok=tk.filter(t=>['معتمد','منشور'].includes(t.status)).length,asg=e?Object.keys(e.assign).length:0,p=all?Math.round(ok/all*100):0;
-let hero=`<div class="hero"><i class="orb o1"></i><i class="orb o3"></i><div><small>${e?esc(e.year)+' • '+esc(e.semester):'لا يوجد إصدار نشط'}</small><h2>أهلاً ${esc(me.name)} • ${e?esc(e.name):'ابدأ بإنشاء إصدار امتحانات'}</h2><p>${e?`${asg} من ${all} برنامجاً مسنداً لمختصين، و${ok} جدول معتمد.`:'أنشئ إصداراً ثم وزّع المسؤوليات على المختصين.'}</p></div><div class="ringwrap"><div class="ring" style="--p:${p}"><b>${p}%</b></div><small>الجداول المعتمدة</small></div></div>`;
+let hero=`<div class="hero"><i class="orb o1"></i><i class="orb o3"></i><div><small>${e?esc(e.year)+' • '+esc(e.semester):'لا يوجد إصدار نشط'}</small><h2>أهلاً ${esc(me.name)}</h2><p>${e?`${asg} من ${all} برنامجاً مسنداً لمختصين، و${ok} جدول معتمد.`:'أنشئ إصداراً ثم وزّع المسؤوليات على المختصين.'}</p></div><div class="ringwrap"><div class="ring" style="--p:${Math.max(p,ok?4:0)}"><b>${ok}<small style="font-size:13px;font-weight:600"> / ${all}</small></b></div><small>الجداول المعتمدة (${p}%)</small></div></div>`;
 return hero+_dash()};
 function asgCatList(){return asgCat==='s'?SP:(asgLevel===1?G1:P2)}
 function asgKeys(){return asgCatList().map(n=>asgLevel+'|'+n)}
@@ -55,7 +55,8 @@ let cells={},dates=new Set(),cols=progs.filter(p=>p.level===pubLevel),has=new Se
 Object.entries(e.tasks).forEach(([k,t])=>{let p=progs.find(x=>x.key===k);if(!p||p.level!==pubLevel)return;if(pubScope==='ok'&&!okSt.includes(t.status))return;(t.courses||[]).filter(c=>c.slot).forEach(c=>{let [d,pid]=c.slot.split('|');dates.add(d);has.add(k);(cells[d+'|'+pid+'|'+k]=cells[d+'|'+pid+'|'+k]||[]).push({...c,st:t.status})})});
 let ds=[...dates].sort(),cs=cols.filter(p=>has.has(p.key));
 let dn=d=>{try{return DAYS[new Date(d+'T12:00:00').getDay()]}catch(x){return''}};
-let mx=cs.length?`<div class="mxwrap"><table class="matrix"><tr><th class="d">اليوم / الفترة</th>${cs.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr>${ds.map(d=>e.periods.map((p,pi)=>`<tr><td class="d">${pi===0?`${dn(d)}<small>${d}</small>`:''}<small>${esc(p.name)} ${p.from}–${p.to}</small></td>${cs.map(c=>{let a=cells[d+'|'+p.id+'|'+c.key]||[];return `<td>${a.map(x=>`<div class="mx ${okSt.includes(x.st)?'':'pre'}"><b>${esc(x.name)}</b><small>${esc(x.code)}${x.students?' • '+x.students+' طالب':''}</small>${x.pair?'<small>⚑ استثناء: طلاب مختلفون</small>':''}</div>`).join('')}</td>`}).join('')}</tr>`).join('')).join('')}</table></div><div class="legend"><span><i style="background:#d5efec"></i>معتمد</span>${pubScope==='all'?'<span><i style="background:#f6e9c6"></i>غير معتمد بعد (مبدئي)</span>':''}</div>`:`<div class="empty"><b>لا توجد جداول ${pubScope==='ok'?'معتمدة ':''}للمستوى ${LV[pubLevel-1]}</b>${pubScope==='ok'?'<br>يمكنك عرض كل الجداول المُدخلة بتغيير النطاق.':''}</div>`;
+let fmtDay=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('ar-EG',{day:'numeric',month:'long'})}catch(x){return d}};
+let mx=cs.length?`<div class="mxwrap"><table class="matrix"><tr><th class="d">اليوم / الفترة</th>${cs.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr>${ds.map(d=>e.periods.map((p,pi)=>`<tr><td class="d">${pi===0?`${dn(d)}<small>${fmtDay(d)}</small>`:''}<small>${esc(p.name)} ${p.from}–${p.to}</small></td>${cs.map(c=>{let a=cells[d+'|'+p.id+'|'+c.key]||[];return `<td>${a.map(x=>`<div class="mx ${okSt.includes(x.st)?'':'pre'}"><b>${esc(x.name)}</b><small>${esc(x.code)}${x.students?' • '+x.students+' طالب':''}</small>${x.pair?'<small>⚑ استثناء: طلاب مختلفون</small>':''}</div>`).join('')}</td>`}).join('')}</tr>`).join('')).join('')}</table></div><div class="legend"><span><i style="background:#d5efec"></i>معتمد</span>${pubScope==='all'?'<span><i style="background:#f6e9c6"></i>غير معتمد بعد (مبدئي)</span>':''}</div>`:`<div class="empty"><b>لا توجد جداول ${pubScope==='ok'?'معتمدة ':''}للمستوى ${LV[pubLevel-1]}</b>${pubScope==='ok'?'<br>يمكنك عرض كل الجداول المُدخلة بتغيير النطاق.':''}</div>`;
 let base=_pub();let seg=(items,cur,fn)=>`<div class="seg">${items.map(([v,t])=>`<button class="${cur===v?'on':''}" onclick="pubSet('${fn}',${typeof v==='number'?v:`'${v}'`})">${t}</button>`).join('')}</div>`;
 let ctl=`<div class="panel" style="margin-bottom:16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between">${seg([['matrix','جدول مصفوفة'],['list','قائمة']],pubTab,'t')}${pubTab==='matrix'?seg(LV.map((n,i)=>[i+1,'المستوى '+n]),pubLevel,'l'):''}${seg([['ok','المعتمد فقط'],['all','كل المُدخل']],pubScope,'s')}</div>`;
 if(pubTab==='list')return base.replace(/<div style="text-align:center"><h2>[\s\S]*?<\/div><\/div>/,offHead('جميع المستويات')).replace('<section class="panel">',ctl+'<section class="panel">');
@@ -64,7 +65,7 @@ let headBlock=base.match(/^<div class="head">[\s\S]*?<\/div><\/div>/)[0];
 let title=offHead('المستوى '+LV[pubLevel-1]);let sigs='<div class="sigs">'+offSigs(active()).map(s=>'<div>'+esc(s[0])+(s[1]?'<br><small style="font-weight:400">'+esc(s[1])+'</small>':'')+'</div>').join('')+'</div>';
 return headBlock+ctl+title+mx+sigs+hidden.replace(headBlock,'')};
 const tdy=()=>{let d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-const nowS=()=>new Date().toLocaleString('ar-EG');
+const nowS=()=>new Date().toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'});
 const OPEN_ST=['مسودة','قيد الإعداد','يحتاج تعديل'];
 const PAGE_ADD=[['observers','الملاحظون والمراقبون'],['roadmap','خارطة التطوير']];
 (()=>{let i=PAGES.findIndex(x=>x[0]==='rooms')+1;PAGES.splice(i,0,...PAGE_ADD);ROLE_PERMS.admin=PAGES.map(x=>x[0]).filter(k=>k!=='tasks').concat('approve')})();
@@ -92,7 +93,7 @@ const _ar=archive;archive=function(){let e=active();if(!e)return;if(me.role!=='a
 let open=Object.values(e.tasks).filter(t=>!['معتمد','منشور'].includes(t.status)).length;
 if(open&&!confirm(`يوجد ${open} جدول غير معتمد. إغلاق الإصدار يجب أن يكون بعد اعتماد النتائج. هل تريد الإغلاق والأرشفة رغم ذلك؟`))return;_ar()};
 function isLate(t){return !!(t&&t.due&&t.due<tdy()&&OPEN_ST.includes(t.status))}
-function stageOf(t){return({'مسودة':'1) بداية الإعداد','قيد الإعداد':'2) إعداد وتوزيع المقررات','مرسل للمراجعة':'3) عند المراجع','يحتاج تعديل':'3) أُعيد للمختص','معتمد':'4) معتمد','منشور':'5) منشور'})[t.status]||t.status}
+function stageOf(t){return({'مسودة':'بداية الإعداد','قيد الإعداد':'إعداد وتوزيع المقررات','مرسل للمراجعة':'عند المراجع','يحتاج تعديل':'أُعيد للمختص','معتمد':'معتمد','منشور':'منشور'})[t.status]||t.status}
 function setDue(k,v){let e=active(),t=e.tasks[k]||(e.tasks[k]={courses:[],status:'مسودة',note:''});t.due=v;save();log(`تحديد موعد تسليم ${progName(k)}: ${v||'بدون'}`);render()}
 function setDueAll(){let v=$('#dueall').value;if(!v)return toast('اختر تاريخاً',true);let e=active(),n=0;Object.keys(e.assign).forEach(k=>{let t=e.tasks[k]||(e.tasks[k]={courses:[],status:'مسودة',note:''});if(OPEN_ST.includes(t.status)){t.due=v;n++}});save();log(`تحديد موعد تسليم ${v} لـ ${n} جدول`);render();toast(`تم تحديد الموعد لـ ${n} جدول`)}
 let trackF='all';
@@ -830,7 +831,7 @@ if (x.carry) {
 let c = (t.courses || []).find(c => c.manual && c.code === x.code);
 if (!c || c.slot || slotClash(t, c.code, 'm:' + c.code, x.slot)) return;
 let [date, pid] = x.slot.split('|'), pp = e.periods.find(z => z.id === pid), day = DAYS[new Date(date + 'T12:00:00').getDay()];
-c.slot = x.slot; c.label = `${day} ${date} – ${pp.name} (${pp.from}–${pp.to})`;
+c.slot = x.slot; c.label = `${day}، ${fmtDay(date)} – ${pp.name} (${pp.from}–${pp.to})`;
 items.push({ k: x.k, code: x.code, slot: x.slot, carry: true });
 } else {
 if (t && planEntry(t, x.code) && planEntry(t, x.code).slot) return;
@@ -1360,7 +1361,7 @@ return `<div style="page-break-after:always">${offHead('كشف مهام فردي
 }).join('');
 }
 const RP_DEFS=[
-{id:'students',title:'جدول الامتحانات — نسخة الطلاب',aud:'للطلاب',cls:'green',desc:'المواعيد المعتمدة لكل مستوى: التاريخ والفترة والمقرر والبرنامج. صالح للنشر للطلاب.',body:rpBodyStudent,extra:'نسخة مخصصة للطلاب'},
+{id:'students',title:'جدول الامتحانات — نسخة الطلاب',aud:'عام',cls:'green',desc:'المواعيد المعتمدة لكل مستوى: التاريخ والفترة والمقرر والبرنامج. صالح للنشر للطلاب.',body:rpBodyStudent,extra:'نسخة مخصصة للطلاب'},
 {id:'committees',title:'كشوف اللجان بالملاحظين',aud:'داخلي',cls:'amber',desc:'كل لجنة: القاعة والمقرر وعدد الطلاب ورئيس اللجنة والمراقب والملاحظون. للاستخدام الداخلي.',body:rpBodyCommittees,extra:'تقرير داخلي — لا يُنشر للطلاب'},
 {id:'invig',title:'جدول مهام الملاحظين',aud:'داخلي',cls:'amber',desc:'لكل ملاحظ أو مراقب أو رئيس لجنة: مواعيده وقاعاته ومقرراته. للاستخدام الداخلي.',body:rpBodyInvig,extra:'تقرير داخلي — لا يُنشر للطلاب'},
 {id:'sheets',title:'كشوف المهام الفردية',aud:'للتوزيع',cls:'green',desc:'صفحة مستقلة بترويسة رسمية لكل معيد أو دكتور: مهامه بالتاريخ والفترة والقاعة والمقرر، مع سطر استلام وتوقيع. تُطبع صفحة لكل شخص وتُوزَّع عليه.',body:rpBodySheetsPrev,printBody:rpBodySheetsPrint,extra:'كشف مهام فردي'}
@@ -1965,4 +1966,22 @@ try { buildBrand = function () {}; } catch (e) {}
   const _r9b = render;
   render = function () { const r = _r9b.apply(this, arguments); try { fix(); } catch (e) { console.warn('v9b', e); } return r; };
   try { fix(); } catch (e) {}
+})();
+
+// ===== v13: consistency pass (audit Nov 26) — localized empty date inputs =====
+(function(){
+const st=document.createElement('style');st.id='v13-consistency';st.textContent=`
+.dw{position:relative;display:inline-block}
+.dw.dempty input[type=date]{color:transparent}
+.dw.dempty input[type=date]::-webkit-calendar-picker-indicator{opacity:.6}
+.dw.dempty::after{content:'اختر التاريخ';position:absolute;inset-inline-start:8px;top:50%;transform:translateY(-50%);color:#8aa0b8;font-size:11.5px;pointer-events:none}
+html[data-theme=dark] .dw.dempty::after{color:#6b7f95}`;
+document.head.appendChild(st);
+window._enhanceDates=function(){
+document.querySelectorAll('#content input[type=date]:not([data-dw]), #modalroot input[type=date]:not([data-dw])').forEach(i=>{
+i.dataset.dw='1';const w=document.createElement('span');w.className='dw';
+i.parentNode.insertBefore(w,i);w.appendChild(i);
+const u=()=>w.classList.toggle('dempty',!i.value);
+i.addEventListener('input',u);i.addEventListener('change',u);u();});};
+const _r13=render;render=function(){const r=_r13.apply(this,arguments);try{window._enhanceDates()}catch(e){}return r};
 })();

@@ -3025,7 +3025,7 @@ function users(){return head('إدارة المستخدمين','إنشاء حس�
 function logTable(rows){return rows.length?`<div class="tablewrap"><table><tr><th>التاريخ والوقت</th><th>المستخدم</th><th>العملية</th></tr>${rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.user)}</td><td>${esc(x.action)}</td></tr>`).join('')}</table></div>`:'<div class="empty">لا توجد عمليات مسجلة.</div>'}
 function modal(title,body,buttons){$('#modalroot').innerHTML=`<div class="modalbg" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>${esc(title)}</h3>${body}<div class="actions">${buttons}<button class="light" onclick="closeModal()">إغلاق</button></div></div></div>`}function closeModal(){$('#modalroot').innerHTML=''}function backup(){let b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='exam-platform-backup.json';a.click();URL.revokeObjectURL(a.href);log('تصدير نسخة احتياطية')}
 window.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('#loginpage').classList.contains('hidden'))login();if(e.key==='Escape')closeModal()});init().catch(err=>console.error('init failed',err));
-</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261125k"></script><script>
+</script><script src="assets.js?v=20261124b"></script><script src="campus1.js?v=20261124b"></script><script src="campus2.js?v=20261124b"></script><script src="campus3.js?v=20261124b"></script><script src="campus4.js?v=20261124b"></script><script>document.querySelectorAll("img[data-lg]").forEach(i=>i.src=LOGO_U);document.querySelectorAll("img[data-lf]").forEach(i=>i.src=LOGO_F)</script><script src="app-ext.js?v=20261126a"></script><script>
 /* v8-login-port: advising-identical login page behaviors */
 window.fosShowAuth=function(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(h)h.classList.add('hidden');if(a)a.classList.remove('hidden');var u=document.getElementById('lu');if(u)setTimeout(function(){u.focus()},80)};
 window.fosShowHome=function(){var h=document.getElementById('lp-home'),a=document.getElementById('lp-auth');if(a)a.classList.add('hidden');if(h)h.classList.remove('hidden')};
@@ -3383,6 +3383,9 @@ html[data-theme="dark"] #loginpage .local-demo-note{color:#f3dbab;background:#30
 #loginpage .local-demo-note{display:none!important}
 </style>
 <style id="v12-appearance">
+/* v12b chrome-parity: sidebar stays fixed on desktop like advising; grid col keeps the 260px spacer */
+@media(min-width:901px){.side{position:fixed;top:0;right:0;height:100vh;width:260px}}
+
 /* v12-appearance: advising polish layer + UI enhancements ported 1:1 (20-polish.css + 41-ui-enhancements.js) */
 :focus-visible{outline:3px solid rgba(20,184,166,.45);outline-offset:2px;border-radius:6px}
 .theme-icon-enter{animation:themeIconEnter .42s cubic-bezier(.2,.8,.2,1) both}

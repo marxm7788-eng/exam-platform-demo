@@ -1988,3 +1988,27 @@ const u=()=>w.classList.toggle('dempty',!i.value);
 i.addEventListener('input',u);i.addEventListener('change',u);u();});};
 const _r13=render;render=function(){const r=_r13.apply(this,arguments);try{window._enhanceDates()}catch(e){}return r};
 })();
+
+// ===== v14: backup reminder on dashboard (audit Nov 26) =====
+(function(){
+window._backupReminder=function(){
+try{
+if(typeof page==='undefined'||page!=='dashboard')return;
+if(typeof me==='undefined'||!me||me.role!=='admin')return;
+if(typeof db==='undefined'||!db)return;
+db.settings=db.settings||{};
+const s=db.settings,now=Date.now();
+if(s.backupSnooze&&s.backupSnooze>now)return;
+if(s.lastBackupAt&&(now-s.lastBackupAt)<7*864e5)return;
+const c=document.getElementById('content');
+if(!c||c.querySelector('.backup-reminder'))return;
+const d=document.createElement('div');
+d.className='panel backup-reminder';
+d.style.cssText='display:flex;align-items:center;gap:12px;border-inline-start:4px solid #b45309;margin-bottom:14px';
+d.innerHTML='<i class="fas fa-exclamation-triangle" style="color:#b45309;font-size:18px"></i><div style="flex:1"><b>تذكير بالنسخ الاحتياطي</b><div class="muted" style="font-size:12px;margin-top:2px">'+(s.lastBackupAt?'مرّ أكثر من 7 أيام على آخر نسخة احتياطية.':'لم تُؤخذ نسخة احتياطية من البيانات بعد.')+' صدّر نسخة من صفحة «القاعات والمباني» للحفاظ على بياناتك.</div></div><button class="sm teal" onclick="go(\'rooms\')">النسخ الآن</button><button class="sm light" onclick="db.settings.backupSnooze=Date.now()+3*864e5;save();render()">تذكير لاحقًا</button>';
+c.insertBefore(d,c.firstChild);
+}catch(e){}
+};
+const _r14=render;render=function(){const r=_r14.apply(this,arguments);try{window._backupReminder()}catch(e){}return r};
+const _go14=go;go=function(p){if(p!=='setup'){window.__wizSnap=null;}return _go14.apply(this,arguments)};
+})();

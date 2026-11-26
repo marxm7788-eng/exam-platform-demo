@@ -493,7 +493,7 @@ let saved=null;try{saved=localStorage.getItem('sohag_theme')}catch(x){}
 if(!saved&&matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)saved='dark';
 D.documentElement.dataset.theme=saved==='dark'?'dark':'light';
 if(!D.getElementById('loginTheme')){let l=D.createElement('button');l.type='button';l.id='loginTheme';l.onclick=()=>setTheme(cur()==='dark'?'light':'dark');D.body.appendChild(l)}
-const hideLT=()=>{let l=D.getElementById('loginTheme'),lg=D.getElementById('login');if(l&&lg)l.style.display=lg.classList.contains('hidden')?'none':''};
+const hideLT=()=>{let l=D.getElementById('loginTheme'),lg=D.getElementById('loginpage');if(l&&lg)l.style.display=lg.classList.contains('hidden')?'none':''};
 const _r7=render;render=function(){let r=_r7.apply(this,arguments);build();closeSide();hideLT();return r};
 const _lg=login;login=function(){let r=_lg.apply(this,arguments);setTimeout(()=>{build();hideLT()},900);return r};
 D.addEventListener('keydown',e=>{if(e.key==='Escape')closeSide()});

@@ -2048,13 +2048,13 @@ const inv=(typeof invigOn==='function')?invigOn():true;
 const comm=e?Object.keys(e.alloc||{}).length:0;
 const S=[
 {n:1,p:'setup',name:'إعداد الإصدار',done:!!e,st:e?'تم إنشاء الإصدار':'لم يُنشأ بعد'},
-{n:2,p:'assign',name:'توزيع المسؤوليات',done:assigned>0,st:!e?'بانتظار الإصدار':(assigned?assigned+' من '+progs.length+' برنامجًا':'لم يبدأ')},
+{n:2,p:'assign',name:'توزيع المسؤوليات',done:progs.length>0&&assigned>=progs.length,st:!e?'بانتظار الإصدار':(assigned?assigned+' من '+progs.length+' برنامجًا':'لم يبدأ')},
 {n:3,p:'rooms',name:'القاعات والمباني',done:rooms>0,st:rooms?rooms+' قاعة':'لم تُضف قاعات'},
 {n:4,p:'observers',name:'الملاحظون',off:!inv,done:inv&&obs>0,st:!inv?'موقوف (وضع المراقبة)':(obs?obs+' ملاحظ/مراقب':'لم يُضف أحد')},
 {n:5,p:'alloc',name:'توزيع اللجان',off:!inv,done:inv&&comm>0,st:!inv?'موقوف (وضع المراقبة)':(comm?comm+' مقررًا له لجنة':'لم تُوزَّع')},
-{n:6,p:'tracking',name:'متابعة الجداول',done:sent>0,st:sent?sent+' جدول أُرسل':'لم يُرسل جدول'},
-{n:7,p:'review',name:'المراجعة والاعتماد',done:ok>0,st:ok?ok+' جدول معتمد':'لا جداول معتمدة'},
-{n:8,p:'reports',name:'مركز التقارير',done:pub>0,st:pub?pub+' جدول منشور':'لا جداول منشورة'}
+{n:6,p:'tracking',name:'متابعة الجداول',done:assigned>0&&sent>=assigned,st:sent?sent+' جدول أُرسل':'لم يُرسل جدول'},
+{n:7,p:'review',name:'المراجعة والاعتماد',done:sent>0&&ok>=sent,st:ok?ok+' جدول معتمد':'لا جداول معتمدة'},
+{n:8,p:'reports',name:'مركز التقارير',done:ok>0&&pub>=ok,st:pub?pub+' جدول منشور':'لا جداول منشورة'}
 ];
 const d=document.createElement('div');d.className='wf-strip';
 S.forEach(s=>{

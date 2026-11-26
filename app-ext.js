@@ -14,7 +14,7 @@ const SIMAP={'المعتمدة':'fa-check-circle','مرسلة للمراجعة':
 stat=function(t,n){return `<div class="stat"><div class="si"><i class="fas ${SIMAP[t]||'fa-chart-simple'}"></i></div><span>${t}</span><strong data-count="${n}">${n}</strong></div>`};
 const _dash=dashboard;
 dashboard=function(){_si=0;let e=active(),tk=e?Object.values(e.tasks):[],all=programs().length,ok=tk.filter(t=>['معتمد','منشور'].includes(t.status)).length,asg=e?Object.keys(e.assign).length:0,p=all?Math.round(ok/all*100):0;
-let hero=`<div class="hero"><i class="orb o1"></i><i class="orb o3"></i><div><small>${e?esc(e.year)+' • '+esc(e.semester):'لا يوجد إصدار نشط'}</small><h2>أهلاً ${esc(me.name)}</h2><p>${e?`${asg} من ${all} برنامجاً مسنداً لمختصين، و${ok} جدول معتمد.`:'أنشئ إصداراً ثم وزّع المسؤوليات على المختصين.'}</p></div><div class="ringwrap"><div class="ring" style="--p:${Math.max(p,ok?4:0)}"><b>${ok}<small style="font-size:13px;font-weight:600"> / ${all}</small></b></div><small>الجداول المعتمدة (${p}%)</small></div></div>`;
+let hero=`<div class="hero"><i class="orb o1"></i><i class="orb o3"></i><div><small>${e?esc(e.year)+' • '+esc(e.semester):'لا يوجد إصدار نشط'}</small><h2>أهلاً ${esc(me.name)}</h2><p>${e?`${asg} من ${all} برنامجاً مسنداً لمختصين، و${ok} جدول معتمد.`:'أنشئ إصداراً ثم وزّع المسؤوليات على المختصين.'}</p></div><div class="ringwrap"><div class="ring" style="--p:${Math.max(p,ok?4:0)}"><b style="direction:ltr;unicode-bidi:isolate">${ok}<small style="font-size:13px;font-weight:600"> / ${all}</small></b></div><small>الجداول المعتمدة (${p}%)</small></div></div>`;
 return hero+_dash()};
 function asgCatList(){return asgCat==='s'?SP:(asgLevel===1?G1:P2)}
 function asgKeys(){return asgCatList().map(n=>asgLevel+'|'+n)}
@@ -1745,7 +1745,7 @@ logout = (function (_g) {
 // ===== Advising-style grouped sidebar (Nov 25 v7e) =====
 const FOS_GROUPS = [
   ['الرئيسية', ['dashboard']],
-  ['الإصدار والتوزيع', ['setup', 'assign', 'alloc', 'observers', 'rooms']],
+  ['الإصدار والتوزيع', ['setup', 'assign', 'rooms', 'observers', 'alloc']],
   ['الجداول والاعتماد', ['tracking', 'review', 'published', 'reports']],
   ['النظام', ['users', 'settings', 'logs', 'roadmap']]
 ];
@@ -1954,11 +1954,13 @@ try { buildBrand = function () {}; } catch (e) {}
       if (!nav.querySelector('.nav-group.expanded')) { const g = nav.querySelector('.nav-group'); if (g) { g.classList.add('expanded'); g.querySelector('.nav-group-toggle').setAttribute('aria-expanded', 'true'); } }
       nav.querySelectorAll('button:not(.nav-group-toggle)').forEach(b => b.classList.add('nav-item'));
       // v11: FontAwesome icons instead of text glyphs (advising style)
-      const V11ICONS = [['لوحة التحكم','fa-th-large'],['إعداد الإصدار','fa-cog'],['توزيع المسؤوليات','fa-random'],['توزيع اللجان','fa-users'],['الملاحظون والمراقبون','fa-user-shield'],['القاعات والنسخ الاحتياطي','fa-door-open'],['متابعة الجداول','fa-tasks'],['المراجعة والاعتماد','fa-check-double'],['الجدول المجمّع','fa-table'],['مركز التقارير','fa-chart-bar'],['إدارة المستخدمين','fa-users-cog'],['الإعدادات','fa-sliders'],['سجل النشاط','fa-list']];
+      const V11ICONS = [['لوحة التحكم','fa-th-large'],['إعداد الإصدار','fa-cog'],['توزيع المسؤوليات','fa-random'],['توزيع اللجان','fa-users'],['الملاحظون والمراقبون','fa-user-shield'],['القاعات والمباني','fa-door-open'],['متابعة الجداول','fa-tasks'],['المراجعة والاعتماد','fa-check-double'],['الجدول المجمّع','fa-table'],['مركز التقارير','fa-chart-bar'],['إدارة المستخدمين','fa-users-cog'],['الإعدادات','fa-sliders'],['سجل النشاط','fa-list']];
+      const V11ORDER = [['إعداد الإصدار',1],['توزيع المسؤوليات',2],['القاعات والمباني',3],['الملاحظون والمراقبون',4],['توزيع اللجان',5],['متابعة الجداول',6],['المراجعة والاعتماد',7],['مركز التقارير',8]];
       nav.querySelectorAll('.nav-item').forEach(b => {
         let txt = b.textContent.replace(/[^\u0621-\u064A0-9a-zA-Z]+/, ' ').trim();
         const hit = V11ICONS.find(x => txt.includes(x[0]));
-        b.innerHTML = '<i class="fas ' + (hit ? hit[1] : 'fa-circle') + '"></i><span>' + txt + '</span>';
+        const ord = V11ORDER.find(x => txt.includes(x[0]));
+        b.innerHTML = (ord ? '<span class="nav-num">' + ord[1] + '</span>' : '') + '<i class="fas ' + (hit ? hit[1] : 'fa-circle') + '"></i><span>' + txt + '</span>';
       });
     }
     tick(); paintTheme();
@@ -1975,7 +1977,8 @@ const st=document.createElement('style');st.id='v13-consistency';st.textContent=
 .dw.dempty input[type=date]{color:transparent}
 .dw.dempty input[type=date]::-webkit-calendar-picker-indicator{opacity:.6}
 .dw.dempty::after{content:'اختر التاريخ';position:absolute;inset-inline-start:8px;top:50%;transform:translateY(-50%);color:#8aa0b8;font-size:11.5px;pointer-events:none}
-html[data-theme=dark] .dw.dempty::after{color:#6b7f95}`;
+html[data-theme=dark] .dw.dempty::after{color:#6b7f95}
+.nav-num{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 4px;border-radius:7px;background:var(--teal-bg,#e6f6f4);color:var(--teal,#0f766e);font:700 11px/1 'IBM Plex Sans Arabic',sans-serif;margin-left:2px}`;
 document.head.appendChild(st);
 window._enhanceDates=function(){
 document.querySelectorAll('#content input[type=date]:not([data-dw]), #modalroot input[type=date]:not([data-dw])').forEach(i=>{

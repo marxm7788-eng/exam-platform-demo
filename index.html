@@ -3382,4 +3382,100 @@ html[data-theme="dark"] #loginpage .local-demo-note{color:#f3dbab;background:#30
 }
 #loginpage .local-demo-note{display:none!important}
 </style>
+<style id="v12-appearance">
+/* v12-appearance: advising polish layer + UI enhancements ported 1:1 (20-polish.css + 41-ui-enhancements.js) */
+:focus-visible{outline:3px solid rgba(20,184,166,.45);outline-offset:2px;border-radius:6px}
+.theme-icon-enter{animation:themeIconEnter .42s cubic-bezier(.2,.8,.2,1) both}
+@keyframes themeIconEnter{0%{transform:rotate(-115deg) scale(.45);opacity:.2}70%{transform:rotate(12deg) scale(1.16);opacity:1}100%{transform:rotate(0) scale(1)}}
+.anim-fade-in{animation:fadeIn .25s ease both}
+.anim-fade-up{animation:fadeUp .32s cubic-bezier(.2,.7,.3,1) both}
+.anim-scale{animation:scaleIn .28s cubic-bezier(.2,.7,.3,1) both}
+.stat,.card,.stat-card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.stat:hover,.card:hover,.stat-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(12,30,54,.12)}
+html[data-theme="dark"] .stat:hover,html[data-theme="dark"] .card:hover,html[data-theme="dark"] .stat-card:hover{box-shadow:0 14px 34px rgba(0,0,0,.45)}
+.skeleton{background:linear-gradient(90deg,#eef2f7 25%,#f8fafc 50%,#eef2f7 75%);background-size:200% 100%;animation:sheen 1.2s infinite;border-radius:8px}
+html[data-theme="dark"] .skeleton{background:linear-gradient(90deg,#17273c 25%,#1f3249 50%,#17273c 75%);background-size:200% 100%}
+.fos-reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.fos-reveal.fos-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.fos-reveal{opacity:1;transform:none;transition:none}.theme-icon-enter{animation:none}}
+#fos-back-top{position:fixed;bottom:70px;left:22px;z-index:900;width:44px;height:44px;border-radius:13px;border:1px solid #e2e8f0;background:#fff;color:#173451;cursor:pointer;box-shadow:0 6px 20px rgba(12,30,54,.14);opacity:0;pointer-events:none;transform:translateY(10px);transition:all .25s ease;display:grid;place-items:center;font-size:15px}
+#fos-back-top.fos-show{opacity:1;pointer-events:auto;transform:none}
+#fos-back-top:hover{background:#0d9488;color:#fff;border-color:#0d9488}
+html[data-theme="dark"] #fos-back-top{background:#131f30;color:#e8eff7;border-color:#2a3a4e}
+html[data-theme="dark"] #fos-back-top:hover{background:#0d9488;color:#fff;border-color:#0d9488}
+</style>
+<script id="v12-appearance-js">
+/* v12-appearance: advising 41-ui-enhancements.js ported 1:1 + theme icon animation trigger */
+(function(){
+'use strict';
+function onReady(fn){if(document.readyState!=='loading')fn();else document.addEventListener('DOMContentLoaded',fn);}
+onReady(function(){
+  /* 1) back-to-top (advising: bottom-left; stacked above exam save chip) */
+  if(!document.getElementById('fos-back-top')){
+    var btn=document.createElement('button');
+    btn.id='fos-back-top';btn.type='button';
+    btn.setAttribute('aria-label','العودة لأعلى الصفحة');btn.title='العودة لأعلى الصفحة';
+    btn.innerHTML='<i class="fas fa-arrow-up"></i>';
+    btn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+    document.body.appendChild(btn);
+    window.addEventListener('scroll',function(){btn.classList.toggle('fos-show',window.scrollY>350);},{passive:true});
+  }
+  /* 2) scroll reveal (advising targets, incl. exam .stat) */
+  var SEL='.card,.stat,.stat-card,.lp-svc,.academic-import-type';
+  var io=('IntersectionObserver' in window)?new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('fos-in');io.unobserve(e.target);}});
+  },{threshold:.12}):null;
+  function attachReveals(){
+    if(!io)return;
+    var targets=document.querySelectorAll(SEL);
+    targets.forEach(function(t,i){
+      if(!t.classList.contains('fos-reveal')){
+        t.classList.add('fos-reveal');
+        t.style.transitionDelay=(Math.min(i,6)*45)+'ms';
+        io.observe(t);
+      }
+    });
+  }
+  attachReveals();
+  var rT=null;
+  new MutationObserver(function(){clearTimeout(rT);rT=setTimeout(attachReveals,350);}).observe(document.body,{childList:true,subtree:true});
+  /* 3) animated stat counters (advising: 3+ digit numbers) */
+  function attachCounters(){
+    if(!('IntersectionObserver' in window))return;
+    document.querySelectorAll('.stat,.stat-card').forEach(function(card){
+      card.querySelectorAll('div,span').forEach(function(n){
+        if(n.dataset.fosCounted)return;
+        var txt=n.textContent.trim().replace(/,/g,'');
+        if(/^\d{3,}$/.test(txt)&&n.children.length===0){
+          n.dataset.fosCounted='1';
+          var target=parseInt(txt,10);
+          var io2=new IntersectionObserver(function(en){
+            if(!en[0].isIntersecting)return;io2.disconnect();
+            var start=null;
+            function step(ts){if(!start)start=ts;var p=Math.min((ts-start)/900,1);
+              n.textContent=Math.round(target*(1-Math.pow(1-p,3))).toLocaleString('en');
+              if(p<1)requestAnimationFrame(step);}
+            requestAnimationFrame(step);
+          });
+          io2.observe(n);
+        }
+      });
+    });
+  }
+  attachCounters();
+  var cT=null;
+  new MutationObserver(function(){clearTimeout(cT);cT=setTimeout(attachCounters,500);}).observe(document.body,{childList:true,subtree:true});
+  /* 4) theme icon enter animation on every theme toggle (landing + topbar) */
+  function animateIcons(){
+    document.querySelectorAll('.theme-toggle-btn i').forEach(function(ic){
+      ic.classList.remove('theme-icon-enter');void ic.offsetWidth;ic.classList.add('theme-icon-enter');
+    });
+  }
+  new MutationObserver(function(muts){
+    if(muts.some(function(m){return m.attributeName==='data-theme';}))animateIcons();
+  }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+});
+})();
+</script>
+
 </body></html>

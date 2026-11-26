@@ -2012,3 +2012,62 @@ c.insertBefore(d,c.firstChild);
 const _r14=render;render=function(){const r=_r14.apply(this,arguments);try{window._backupReminder()}catch(e){}return r};
 const _go14=go;go=function(p){if(p!=='setup'){window.__wizSnap=null;}return _go14.apply(this,arguments)};
 })();
+
+// ===== v15: dashboard workflow strip (audit Nov 26) =====
+(function(){
+const st=document.createElement('style');st.id='v15-wf';st.textContent=`
+.wf-strip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin:0 0 6px;scrollbar-width:thin}
+.wf-item{flex:1 0 132px;max-width:170px;text-align:right;border:1px solid var(--bd,#e3e9f2);background:var(--card,#fff);border-radius:12px;padding:10px 12px;cursor:pointer;transition:.15s;font-family:inherit}
+.wf-item:hover{border-color:var(--teal,#0f766e);box-shadow:0 2px 8px rgba(15,118,110,.12)}
+.wf-item .wf-top{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.wf-item .wf-num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--teal-bg,#e6f6f4);color:var(--teal,#0f766e);font:700 11px/1 'IBM Plex Sans Arabic',sans-serif}
+.wf-item .wf-name{font-weight:700;font-size:12.5px}
+.wf-item .wf-st{font-size:11px;color:var(--tx3,#8aa0b8);display:flex;align-items:center;gap:5px}
+.wf-dot{width:8px;height:8px;border-radius:50%;background:#c3ced9;flex:none}
+.wf-done .wf-dot{background:#0f766e}
+.wf-done .wf-num{background:#0f766e;color:#fff}
+.wf-off .wf-dot{background:#d97706}
+html[data-theme=dark] .wf-item{background:var(--card,#16222f);border-color:var(--bd,#243246)}`;
+document.head.appendChild(st);
+window._wfStrip=function(){
+try{
+if(typeof page==='undefined'||page!=='dashboard')return;
+const c=document.getElementById('content');if(!c)return;
+c.querySelectorAll('.wf-strip').forEach(x=>x.remove());
+const e=(typeof active==='function')?active():null;
+const progs=(typeof programs==='function')?programs():[];
+const tasks=(e&&e.tasks)?e.tasks:{};
+const tv=Object.values(tasks);
+const assigned=e?Object.keys(e.assign||{}).length:0;
+const sent=tv.filter(t=>t.status&&t.status!=='مسودة').length;
+const ok=tv.filter(t=>['معتمد','منشور'].includes(t.status)).length;
+const pub=tv.filter(t=>t.status==='منشور').length;
+const rooms=(typeof db!=='undefined'&&db&&db.rooms)?db.rooms.length:0;
+const obs=(typeof db!=='undefined'&&db&&db.observers)?db.observers.length:0;
+const inv=(typeof invigOn==='function')?invigOn():true;
+const comm=e?Object.keys(e.alloc||{}).length:0;
+const S=[
+{n:1,p:'setup',name:'إعداد الإصدار',done:!!e,st:e?'تم إنشاء الإصدار':'لم يُنشأ بعد'},
+{n:2,p:'assign',name:'توزيع المسؤوليات',done:assigned>0,st:!e?'بانتظار الإصدار':(assigned?assigned+' من '+progs.length+' برنامجًا':'لم يبدأ')},
+{n:3,p:'rooms',name:'القاعات والمباني',done:rooms>0,st:rooms?rooms+' قاعة':'لم تُضف قاعات'},
+{n:4,p:'observers',name:'الملاحظون',off:!inv,done:inv&&obs>0,st:!inv?'موقوف (وضع المراقبة)':(obs?obs+' ملاحظ/مراقب':'لم يُضف أحد')},
+{n:5,p:'alloc',name:'توزيع اللجان',off:!inv,done:inv&&comm>0,st:!inv?'موقوف (وضع المراقبة)':(comm?comm+' مقررًا له لجنة':'لم تُوزَّع')},
+{n:6,p:'tracking',name:'متابعة الجداول',done:sent>0,st:sent?sent+' جدول أُرسل':'لم يُرسل جدول'},
+{n:7,p:'review',name:'المراجعة والاعتماد',done:ok>0,st:ok?ok+' جدول معتمد':'لا جداول معتمدة'},
+{n:8,p:'reports',name:'مركز التقارير',done:pub>0,st:pub?pub+' جدول منشور':'لا جداول منشورة'}
+];
+const d=document.createElement('div');d.className='wf-strip';
+S.forEach(s=>{
+const b=document.createElement('button');b.type='button';
+b.className='wf-item'+(s.done?' wf-done':'')+(s.off?' wf-off':'');
+b.innerHTML='<span class="wf-top"><span class="wf-num">'+s.n+'</span><span class="wf-name">'+s.name+'</span></span><span class="wf-st"><span class="wf-dot"></span>'+s.st+'</span>';
+b.onclick=function(){go(s.p)};
+d.appendChild(b);
+});
+const hero=c.querySelector('.hero');
+if(hero&&hero.parentNode===c){c.insertBefore(d,hero.nextSibling)}else{c.insertBefore(d,c.firstChild)}
+}catch(e){}
+};
+const _r15=render;render=function(){const r=_r15.apply(this,arguments);try{window._wfStrip()}catch(e){}return r};
+try{window._wfStrip()}catch(e){}
+})();

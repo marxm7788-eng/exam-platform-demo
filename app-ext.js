@@ -2071,3 +2071,36 @@ if(hero&&hero.parentNode===c){c.insertBefore(d,hero.nextSibling)}else{c.insertBe
 const _r15=render;render=function(){const r=_r15.apply(this,arguments);try{window._wfStrip()}catch(e){}return r};
 try{window._wfStrip()}catch(e){}
 })();
+
+// ===== v16: advising-style sidebar + login gating fix (Nov 27) =====
+(function(){
+const st=document.createElement('style');st.id='v16-sidebar';st.textContent=`
+#app.hidden{display:none!important}
+#nav{scrollbar-width:thin;scrollbar-color:#344b67 transparent}
+#nav::-webkit-scrollbar{width:9px}
+#nav::-webkit-scrollbar-thumb{background:linear-gradient(#14b8a6,#0891b2);border-radius:99px}
+#nav::-webkit-scrollbar-track{background:transparent}
+#nav .adv-sec{font-size:.65rem;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.4);padding:.85rem .85rem .35rem;margin-top:.35rem}
+#nav button.nav-item{display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;border-radius:8px;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.75);background:none;border:none;width:100%;text-align:right;cursor:pointer;margin-bottom:2px;box-shadow:none}
+#nav button.nav-item:hover{background:rgba(255,255,255,.08);color:#fff;filter:none}
+#nav button.nav-item.active{background:rgba(20,184,166,.2);color:#2dd4bf}
+#nav button.nav-item i{width:1.15rem;text-align:center;opacity:.9}`;
+document.head.appendChild(st);
+window._advSidebar=function(){
+try{
+const nav=document.getElementById('nav');if(!nav)return;
+const groups=[...nav.querySelectorAll('.nav-group')];
+if(!groups.length)return;
+groups.forEach(g=>{
+const t=g.querySelector('.nav-group-toggle .nav-group-title');
+const label=t?t.textContent.trim():'';
+const sec=document.createElement('div');sec.className='adv-sec';sec.textContent=label;
+g.parentNode.insertBefore(sec,g);
+[...g.querySelectorAll('button.nav-item')].forEach(b=>{g.parentNode.insertBefore(b,g);});
+g.remove();
+});
+}catch(e){}
+};
+const _r16=render;render=function(){const r=_r16.apply(this,arguments);try{window._advSidebar()}catch(e){}return r};
+try{window._advSidebar()}catch(e){}
+})();

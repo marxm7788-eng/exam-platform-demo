@@ -2084,9 +2084,10 @@ const st=document.createElement('style');st.id='v16-sidebar';st.textContent=`
 #nav button.nav-item{display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;border-radius:8px;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.75);background:none;border:none;width:100%;text-align:right;cursor:pointer;margin-bottom:2px;box-shadow:none}
 #nav button.nav-item:hover{background:rgba(255,255,255,.08);color:#fff;filter:none}
 #nav button.nav-item.active{background:rgba(20,184,166,.2);color:#2dd4bf}
-#nav button.nav-item i{width:1.15rem;text-align:center;opacity:.9}`;
+#nav button.nav-item i{width:1.15rem;text-align:center;opacity:.9}
+#nav .nav-num{display:none}`;
 document.head.appendChild(st);
-window._advSidebar=function(){
+window._advSidebar=function(){return;
 try{
 const nav=document.getElementById('nav');if(!nav)return;
 const groups=[...nav.querySelectorAll('.nav-group')];

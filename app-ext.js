@@ -2076,10 +2076,10 @@ try{window._wfStrip()}catch(e){}
 (function(){
 const st=document.createElement('style');st.id='v16-sidebar';st.textContent=`
 #app.hidden{display:none!important}
-#nav{scrollbar-width:thin;scrollbar-color:#344b67 transparent}
-#nav::-webkit-scrollbar{width:9px}
-#nav::-webkit-scrollbar-thumb{background:linear-gradient(#14b8a6,#0891b2);border-radius:99px}
-#nav::-webkit-scrollbar-track{background:transparent}
+#side,#side *,#nav,#nav *{scrollbar-width:thin;scrollbar-color:#344b67 transparent}
+#side::-webkit-scrollbar,#side *::-webkit-scrollbar,#nav::-webkit-scrollbar,#nav *::-webkit-scrollbar{width:9px}
+#side::-webkit-scrollbar-thumb,#side *::-webkit-scrollbar-thumb,#nav::-webkit-scrollbar-thumb,#nav *::-webkit-scrollbar-thumb{background:linear-gradient(#14b8a6,#0891b2);border-radius:99px}
+#side::-webkit-scrollbar-track,#side *::-webkit-scrollbar-track,#nav::-webkit-scrollbar-track,#nav *::-webkit-scrollbar-track{background:transparent}
 #nav .adv-sec{font-size:.65rem;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.4);padding:.85rem .85rem .35rem;margin-top:.35rem}
 #nav button.nav-item{display:flex;align-items:center;gap:.65rem;padding:.65rem .85rem;border-radius:8px;font-size:.875rem;font-weight:600;color:rgba(255,255,255,.75);background:none;border:none;width:100%;text-align:right;cursor:pointer;margin-bottom:2px;box-shadow:none}
 #nav button.nav-item:hover{background:rgba(255,255,255,.08);color:#fff;filter:none}
